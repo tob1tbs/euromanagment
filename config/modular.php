@@ -8,14 +8,7 @@ return [
     ],
 
     'modules' => [
-        'Customers',
         'Users',
         'Main',
-        'Parameters',
-        'Products',
-        'Orders',
-        'Delivery',
-        'FileManager',
-        'Content',
     ]
 ];
