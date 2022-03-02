@@ -50,6 +50,17 @@ class UsersController extends Controller
         }
     }
 
+    public function actionUsersCalendar(Request $Request) {
+        if (view()->exists('users.users_calendar')) {
+
+            $data = [];
+
+            return view('users.users_calendar', $data);
+        } else {
+            abort('404');
+        }
+    }
+
     public function actionUsersRole(Request $Request) {
         if (view()->exists('users.users_role')) {
 

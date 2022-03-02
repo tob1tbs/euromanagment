@@ -9,6 +9,7 @@ use App\Modules\Users\Models\UserRole;
 use App\Modules\Users\Models\UserPermission;
 use App\Modules\Users\Models\UserPermissionGroup;
 use App\Modules\Users\Models\UserRoleHasPermission;
+use App\Modules\Users\Models\UserWorkCalendar;
 
 use Validator;
 use Response;
@@ -224,6 +225,100 @@ class UsersAjaxController extends Controller
             $UserRoleHasPermission->where('permission_id', $Request->permission_id)->where('role_id', $Request->role_id)->get();
 
             return Response::json(['status' => true, 'message' => 'უფლება წარმატებით წაიშალა !!!']);
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    // USER WORK
+    public function ajaxUserWorkGet(Request $Request) {
+        if($Request->isMethod('GET')) {
+
+            $StartDate = Carbon::parse($Request->start);
+            $EndDate = Carbon::parse($Request->end);
+
+
+            $UserWorkCalendar = new UserWorkCalendar();
+            $UserWorkCalendarData = $UserWorkCalendar::where('deleted_at_int', '!=', 0)->whereBetween('work_date', [$StartDate, $EndDate])->get();
+
+            if(count($UserWorkCalendarData) > 0) {
+                $WorkArray = [];
+                
+                foreach($UserWorkCalendarData as $Key => $WorkItem) {
+                    $WorkArray[] = [
+                        'id' => $WorkItem->id,
+                        'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
+                        'date' => $WorkItem->work_date,
+                        'url' => '',
+                    ];
+                }
+            }
+
+            return Response::json($WorkArray);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserWorkAdd(Request $Request) {
+        if($Request->isMethod('POST')) {
+
+            $messages = array(
+                'required' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
+                'not_in' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
+            );
+            $validator = Validator::make($Request->all(), [
+                'work_user_id' => 'required|max:255|not_in:0',
+                'work_date' => 'required|max:255',
+            ], $messages);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
+            } else {
+
+                $UserWorkCalendar = new UserWorkCalendar();
+                $UserWorkCalendarData = $UserWorkCalendar::whereDate('work_date', Carbon::parse($Request->work_date)->format('Y-m-d'))->where('user_id', 1)->where('deleted_at_int', '!=', 0)->first();
+
+                if(!empty($UserWorkCalendarData)) {
+                    return Response::json(['status' => true, 'errors' => true, 'message' => ['0' => 'არჩეული თანამშრომელი უკვე დამატებულია არჩეულ დღეზე.']], 200);
+                } else {
+                    $UserWorkCalendar = new UserWorkCalendar();
+                    $UserWorkCalendar->user_id = $Request->work_user_id;
+                    $UserWorkCalendar->work_date = $Request->work_date;
+                    $UserWorkCalendar->created_by = 1;
+                    $UserWorkCalendar->save();
+
+                    $UserWorkData = $UserWorkCalendar::whereMonth('work_date', Carbon::parse($Request->work_date)->format('m'))->where('deleted_at_int', '!=', 0)->get();
+                    
+                    if(count($UserWorkData) > 0) {
+                        $WorkArray = [];
+                        
+                        foreach($UserWorkData as $Key => $WorkItem) {
+                            $WorkArray[] = [
+                                'id' => $WorkItem->id,
+                                'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
+                                'date' => $WorkItem->work_date,
+                            ];
+                        }
+                    }
+
+                    return Response::json(['status' => true, 'errors' => false, 'WorkArray' => $WorkArray]);
+                }
+            }
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserWorkEvent(Request $Request) {
+        if($Request->isMethod('GET') && $Request->work_id > 0) {
+
+            $UserWorkCalendar = new UserWorkCalendar();
+            $UserWorkData = $UserWorkCalendar::find($Request->work_id)->load(['workCreator', 'workUser']);
+
+            return Response::json(['status' => true, 'UserWorkData' => $UserWorkData]);
 
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);

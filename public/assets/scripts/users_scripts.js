@@ -322,3 +322,44 @@ function UserRolePermissionDelete(permission_id, role_id) {
         }
     });
 }
+
+function addUserWorkModal() {
+    $('#add_user_work_modal')[0].reset();
+    $("#addUserWorkModal").modal('show');
+}
+
+function addUserWorkSubmit() {
+    var form = $('#add_user_work_modal')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/work/add",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $.each(data['message'], function(key, value) {
+                        NioApp.Toast(value, 'error', {
+                            position: 'top-right'
+                        });
+                    })
+                }
+            } else {
+                
+            }
+        }
+    });
+}
+
+function DeleteUserWork() {
+    
+}

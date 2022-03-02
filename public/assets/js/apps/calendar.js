@@ -26,7 +26,7 @@
     var YESTERDAY = y_yyyy + '-' + y_mm + '-' + y_dd;
     var TODAY = yyyy + '-' + mm + '-' + dd;
     var TOMORROW = t_yyyy + '-' + t_mm + '-' + t_dd;
-    var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var month = ["იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"];
     var calendarEl = document.getElementById('calendar');
     var eventsEl = document.getElementById('externalEvents');
     var removeEvent = document.getElementById('removeEvent');

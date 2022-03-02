@@ -30,17 +30,12 @@
                     </li>
                     <li class="nk-menu-item has-sub">
                         <a href="#" class="nk-menu-link nk-menu-toggle">
-                            <span class="nk-menu-text">მომხმარებლები</span>
+                            <span class="nk-menu-text">თანამშრომლები</span>
                         </a>
                         <ul class="nk-menu-sub">
                             <li class="nk-menu-item">
                                 <a href="{{ route('actionUsersIndex') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">სისტემური მომხმარებლები</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionCustomersIndex') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">კლიენტები</span>
+                                    <span class="nk-menu-text">ჩამონათვალი</span>
                                 </a>
                             </li>
                             <li class="nk-menu-item">
@@ -48,98 +43,22 @@
                                     <span class="nk-menu-text">წვდომის ჯგუფები</span>
                                 </a>
                             </li>
-                        </ul>
-                    </li>
-                    <li class="nk-menu-item">
-                        <a href="{{ route('actionOrdersIndex') }}" class="nk-menu-link">
-                            <span class="nk-menu-text">შეკვეთები</span>
-                        </a>
-                    </li>
-                    <li class="nk-menu-item has-sub">
-                        <a href="#" class="nk-menu-link nk-menu-toggle">
-                            <span class="nk-menu-text">პროდუქცია</span>
-                        </a>
-                        <ul class="nk-menu-sub">
                             <li class="nk-menu-item">
-                                <a href="{{ route('actionProductsCategories') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">კატეგორიები</span>
+                                <a href="{{ route('actionUsersIndex') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">სამუშაო პოზიციები</span>
                                 </a>
                             </li>
                             <li class="nk-menu-item">
-                                <a href="{{ route('actionProductsBrands') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">ბრენდები</span>
+                                <a href="{{ route('actionUsersCalendar') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">სამუშაო კალენდარი</span>
                                 </a>
                             </li>
                             <li class="nk-menu-item">
-                                <a href="{{ route('actionProductsVendors') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">მომწოდებლები</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionProductsOptions') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">დამატებითი ველები</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionProductsIndex') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">ჩამონათვალი</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionProductsFacebook') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">Facebook Feed</span>
+                                <a href="{{ route('actionUsersSalary') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">თანამშრომელთა ხელფასები</span>
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="nk-menu-item has-sub">
-                        <a href="#" class="nk-menu-link nk-menu-toggle">
-                            <span class="nk-menu-text">კონტენტი</span>
-                        </a>
-                        <ul class="nk-menu-sub">
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionSliderIndex') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">სლაიდერი</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nk-menu-item has-sub">
-                        <a href="#" class="nk-menu-link nk-menu-toggle">
-                            <span class="nk-menu-text">პარამეტრები</span>
-                        </a>
-                        <ul class="nk-menu-sub">
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionParametersIndex') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">ზოგადი პარამეტრები</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionParametersPayments') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">ონლაინ გადახდები</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionParametersTranslate') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">თარგმნები</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionDeliveryParameters') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">მიწოდების პარამეტრები</span>
-                                </a>
-                            </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionDeliveryAddress') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">მიწოდების მისამართები</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nk-menu-item">
-                        <a href="/filemanager" class="nk-menu-link">
-                            <span class="nk-menu-text">ფაილ მენეჯერი</span>
-                        </a>
                     </li>
                 </ul>
             </div>

@@ -12,10 +12,15 @@ class MainController extends Controller
 {
 
     public function __construct() {
-        //
+        
+        // $op=file_get_contents('https://cdn.jsdelivr.net/npm/fullcalendar@4.10.5/dist/fullcalendar.min.js');
+
+        // echo $op;
+        // exit();
     }
 
     public function actionMainIndex() {
+
         if (view()->exists('main.main_index')) {
 
             $data = [];
