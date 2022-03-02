@@ -1,0 +1,71 @@
+.dropdown-menu-xl {
+    min-width: 450px;
+    max-width: 450px;
+}
+
+@media (min-width: 576px) { .nk-content { padding: 44px 22px; }
+
+.wide-xl {
+    max-width: 100% !important;
+}
+
+@font-face {
+    font-family: 'HelveticaRegular';
+        src: url('../fonts/Linotype-HelveticaNeueLTGEO55Roman.ttf');
+}
+
+@font-face {
+    font-family: 'HelveticaBold';
+        src: url('../fonts/Linotype-HelveticaNeueLTGEO75Bold.ttf');
+}
+
+@font-face {
+    font-family: 'fire-regular';
+    src: url('../fonts/FiraGO-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'fire-heavy';
+    src: url('../fonts/FiraGO-Heavy.ttf');
+}
+
+@font-face {
+    font-family: 'fire-bold';
+    src: url('../fonts/FiraGO-Bold.ttf');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'neue-geo-caps';
+    src: url('../fonts/helvetica-neue-lt-geo-55-roman-caps.ttf');
+}
+
+.nk-menu-text {
+	font-family: 'HelveticaRegular';
+	font-size: 14px;
+}
+
+.form-label, .font-helvetica-bold {
+	font-family: 'HelveticaBold';
+}
+
+.font-neue, .swal2-title {
+	font-family: 'neue-geo-caps' !important;
+}
+.font-helvetica-regular, .swal2-styled, .swal2-html-container {
+	font-family: 'HelveticaRegular';
+}
+
+.swal2-title {
+	font-size: 16px;
+}
+
+.nk-menu .nk-menu-sub {
+    width: 250px;
+}
+
+.toastr-text {
+    font-family: 'HelveticaRegular';
+}

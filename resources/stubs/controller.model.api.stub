@@ -1,0 +1,21 @@
+<?php
+
+namespace DummyNamespace;
+
+
+use Illuminate\Http\Request;
+use DummyRootNamespaceHttp\Controllers\Controller;
+
+use DummyFullModelClass;
+
+class DummyClass extends Controller
+{
+
+    public function __construct() {
+        //
+    }
+
+    public function actionDummyIndexName() {
+        //
+    }
+}

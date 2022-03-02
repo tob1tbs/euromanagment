@@ -1,0 +1,11 @@
+<?php
+
+// GENERAL ROUTES
+Route::group(['prefix' => 'DummyRoutePrefix', 'middleware' => []], function () {
+    Route::get('/', 'actionDummyClass@DummyIndex')->name('actionDummyIndex');
+});
+
+// AJAX ROUTES
+Route::group(['prefix' => 'DummyRoutePrefix/ajax', 'middleware' => []], function () {
+    
+});
