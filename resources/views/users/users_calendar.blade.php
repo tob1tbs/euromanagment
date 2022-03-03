@@ -50,7 +50,9 @@
                                 <div class="form-control-wrap">
                                     <select class="form-select form-control form-control-lg" data-search="on" id="work_user_id" name="work_user_id">
                                         <option value="0">გთხოვთ აირჩიოთ თანამშრომელი</option>
-                                        <option value="1">სახელი გვარი</option>
+                                        @foreach($users_list as $user_item)
+                                        <option value="{{ $user_item->id }}">{{ $user_item->name }} {{ $user_item->lastname }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

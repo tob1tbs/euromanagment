@@ -17,6 +17,11 @@ Route::group(['prefix' => 'users/ajax', 'middleware' => []], function () {
     Route::post('/work/add', 'UsersAjaxController@ajaxUserWorkAdd')->name('ajaxUserWorkAdd');
     Route::get('/work/get', 'UsersAjaxController@ajaxUserWorkGet')->name('ajaxUserWorkGet');
     Route::get('/work/event', 'UsersAjaxController@ajaxUserWorkEvent')->name('ajaxUserWorkEvent');
+    Route::post('/work/delete', 'UsersAjaxController@ajaxUserWorkDelete')->name('ajaxUserWorkDelete');
+    // USER SALARY
+    Route::post('/salary/submit', 'UsersAjaxController@ajaxUserSalarySubmit')->name('ajaxUserSalarySubmit');
+    Route::get('/salary/view', 'UsersAjaxController@ajaxUserSalaryView')->name('ajaxUserSalaryView');
+    Route::post('/salary/delete', 'UsersAjaxController@ajaxUserSalaryDelete')->name('ajaxUserSalaryDelete');
     // USERS ROLE
     Route::post('/role/submit', 'UsersAjaxController@ajaxUserRoleSubmit')->name('ajaxUserRoleSubmit');
     Route::post('/role/active', 'UsersAjaxController@ajaxUserRoleActiveChange')->name('ajaxUserRoleActiveChange');

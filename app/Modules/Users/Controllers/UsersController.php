@@ -9,6 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Modules\Users\Models\User;
 use App\Modules\Users\Models\UserRole;
 use App\Modules\Users\Models\UserPermissionGroup;
+use App\Modules\Users\Models\UserWorkSalary;
+use App\Modules\Users\Models\UserSalary;
+use App\Modules\Users\Models\UserWorkPosition;
+
+use Carbon\Carbon;
 
 class UsersController extends Controller
 {
@@ -53,9 +58,140 @@ class UsersController extends Controller
     public function actionUsersCalendar(Request $Request) {
         if (view()->exists('users.users_calendar')) {
 
-            $data = [];
+            $User = new User();
+            $UserList = $User::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $data = [
+                'users_list' => $UserList,
+            ];
 
             return view('users.users_calendar', $data);
+        } else {
+            abort('404');
+        }
+    }
+
+    public function actionUsersSalary(Request $Request) {
+        if (view()->exists('users.users_salary')) { 
+
+            $CurrentDate = Carbon::now()->locale('ka_GE');
+
+            $User = new User();
+            $UsersList = $User::where('deleted_at_int', '!=', 0)->where('active', 1);
+
+            if($Request->has('salary_year')) {
+                $SalaryYear = $Request->salary_year;
+            } else {
+                $SalaryYear = Carbon::now()->year;
+            }
+
+            if($Request->has('salary_month')) {
+                $SalaryMonth = $Request->salary_month;
+            } else {
+                $SalaryMonth = Carbon::now()->format('m');
+            }
+
+            $DaysInMonth = Carbon::create($SalaryYear, $SalaryMonth)->daysInMonth;
+
+            if($Request->isMethod('GET')) {
+                if($Request->has('salary_search_query') && !empty($Request->salary_search_query)) {
+                    $UsersList->where(function($query) use ($Request) {
+                        $query->where('new_users.name', 'like', '%'.$Request->salary_search_query.'%');
+                        $query->orWhere('new_users.lastname', 'like', '%'.$Request->salary_search_query.'%');
+                        $query->orWhere('new_users.personal_id', 'like', '%'.$Request->salary_search_query.'%');
+                        $query->orWhere('new_users.phone', 'like', '%'.$Request->salary_search_query.'%');
+                    });
+                }
+
+                if($Request->has('work_position') && !empty($Request->work_position)) {
+                    $UsersList->whereHas('workData', function ($query) {
+                        $query->whereNotNull('new_users_work_data.position_id');
+                        $query->where('new_users_work_data.deleted_at_int', '!=', 0);
+                    });
+                }
+            }
+            $UsersList = $UsersList->whereRelation('workData', 'deleted_at_int', '!=', 0);
+            $UsersList->get();
+
+            $UsersList = $UsersList->get()->load('workData');
+            $SalaryArray = [];
+            $RenderCalendar = [];
+
+            $UserWorkPosition = new UserWorkPosition();
+            $UserWorkPositionList = $UserWorkPosition::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            foreach($UsersList as $UserKey => $UserItem) {
+                foreach($UserItem->workData as $Item) {
+                    if($Item->deleted_at_int == 1) {
+
+                        foreach($UserWorkPositionList as $PositionItem) {
+                            if($PositionItem->id == $Item->position_id) {
+                                $SalaryArray[$Item->position_id]['position_data'] = [
+                                    'name' => $PositionItem->name,
+                                ];
+                            }
+                        }
+
+                        $SalaryArray[$Item->position_id]['data'][$UserItem->id] = [
+                            'user_id' => $UserItem->id,
+                            'name' => $UserItem->name,
+                            'lastname' => $UserItem->lastname,
+                            'position_id' => $Item->position_id,
+                            'basic_salary' => $Item->salary,
+                            'total_salary' => 0,
+                        ];
+
+                        for ($i = 1; $i <= $DaysInMonth; $i++) { 
+                            $Day = sprintf("%02d", $i);
+                            $RenderCalendar[$Day] = [
+                                'id' => 0,
+                                'date' => $SalaryYear.'-'.$SalaryMonth.'-'.$Day,
+                                'day_salary' => 0,
+                                'bonus' => 0,
+                                'fine' => 0,
+                                'total_day_salary' => 0,
+                            ];
+                        }
+
+                        $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'] = $RenderCalendar;
+
+                        $UserWorkSalary = new UserWorkSalary();
+                        $UserWorkSalaryData = $UserWorkSalary::where('deleted_at_int', '!=', 0)->whereYear('date', $SalaryYear)->whereMonth('date', $SalaryMonth)->get();
+
+                        $TotalSalary = 0;
+                        $TotalBonus = 0;
+                        $TotalFine = 0;
+
+                        foreach($UserWorkSalaryData as $SalaryItem) {
+                            if($SalaryItem->user_id == $UserItem->id && $SalaryItem->position_id == $Item->position_id) {
+                                $Day =  carbon::parse($SalaryItem->date)->format('d');
+                                
+                                $TotalSalary = $TotalSalary + $SalaryItem->salary;
+                                $TotalBonus = $TotalBonus + $SalaryItem->bonus;
+                                $TotalFine = $TotalFine + $SalaryItem->fine;
+
+                                $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$Day]['total_day_salary'] = $SalaryItem->salary + $SalaryItem->bonus - $SalaryItem->fine;
+                                $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$Day]['day_salary'] = $SalaryItem->salary;
+                                $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$Day]['bonus'] = $SalaryItem->bonus;
+                                $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$Day]['fine'] = $SalaryItem->fine;
+                                $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$Day]['id'] = $SalaryItem->id;
+                                $SalaryArray[$Item->position_id]['data'][$UserItem->id]['total_salary'] = $TotalSalary + $TotalBonus - $TotalFine;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            $data = [
+                'year_list' => $this->yearList(),   
+                'month_list' => $this->monthList(),   
+                'current_date' => $CurrentDate,
+                'days_count' => $DaysInMonth,
+                'salary_data' => $SalaryArray,
+            ];
+
+            return view('users.users_salary', $data);
         } else {
             abort('404');
         }

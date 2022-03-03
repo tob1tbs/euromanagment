@@ -69,3 +69,13 @@
 .toastr-text {
     font-family: 'HelveticaRegular';
 }
+
+@media (min-width: 1200px) {
+    .nk-fmg {
+        padding-left: 270px;
+    }
+
+    .nk-fmg-aside {
+        width: 270px;
+    }
+}

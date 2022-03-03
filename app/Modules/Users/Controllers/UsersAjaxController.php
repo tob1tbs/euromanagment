@@ -10,6 +10,7 @@ use App\Modules\Users\Models\UserPermission;
 use App\Modules\Users\Models\UserPermissionGroup;
 use App\Modules\Users\Models\UserRoleHasPermission;
 use App\Modules\Users\Models\UserWorkCalendar;
+use App\Modules\Users\Models\UserWorkSalary;
 
 use Validator;
 use Response;
@@ -303,7 +304,7 @@ class UsersAjaxController extends Controller
                         }
                     }
 
-                    return Response::json(['status' => true, 'errors' => false, 'WorkArray' => $WorkArray]);
+                    return Response::json(['status' => true, 'errors' => false, 'WorkArray' => $WorkArray, 'message' => 'თანამშრომელი დამატებულია განგრიგში.']);
                 }
             }
 
@@ -319,6 +320,97 @@ class UsersAjaxController extends Controller
             $UserWorkData = $UserWorkCalendar::find($Request->work_id)->load(['workCreator', 'workUser']);
 
             return Response::json(['status' => true, 'UserWorkData' => $UserWorkData]);
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserWorkDelete(Request $Request) {
+        if($Request->isMethod('POST') && $Request->work_id > 0) {
+
+            $UserWorkCalendar = new UserWorkCalendar();
+            $WorkData = $UserWorkCalendar::find($Request->work_id);
+
+            $WorkData->update([
+                'deleted_at' => Carbon::now(),
+                'deleted_at_int' => 0,
+                'active' => 0,
+            ]);
+
+            $UserWorkData = $UserWorkData = $UserWorkCalendar::whereMonth('work_date', Carbon::parse($WorkData->work_date)->format('m'))->where('deleted_at_int', '!=', 0)->get();
+
+            return Response::json(['status' => true, 'UserWorkData' => $UserWorkData, 'message' => 'თანამშრომელი წაიშალა განრიგიდან']);
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    // SALARY
+    public function ajaxUserSalarySubmit(Request $Request) {
+        if($Request->isMethod('POST')) {
+
+            $UserWorkCalendar = new UserWorkCalendar();
+            $UserWorkCalendarData = $UserWorkCalendar::whereDate('work_date', Carbon::parse($Request->salary_date))
+                                                        ->where('user_id', $Request->salary_user_id)
+                                                        ->where('deleted_at_int', '!=', 0)
+                                                        ->first();
+
+            if(empty($UserWorkCalendarData)) {
+                return Response::json(['status' => true, 'errors' => true, 'message' => 'აღნიშნული თანამშრომელი არ მუშაობდა '.$Request->salary_date.' ში, გთხოვთ გადაამოწმოთ მონაცემები.']);
+            } else {
+                $messages = array(
+                    'required' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
+                );
+                $validator = Validator::make($Request->all(), [
+                    // VALIDATOR TODO
+                ], $messages);
+
+                if ($validator->fails()) {
+                    return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
+                } else {
+                    $UserWorkSalary = new UserWorkSalary();
+                    $UserWorkSalary->user_id = $Request->salary_user_id;
+                    $UserWorkSalary->salary = $Request->user_day_salary;
+                    $UserWorkSalary->bonus = $Request->user_bonus_salary;
+                    $UserWorkSalary->fine = $Request->user_fine_salary;
+                    $UserWorkSalary->date = $Request->salary_date;
+                    $UserWorkSalary->position_id = $Request->salary_position;
+                    $UserWorkSalary->save();
+
+                    return Response::json(['status' => true, 'errors' => false, 'message' => 'ხელფასი წარმატებით დაემატა']);
+                }
+            }
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserSalaryView(Request $Request) {
+        if($Request->isMethod('GET')) {
+
+            $UserWorkSalary = new UserWorkSalary();
+            $UserWorkSalaryData = $UserWorkSalary::find($Request->salary_id);
+
+            return Response::json(['status' => true, 'UserWorkSalaryData' => $UserWorkSalaryData]);
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserSalaryDelete(Request $Request) {
+        if($Request->isMethod('POST') && $Request->salary_id > 0) {
+
+            $UserWorkSalary = new UserWorkSalary();
+            $UserWorkSalaryData = $UserWorkSalary::find($Request->salary_id)->update([
+                'deleted_at' => Carbon::now(),
+                'deleted_at_int' => 0,
+            ]);
+
+            return Response::json(['status' => true, 'message' => 'ხელფასი წარმატებით წაიშლა']);
 
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);

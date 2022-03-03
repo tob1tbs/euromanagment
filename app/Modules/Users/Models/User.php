@@ -16,12 +16,10 @@ class User extends Authenticatable
 
     protected $fillable = [];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-    
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected $hidden = ['password', 'remember_token'];
+
+    public function workData() {
+        return $this->hasMany('App\Modules\Users\Models\UserWorkData', 'user_id', 'id');
+    }
+
 }

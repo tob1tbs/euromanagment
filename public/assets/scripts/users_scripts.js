@@ -352,14 +352,141 @@ function addUserWorkSubmit() {
                             position: 'top-right'
                         });
                     })
+                } else {
+                    NioApp.Toast(data['message'], 'success', {
+                        position: 'top-right'
+                    });
+                    $("#addUserWorkModal").modal('hide');
                 }
             } else {
-                
+                Swal.fire({
+                  icon: 'error',
+                  text: data['message'],
+                })
             }
         }
     });
 }
 
 function DeleteUserWork() {
-    
+    Swal.fire({
+        title: "ნამდვილად გსურთ თანამშრომლის განრიგიდან წაშლა?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/users/ajax/work/delete",
+                type: "POST",
+                data: {
+                    work_id: $("#view_work_id").val(),
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if(data['status'] == true) {
+                        NioApp.Toast(data['message'], 'success', {
+                            position: 'top-right'
+                        });
+                        $("#viewUserWorkModal").modal('hide');
+                    } else {
+                        Swal.fire({
+                          icon: 'error',
+                          text: data['message'],
+                        })
+                    }
+                }
+            });
+        }
+    });
+}
+
+function AddUserSalary(user_id, position_id, date) {
+    $('#add_user_salary_form')[0].reset();
+    $("#salary_user_id").val(user_id);
+    $("#salary_position").val(position_id);
+    $("#salary_date").val(date);
+    $("#userAddSalary").modal('show');
+}
+
+function AddSalarySubmit() {
+    var form = $('#add_user_salary_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/salary/submit",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    NioApp.Toast(data['message'], 'error', {
+                        position: 'top-right'
+                    });
+                } else {
+                    NioApp.Toast(data['message'], 'success', {
+                        position: 'top-right'
+                    });
+                }
+            }
+        }
+    });
+}
+
+function ViewUserSalary(salary_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/salary/view",
+        type: "GET",
+        data: {
+            salary_id: salary_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $("#view_salary_id").val(data['UserWorkSalaryData']['id']);
+                $(".view_salary_date").html(data['UserWorkSalaryData']['date']);
+                $(".view_salary").html(data['UserWorkSalaryData']['salary']);
+                $(".view_salary_bonus").html(data['UserWorkSalaryData']['bonus']);
+                $(".view_salary_fine").html(data['UserWorkSalaryData']['fine']);
+                $("#userViewSalary").modal('show');
+            }
+        }
+    });
+}
+
+function DeleteUserSalary() {
+    Swal.fire({
+        title: "ნამდვილად გსურთ ხელფასის წაშლა?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/users/ajax/salary/delete",
+                type: "POST",
+                data: {
+                    salary_id: $("#view_salary_id").val(),
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    
+                }
+            });
+        }
+    });
 }
