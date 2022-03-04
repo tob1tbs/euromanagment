@@ -12,6 +12,7 @@ use App\Modules\Users\Models\UserPermissionGroup;
 use App\Modules\Users\Models\UserWorkSalary;
 use App\Modules\Users\Models\UserSalary;
 use App\Modules\Users\Models\UserWorkPosition;
+use App\Modules\Users\Models\UserWorkCalendar;
 
 use Carbon\Carbon;
 
@@ -103,17 +104,18 @@ class UsersController extends Controller
                     });
                 }
 
-                if($Request->has('work_position') && !empty($Request->work_position)) {
-                    $UsersList->whereHas('workData', function ($query) {
-                        $query->whereNotNull('new_users_work_data.position_id');
+                if($Request->has('salary_work_position') && !empty($Request->salary_work_position)) {
+                    $UsersList->whereHas('workData', function ($query) use ($Request) {
                         $query->where('new_users_work_data.deleted_at_int', '!=', 0);
+                        $query->where('new_users_work_data.position_id', $Request->salary_work_position);
                     });
                 }
             }
+
             $UsersList = $UsersList->whereRelation('workData', 'deleted_at_int', '!=', 0);
-            $UsersList->get();
 
             $UsersList = $UsersList->get()->load('workData');
+
             $SalaryArray = [];
             $RenderCalendar = [];
 
@@ -150,10 +152,22 @@ class UsersController extends Controller
                                 'bonus' => 0,
                                 'fine' => 0,
                                 'total_day_salary' => 0,
+                                'work_on_this_day' => 0,
                             ];
                         }
 
                         $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'] = $RenderCalendar;
+
+
+                        $UserWorkCalendar = new UserWorkCalendar();
+                        $UserWorkCalendarData = $UserWorkCalendar::where('user_id', $UserItem->id)->where('deleted_at_int', '!=', 0)->get();
+
+                        foreach($UserWorkCalendarData as $CalendarItem) {
+                            if($CalendarItem->user_id == $UserItem->id) {
+                                $WorkDay =  carbon::parse($CalendarItem->work_date)->format('d');
+                                $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$WorkDay]['work_on_this_day'] = 1;
+                            }
+                        }
 
                         $UserWorkSalary = new UserWorkSalary();
                         $UserWorkSalaryData = $UserWorkSalary::where('deleted_at_int', '!=', 0)->whereYear('date', $SalaryYear)->whereMonth('date', $SalaryMonth)->get();
@@ -176,6 +190,7 @@ class UsersController extends Controller
                                 $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$Day]['fine'] = $SalaryItem->fine;
                                 $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'][$Day]['id'] = $SalaryItem->id;
                                 $SalaryArray[$Item->position_id]['data'][$UserItem->id]['total_salary'] = $TotalSalary + $TotalBonus - $TotalFine;
+
                             }
                         }
 
@@ -189,6 +204,7 @@ class UsersController extends Controller
                 'current_date' => $CurrentDate,
                 'days_count' => $DaysInMonth,
                 'salary_data' => $SalaryArray,
+                'work_position' => $UserWorkPositionList,
             ];
 
             return view('users.users_salary', $data);

@@ -455,10 +455,12 @@ function ViewUserSalary(salary_id) {
         success: function(data) {
             if(data['status'] == true) {
                 $("#view_salary_id").val(data['UserWorkSalaryData']['id']);
+                $(".view_salary_user").html(data['UserWorkSalaryData']['salary_user']['name']+' '+data['UserWorkSalaryData']['salary_user']['lastname']);
                 $(".view_salary_date").html(data['UserWorkSalaryData']['date']);
                 $(".view_salary").html(data['UserWorkSalaryData']['salary']);
                 $(".view_salary_bonus").html(data['UserWorkSalaryData']['bonus']);
                 $(".view_salary_fine").html(data['UserWorkSalaryData']['fine']);
+                $(".view_salary_creator").html(data['UserWorkSalaryData']['salary_creator']['name']+' '+data['UserWorkSalaryData']['salary_creator']['lastname']);
                 $("#userViewSalary").modal('show');
             }
         }
@@ -488,5 +490,11 @@ function DeleteUserSalary() {
                 }
             });
         }
+    });
+}
+
+function UserNotWorking() {
+    NioApp.Toast('აღნიშნულ თარიღში თანამშრომელი არ მუშაობდა', 'error', {
+        position: 'top-right'
     });
 }

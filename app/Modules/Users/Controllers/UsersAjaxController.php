@@ -377,6 +377,7 @@ class UsersAjaxController extends Controller
                     $UserWorkSalary->fine = $Request->user_fine_salary;
                     $UserWorkSalary->date = $Request->salary_date;
                     $UserWorkSalary->position_id = $Request->salary_position;
+                    $UserWorkSalary->created_by = 1;
                     $UserWorkSalary->save();
 
                     return Response::json(['status' => true, 'errors' => false, 'message' => 'ხელფასი წარმატებით დაემატა']);
@@ -392,7 +393,7 @@ class UsersAjaxController extends Controller
         if($Request->isMethod('GET')) {
 
             $UserWorkSalary = new UserWorkSalary();
-            $UserWorkSalaryData = $UserWorkSalary::find($Request->salary_id);
+            $UserWorkSalaryData = $UserWorkSalary::find($Request->salary_id)->load('salaryCreator')->load('salaryUser');
 
             return Response::json(['status' => true, 'UserWorkSalaryData' => $UserWorkSalaryData]);
 
@@ -408,6 +409,7 @@ class UsersAjaxController extends Controller
             $UserWorkSalaryData = $UserWorkSalary::find($Request->salary_id)->update([
                 'deleted_at' => Carbon::now(),
                 'deleted_at_int' => 0,
+                'deleted_by' => 1,
             ]);
 
             return Response::json(['status' => true, 'message' => 'ხელფასი წარმატებით წაიშლა']);
