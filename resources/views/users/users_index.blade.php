@@ -29,7 +29,7 @@
                 <div class="nk-block nk-block-lg">
                     <div class="card card-bordered">
                         <div class="row">
-                            <div class="col-lg-9">
+                            <div class="col-lg-12">
                                 <div class="card-inner">
                                     <table class="datatable-init nk-tb-list nk-tb-ulist" data-auto-responsive="false">
                                         <thead>
@@ -90,11 +90,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="card-inner">
-                                    asdasd
                                 </div>
                             </div>
                         </div>

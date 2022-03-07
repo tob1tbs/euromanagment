@@ -7,6 +7,7 @@ Route::group(['prefix' => 'users', 'middleware' => []], function () {
     Route::get('/edit/{user_id}', 'UsersController@actionUsersEdit')->name('actionUsersEdit');
     Route::get('/view/{user_id}', 'UsersController@actionUsersView')->name('actionUsersView');
     Route::get('/role', 'UsersController@actionUsersRole')->name('actionUsersRole');
+    Route::get('/positions', 'UsersController@actionUsersPositions')->name('actionUsersPositions');
     Route::get('/calendar', 'UsersController@actionUsersCalendar')->name('actionUsersCalendar');
     Route::get('/salary', 'UsersController@actionUsersSalary')->name('actionUsersSalary');
 });

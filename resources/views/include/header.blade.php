@@ -44,7 +44,7 @@
                                 </a>
                             </li>
                             <li class="nk-menu-item">
-                                <a href="{{ route('actionUsersIndex') }}" class="nk-menu-link">
+                                <a href="{{ route('actionUsersPositions') }}" class="nk-menu-link">
                                     <span class="nk-menu-text">სამუშაო პოზიციები</span>
                                 </a>
                             </li>

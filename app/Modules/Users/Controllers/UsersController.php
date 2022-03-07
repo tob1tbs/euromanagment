@@ -240,6 +240,19 @@ class UsersController extends Controller
         }
     }
 
+    public function actionUsersPositions(Request $Request) {
+        if (view()->exists('users.users_positions')) {
+
+            $data = [
+                
+            ];
+
+            return view('users.users_positions', $data);
+        } else {
+            abort('404');
+        }
+    }
+
     public function actionUsersView(Request $Request) {
         if (view()->exists('users.users_view')) {
 

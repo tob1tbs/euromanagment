@@ -240,6 +240,9 @@ class UsersAjaxController extends Controller
 
             $StartDate = Carbon::parse($Request->start);
             $EndDate = Carbon::parse($Request->end);
+            $WorkDays =$EndDate->diffInWeekdays($StartDate);
+
+            dd($WorkDays);
 
 
             $UserWorkCalendar = new UserWorkCalendar();
