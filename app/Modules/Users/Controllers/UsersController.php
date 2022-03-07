@@ -13,6 +13,8 @@ use App\Modules\Users\Models\UserWorkSalary;
 use App\Modules\Users\Models\UserSalary;
 use App\Modules\Users\Models\UserWorkPosition;
 use App\Modules\Users\Models\UserWorkCalendar;
+use App\Modules\Users\Models\UserWorkData;
+use App\Modules\Users\Models\UserWorkVacation;
 
 use Carbon\Carbon;
 
@@ -26,7 +28,12 @@ class UsersController extends Controller
     public function actionUsersIndex(Request $Request) {
         if (view()->exists('users.users_index')) {
 
-            $data = [];
+            $User = new User();
+            $UserList = $User::where('deleted_at_int', '!=', 0)->orderBy('id', 'DESC')->get();
+
+            $data = [
+                'user_list' => $UserList,
+            ];
 
             return view('users.users_index', $data);
         } else {
@@ -228,6 +235,30 @@ class UsersController extends Controller
             ];
 
             return view('users.users_role', $data);
+        } else {
+            abort('404');
+        }
+    }
+
+    public function actionUsersView(Request $Request) {
+        if (view()->exists('users.users_view')) {
+
+            $User = new User();
+            $UserData = $User::findOrFail($Request->user_id);
+
+            $UserWorkData = new UserWorkData();
+            $UserWorkDataList = $UserWorkData::where('user_id', $Request->user_id)->where('deleted_at_int', '!=', 0)->get();
+
+            $UserWorkVacation = new UserWorkVacation();
+            $UserWorkVacationList = $UserWorkVacation::where('user_id', $Request->user_id)->get();
+
+            $data = [
+                'user_data' => $UserData,
+                'user_work_data' => $UserWorkDataList,
+                'user_work_vacation' => $UserWorkVacationList,
+            ];
+
+            return view('users.users_view', $data);
         } else {
             abort('404');
         }

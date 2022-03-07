@@ -102,7 +102,7 @@
                                                         <th style="border: 1px solid #dbdfea;" class="table-cell day-cell" onclick="ViewUserSalary({{ $salary_item['id'] }})">{{ $salary_item['total_day_salary'] }}</th>
                                                         @endif
                                                     @else
-                                                    <th class="day-cell" style="border: 1px solid #dbdfea;" onclick="UserNotWorking({{ $salary_item['date'] }})">{{ $salary_key }}</th>
+                                                    <th class="day-cell" style="border: 1px solid #dbdfea; " onclick="UserNotWorking({{ $salary_item['date'] }})">{{ $salary_key }}</th>
                                                     @endif
                                                 @endforeach
                                                 <th class="text-center" style="border: 1px solid #dbdfea;">{{ $item['basic_salary'] }} ₾</th>

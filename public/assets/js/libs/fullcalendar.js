@@ -6261,7 +6261,6 @@ var FullCalendar = (function (exports) {
                 rawEvents: rawEvents,
             });
         }, function (error) {
-            console.warn(error.message, error);
             if (options.eventSourceFailure) {
                 options.eventSourceFailure.call(calendarApi, error);
             }

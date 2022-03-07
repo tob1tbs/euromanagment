@@ -11,10 +11,12 @@ use App\Modules\Users\Models\UserPermissionGroup;
 use App\Modules\Users\Models\UserRoleHasPermission;
 use App\Modules\Users\Models\UserWorkCalendar;
 use App\Modules\Users\Models\UserWorkSalary;
+use App\Modules\Users\Models\UserWorkVacation;
 
 use Validator;
 use Response;
 use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
 
 class UsersAjaxController extends Controller
 {
@@ -245,14 +247,30 @@ class UsersAjaxController extends Controller
 
             if(count($UserWorkCalendarData) > 0) {
                 $WorkArray = [];
-                
                 foreach($UserWorkCalendarData as $Key => $WorkItem) {
                     $WorkArray[] = [
                         'id' => $WorkItem->id,
                         'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
                         'date' => $WorkItem->work_date,
-                        'url' => '',
+                        'color' => '#526484',
                     ];
+                }
+            }
+
+            $UserWorkVacation = new UserWorkVacation();
+            $UserWorkVacationList = $UserWorkVacation::whereBetween('date_from', [$StartDate, $EndDate])->whereBetween('date_to', [$StartDate, $EndDate])->get();
+
+            if(!empty($UserWorkVacationList)) {
+                foreach($UserWorkVacationList as $VacationItem) {
+                    $VacationPeriod = carbonPeriod::create($VacationItem->date_from, $VacationItem->date_to);
+                    foreach($VacationPeriod as $VacationDate) {
+                        $WorkArray[] = [
+                            'id' => $VacationItem->id,
+                            'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
+                            'date' => $VacationDate->format('Y-m-d'),
+                            'color' => '#d52800',
+                        ];
+                    }
                 }
             }
 
@@ -281,9 +299,23 @@ class UsersAjaxController extends Controller
                 $UserWorkCalendar = new UserWorkCalendar();
                 $UserWorkCalendarData = $UserWorkCalendar::whereDate('work_date', Carbon::parse($Request->work_date)->format('Y-m-d'))->where('user_id', 1)->where('deleted_at_int', '!=', 0)->first();
 
+                $UserWorkVacation = new UserWorkVacation();
+                $UserWorkVacationList = $UserWorkVacation::where('user_id', $Request->work_user_id)->where('deleted_at_int', '!=', 0)->get();
+
                 if(!empty($UserWorkCalendarData)) {
                     return Response::json(['status' => true, 'errors' => true, 'message' => ['0' => 'არჩეული თანამშრომელი უკვე დამატებულია არჩეულ დღეზე.']], 200);
                 } else {
+                    if(!empty($UserWorkVacationList)) {
+                        foreach($UserWorkVacationList as $VacationItem) {
+                            $VacationPeriod = carbonPeriod::create($VacationItem->date_from, $VacationItem->date_to);
+                            foreach($VacationPeriod as $PeriodItem) {
+                                if(Carbon::parse($PeriodItem->format('Y-m-d')) == Carbon::parse($Request->work_date)) {
+                                    return Response::json(['status' => true, 'errors' => true, 'message' => ['0' => 'აღნიშნულ თარიღზე თანამშრომელი იმყოფება შვებულებაში.']], 200);
+                                }
+                            }
+                        }
+                    }
+
                     $UserWorkCalendar = new UserWorkCalendar();
                     $UserWorkCalendar->user_id = $Request->work_user_id;
                     $UserWorkCalendar->work_date = $Request->work_date;
@@ -292,19 +324,7 @@ class UsersAjaxController extends Controller
 
                     $UserWorkData = $UserWorkCalendar::whereMonth('work_date', Carbon::parse($Request->work_date)->format('m'))->where('deleted_at_int', '!=', 0)->get();
                     
-                    if(count($UserWorkData) > 0) {
-                        $WorkArray = [];
-                        
-                        foreach($UserWorkData as $Key => $WorkItem) {
-                            $WorkArray[] = [
-                                'id' => $WorkItem->id,
-                                'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
-                                'date' => $WorkItem->work_date,
-                            ];
-                        }
-                    }
-
-                    return Response::json(['status' => true, 'errors' => false, 'WorkArray' => $WorkArray, 'message' => 'თანამშრომელი დამატებულია განგრიგში.']);
+                    return Response::json(['status' => true, 'errors' => false, 'message' => 'თანამშრომელი დამატებულია განგრიგში.']);
                 }
             }
 

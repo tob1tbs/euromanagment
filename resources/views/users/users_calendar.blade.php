@@ -24,6 +24,10 @@
                 <div class="nk-block">
                     <div class="card card-bordered">
                         <div class="card-inner">
+                            <div style="margin: 20px 0;">
+                                <span style="width: 20px; height: 20px; background: #526484; padding: 7px; border-radius: 5px; color: #fff; font-size: 12px;" class="font-neue">სამუშაო დღე</span>
+                                <span style="width: 20px; height: 20px; background: #d52800; padding: 7px; border-radius: 5px; color: #fff; font-size: 12px;" class="font-neue">შვებულება</span>
+                            </div>
                             <div id="calendar" class="nk-calendar"></div>
                         </div>
                     </div>
@@ -158,8 +162,9 @@
             editable: false,
             droppable: false,
             selectable: false,
+            firstDay: 1,
             views: {
-                dayGridMonth: {
+                    dayGridMonth: {
                     dayMaxEventRows: 7
                 }
             },
@@ -174,29 +179,38 @@
                 $("#addUserWorkModal").modal('show');    
             },
             eventClick: function(info) {
-                $.ajax({
-                    dataType: 'json',
-                    url: "/users/ajax/work/event",
-                    type: "GET",
-                    data: {
-                        work_id: info.event.id,
-                    },
-                    success: function(data) {
-                        if(data['status'] == true) {
-                            $(".work-modal-title").html('სამუშაო ინფორმაცია');
-                            $(".view_work_user").html(data['UserWorkData']['work_user']['name']+' '+data['UserWorkData']['work_user']['lastname']);
-                            $(".view_work_date").html(data['UserWorkData']['work_date']);
-                            $(".view_work_creator").html(data['UserWorkData']['work_creator']['name']+' '+data['UserWorkData']['work_creator']['lastname']);
-                            $("#view_work_id").val(data['UserWorkData']['id']);
-                            $("#viewUserWorkModal").modal('show');
-                        } else {
-                            Swal.fire({
-                              icon: 'error',
-                              text: data['message'],
-                            })
+                if(info.event.extendedProps.is_vacation) {
+                    Swal.fire({
+                        icon: 'warning',
+                        text: 'აღნიშნულ დღეს თანამშრომელი იმყოფება შვებულებაში.',
+                        timer: 1500,
+                        timerProgressBar: true,
+                    })
+                } else {
+                    $.ajax({
+                        dataType: 'json',
+                        url: "/users/ajax/work/event",
+                        type: "GET",
+                        data: {
+                            work_id: info.event.id,
+                        },
+                        success: function(data) {
+                            if(data['status'] == true) {
+                                $(".work-modal-title").html('სამუშაო ინფორმაცია');
+                                $(".view_work_user").html(data['UserWorkData']['work_user']['name']+' '+data['UserWorkData']['work_user']['lastname']);
+                                $(".view_work_date").html(data['UserWorkData']['work_date']);
+                                $(".view_work_creator").html(data['UserWorkData']['work_creator']['name']+' '+data['UserWorkData']['work_creator']['lastname']);
+                                $("#view_work_id").val(data['UserWorkData']['id']);
+                                $("#viewUserWorkModal").modal('show');
+                            } else {
+                                Swal.fire({
+                                  icon: 'error',
+                                  text: data['message'],
+                                })
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
         calendar.render();

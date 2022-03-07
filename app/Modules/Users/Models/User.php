@@ -21,5 +21,4 @@ class User extends Authenticatable
     public function workData() {
         return $this->hasMany('App\Modules\Users\Models\UserWorkData', 'user_id', 'id');
     }
-
 }
