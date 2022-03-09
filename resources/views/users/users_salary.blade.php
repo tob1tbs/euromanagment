@@ -168,6 +168,14 @@
                         </div>
                         <div class="col-12">
                             <div class="form-group">
+                                <label class="form-label" id="user_fine_salary">ჯარიმა</label>
+                                <div class="form-control-wrap">
+                                    <textarea class="form-control" id="user_salary_comment" name="user_salary_comment"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
                                 <button class="btn btn-success font-neue" type="button" onclick="AddSalarySubmit()">შენახვა</button>
                             </div>
                         </div>
@@ -249,6 +257,16 @@
                         <div class="col-lg-7">
                             <div class="form-group">
                                 <span class="view_salary_creator font-helvetica-regular"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="form-group">
+                                <label class="form-label">კომენტარი:</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="form-group">
+                                <span class="view_salary_comment font-helvetica-regular"></span>
                             </div>
                         </div>
                     </div>

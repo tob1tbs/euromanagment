@@ -496,6 +496,7 @@ class UsersAjaxController extends Controller
                     $UserWorkSalary->fine = $Request->user_fine_salary;
                     $UserWorkSalary->date = $Request->salary_date;
                     $UserWorkSalary->position_id = $Request->salary_position;
+                    $UserWorkSalary->comment = $Request->user_salary_comment;
                     $UserWorkSalary->created_by = 1;
                     $UserWorkSalary->save();
 

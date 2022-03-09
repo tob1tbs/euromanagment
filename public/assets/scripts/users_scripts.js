@@ -460,6 +460,7 @@ function ViewUserSalary(salary_id) {
                 $(".view_salary").html(data['UserWorkSalaryData']['salary']);
                 $(".view_salary_bonus").html(data['UserWorkSalaryData']['bonus']);
                 $(".view_salary_fine").html(data['UserWorkSalaryData']['fine']);
+                $(".view_salary_comment").html(data['UserWorkSalaryData']['comment']);
                 $(".view_salary_creator").html(data['UserWorkSalaryData']['salary_creator']['name']+' '+data['UserWorkSalaryData']['salary_creator']['lastname']);
                 $("#userViewSalary").modal('show');
             }
