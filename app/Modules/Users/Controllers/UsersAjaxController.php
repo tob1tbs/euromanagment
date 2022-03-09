@@ -12,6 +12,7 @@ use App\Modules\Users\Models\UserRoleHasPermission;
 use App\Modules\Users\Models\UserWorkCalendar;
 use App\Modules\Users\Models\UserWorkSalary;
 use App\Modules\Users\Models\UserWorkVacation;
+use App\Modules\Users\Models\UserWorkVacationType;
 
 use Validator;
 use Response;
@@ -240,10 +241,6 @@ class UsersAjaxController extends Controller
 
             $StartDate = Carbon::parse($Request->start);
             $EndDate = Carbon::parse($Request->end);
-            $WorkDays =$EndDate->diffInWeekdays($StartDate);
-
-            dd($WorkDays);
-
 
             $UserWorkCalendar = new UserWorkCalendar();
             $UserWorkCalendarData = $UserWorkCalendar::where('deleted_at_int', '!=', 0)->whereBetween('work_date', [$StartDate, $EndDate])->get();
@@ -278,6 +275,105 @@ class UsersAjaxController extends Controller
             }
 
             return Response::json($WorkArray);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserVacationValidate(Request $Request) {
+        if($Request->isMethod('POST')) {
+            $messages = array(
+                'vacation_start.required' => 'გთხოვთ აირჩიოთ გასვლის თარიღი',
+                'vacation_end.required' => 'გთხოვთ აირჩიოთ დაბრუნების თარიღი',
+                'vacation_type.required' => 'გთხოვთ შვებულების ტიპი',
+            );
+            $validator = Validator::make($Request->all(), [
+                'vacation_start' => 'required|max:255',
+                'vacation_end' => 'required|max:255',
+                'vacation_type' => 'required|max:255',
+            ], $messages);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => true, 'errors' => true, 'can_skip' => false, 'message' => $validator->getMessageBag()->toArray()], 200);
+            } else {
+
+                $StartDate = Carbon::parse($Request->vacation_start);
+                $EndDate = Carbon::parse($Request->vacation_end);
+
+                $NewVacation = carbonPeriod::create($StartDate, $EndDate);
+
+                $VacationBussinesDays = $EndDate->diffInWeekDays($StartDate);
+
+                $UserWorkVacationType = new UserWorkVacationType();
+                $UserWorkVacationTypeData = $UserWorkVacationType::find($Request->vacation_type);
+
+                $UserWorkVacation = new UserWorkVacation();
+                $UserWorkVacationList = $UserWorkVacation::where('type_id', $Request->vacation_type)->where('user_id', $Request->vacation_user_id)->get();
+
+                if($StartDate->gt($EndDate)) {
+                    return Response::json(['status' => true, 'error' => false, 'can_skip' => false, 'message' => 'თარიღები არჩეულია არასწორად, გთხოვთ გადაამოწმოთ თარიღები !!!']);
+                }
+
+                if($VacationBussinesDays > $UserWorkVacationTypeData->max_at_one) {
+                    return Response::json(['status' => true, 'error' => false, 'can_skip' => true, 'message' => 'არჩეული სამუშაო დღეები რაოდენობა აღემატება ერთჯერზე ნებადართულს !!!']);
+                }
+
+                if(($UserWorkVacationList->sum('days_count') + $VacationBussinesDays) > $UserWorkVacationTypeData->max_days) {
+                    $RemainingDays = $UserWorkVacationTypeData->max_days - $UserWorkVacationList->sum('days_count');
+                    return Response::json(['status' => true, 'error' => false, 'can_skip' => true, 'message' => 'თანამშრომელს დარჩენილი აქვს შვებულების '.$RemainingDays.' დღე. თქვენ აირჩიეთ '.$VacationBussinesDays.' დღე !!!']);
+                }
+
+                foreach($UserWorkVacationList as $WorkVacationItem) {
+                    $UsedVacation = carbonPeriod::create($WorkVacationItem->date_from, $WorkVacationItem->date_to);
+                    foreach($UsedVacation as $UsedItem) {
+                        foreach($NewVacation as $NewItem) {
+                           if(Carbon::parse($UsedItem->format('Y-m-d')) == Carbon::parse($NewItem->format('Y-m-d'))) {
+                                return Response::json(['status' => true, 'error' => true, 'can_skip' => false,  'message' => $NewItem->format('Y-m-d').' აღნიშნულ თარიღში თანამშრომელი იმყოფება შვებულებაში !!!']);
+                           }
+                        }
+                    }
+                }
+
+                return Response::json(['status' => true, 'error' => false, 'can_skip' => true, 'message' => '']);
+            }
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserVacationSubmit(Request $Request) {
+        if($Request->isMethod('POST')) {
+            $messages = array(
+                'vacation_start.required' => 'გთხოვთ აირჩიოთ გასვლის თარიღი',
+                'vacation_end.required' => 'გთხოვთ აირჩიოთ დაბრუნების თარიღი',
+                'vacation_type.required' => 'გთხოვთ შვებულების ტიპი',
+            );
+            $validator = Validator::make($Request->all(), [
+                'vacation_start' => 'required|max:255',
+                'vacation_end' => 'required|max:255',
+                'vacation_type' => 'required|max:255',
+            ], $messages);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
+            } else {
+                
+                $StartDate = Carbon::parse($Request->vacation_start);
+                $EndDate = Carbon::parse($Request->vacation_end);
+
+                $VacationBussinesDays = $EndDate->diffInWeekDays($StartDate);
+
+                $UserWorkVacation = new UserWorkVacation();
+                $UserWorkVacation->date_from = $Request->vacation_start;
+                $UserWorkVacation->date_to = $Request->vacation_end;
+                $UserWorkVacation->user_id = $Request->vacation_user_id;
+                $UserWorkVacation->type_id = $Request->vacation_type;
+                $UserWorkVacation->days_count = $VacationBussinesDays;
+                $UserWorkVacation->created_by = 1;
+                $UserWorkVacation->save();
+
+                return Response::json(['status' => true, 'error' => false, 'message' => 'შვებულება წარმატებით დაემატა !!!']);
+            }
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
         }

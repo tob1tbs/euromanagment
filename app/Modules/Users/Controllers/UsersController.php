@@ -15,6 +15,7 @@ use App\Modules\Users\Models\UserWorkPosition;
 use App\Modules\Users\Models\UserWorkCalendar;
 use App\Modules\Users\Models\UserWorkData;
 use App\Modules\Users\Models\UserWorkVacation;
+use App\Modules\Users\Models\UserWorkVacationType;
 
 use Carbon\Carbon;
 
@@ -265,10 +266,14 @@ class UsersController extends Controller
             $UserWorkVacation = new UserWorkVacation();
             $UserWorkVacationList = $UserWorkVacation::where('user_id', $Request->user_id)->get();
 
+            $UserWorkVacationType = new UserWorkVacationType();
+            $UserWorkVacationTypeList = $UserWorkVacationType::where('deleted_at_int', '!=', 0)->get();
+
             $data = [
                 'user_data' => $UserData,
                 'user_work_data' => $UserWorkDataList,
                 'user_work_vacation' => $UserWorkVacationList,
+                'user_work_vacation_type_list' => $UserWorkVacationTypeList,
             ];
 
             return view('users.users_view', $data);

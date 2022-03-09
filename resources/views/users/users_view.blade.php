@@ -23,53 +23,10 @@
 								        <p>content</p>
 								    </div>
 								    <div class="tab-pane" id="work_calendar">
-								        <p>content</p>
+								        
 								    </div>
 								    <div class="tab-pane" id="vacation_list">
-								        <table class="table table-tranx">
-                                            <thead>
-                                                <tr class="tb-tnx-head font-neue">
-                                                    <th class="tb-tnx-id"><span class="">#</span></th>
-                                                    <th class="tb-tnx-info">
-                                                        <span class="tb-tnx-desc d-none d-sm-inline-block">
-                                                            <span>შექმნა</span>
-                                                        </span>
-                                                        <span class="tb-tnx-date d-inline-block">
-                                                            <span>
-                                                                <span>გასვლის თარიღი</span>
-                                                                <span>დაბრუნების თარიღი</span>
-                                                            </span>
-                                                        </span>
-                                                    </th>
-                                                    <th class="tb-tnx-amount is-alt">
-                                                        <span class="tb-tnx-total">შექმნის თარიღი</span>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($user_work_vacation as $vacation_item)
-                                                <tr class="tb-tnx-item font-helvetica-regular">
-                                                    <td class="tb-tnx-id">
-                                                        <a href="#"><span>{{ $vacation_item->id }}</span></a>
-                                                    </td>
-                                                    <td class="tb-tnx-info">
-                                                        <div class="tb-tnx-desc">
-                                                            <span class="title">{{ $vacation_item->CreatedBy->name }} {{ $vacation_item->CreatedBy->lastname }}</span>
-                                                        </div>
-                                                        <div class="tb-tnx-date">
-                                                            <span class="date">{{ $vacation_item->date_from }}</span>
-                                                            <span class="date">{{ $vacation_item->date_to }}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tb-tnx-amount is-alt">
-                                                        <div class="tb-tnx-total">
-                                                            <span class="amount">{{ \Carbon\Carbon::parse($vacation_item->created_at)->format('Y-m-d') }}</span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+								        
 								    </div>
 								</div>
                             </div>
@@ -102,7 +59,11 @@
                                         </div>
                                     </div>
                                     <div class="card-inner p-0">
-
+                                        <div class="card-inner p-0">
+                                            <ul class="link-list-menu font-helvetica-regular">
+                                                <li><a href="javascript:;" onclick="AddVacationModal()"><span>შვებულების დამატება</span></a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -113,8 +74,65 @@
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" id="AddVacationModal">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">შვებულების დამატება</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="add_user_vacation_form" class="form-validate is-alter">
+                    <div class="row gx-4 gy-3">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">შვებულების ტიპი</label>
+                                <div class="form-control-wrap">
+                                    <select id="vacation_type" name="vacation_type" class="form-control">
+                                        @foreach($user_work_vacation_type_list as $type_item)
+                                        <option value="{{ $type_item->id }}">{{ $type_item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">გასვლის თარიღი</label>
+                                <div class="form-control-wrap">
+                                    <input type="date" name="vacation_start" class="form-control date-pick">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">დაბრუნების თარიღი</label>
+                                <div class="form-control-wrap">
+                                    <input type="date" name="vacation_end" class="form-control date-pick">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <ul class="d-flex justify-content-between gx-4 mt-1">
+                                <li>
+                                    <button id="resetEvent" data-dismiss="modal" class="btn btn-danger btn-dim font-helvetica-regular">გათიშვა</button>
+                                </li>
+                                <li>
+                                    <button id="addEvent" type="button" onclick="UserVacationValidate()" class="btn btn-primary font-helvetica-regular">თარიღების შემოწმება</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <input type="hidden" name="vacation_user_id" value="{{ request()->user_id }}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('js')
-
+<script src="{{ url('assets/scripts/users_scripts.js') }}"></script>
 @endsection

@@ -498,3 +498,80 @@ function UserNotWorking() {
         position: 'top-right'
     });
 }
+
+function AddVacationModal() {
+    $("#AddVacationModal").modal('show');
+}
+
+function UserVacationValidate() {
+    var form = $('#add_user_vacation_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/vacation/validate",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $.each(data['message'], function(key, value) {
+                        NioApp.Toast(value, 'error', {
+                            position: 'top-right'
+                        });
+                    })
+                } else {
+                    if(data['can_skip'] == false) {
+                        NioApp.Toast(data['message'], 'error', {
+                            position: 'top-right'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "ნამდვილად გსურთ შვებულების დამატება?",
+                            text: data['message'],
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: 'დამატება',
+                            cancelButtonText: "გათიშვა",
+                            preConfirm: () => {
+                                var form = $('#add_user_vacation_form')[0];
+                                var data = new FormData(form);
+
+                                $.ajax({
+                                    dataType: 'json',
+                                    url: "/users/ajax/vacation/submit",
+                                    type: "POST",
+                                    data: data,
+                                    enctype: 'multipart/form-data',
+                                    processData: false,
+                                    contentType: false,
+                                    cache: false,
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    },
+                                    success: function(data) {
+                                        if(data['status'] == true) {
+                                            Swal.fire({
+                                                icon: 'success',
+                                                text: data['message'],
+                                                timer: 2000,
+                                            });
+                                            location.reload()
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    });
+}
