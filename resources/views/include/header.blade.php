@@ -60,6 +60,18 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nk-menu-item has-sub">
+                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                            <span class="nk-menu-text">კომპანია</span>
+                        </a>
+                        <ul class="nk-menu-sub">
+                            <li class="nk-menu-item">
+                                <a href="{{ route('actionCompanyBranch') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">ფილიალები</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <div class="nk-header-tools">

@@ -2,7 +2,7 @@
 
 // GENERAL ROUTES
 Route::group(['prefix' => 'DummyRoutePrefix', 'middleware' => []], function () {
-    Route::get('/', 'actionDummyClass@DummyIndex')->name('actionDummyIndex');
+    Route::get('/', 'DummyClass@actionDummyIndex')->name('actionDummyIndex');
 });
 
 // AJAX ROUTES

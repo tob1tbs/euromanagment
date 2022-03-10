@@ -529,7 +529,7 @@ function UserVacationValidate() {
                         });
                     })
                 } else {
-                    if(data['can_skip'] == false) {
+                    if(data['skip'] == false) {
                         NioApp.Toast(data['message'], 'error', {
                             position: 'top-right'
                         });

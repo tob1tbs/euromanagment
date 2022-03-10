@@ -102,5 +102,5 @@
 @endsection
 
 @section('js')
-
+<script src="{{ url('assets/scripts/users_scripts.js') }}"></script>
 @endsection

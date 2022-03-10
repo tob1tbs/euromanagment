@@ -262,7 +262,51 @@ class UsersAjaxController extends Controller
 
             if(!empty($UserWorkVacationList)) {
                 foreach($UserWorkVacationList as $VacationItem) {
-                    $VacationPeriod = carbonPeriod::create($VacationItem->date_from, $VacationItem->date_to);
+                    $VacationPeriod = carbonPeriod::create(Carbon::parse($VacationItem->date_from), Carbon::parse($VacationItem->date_to)->subDays(1));
+                    foreach($VacationPeriod as $VacationDate) {
+                        $WorkArray[] = [
+                            'id' => $VacationItem->id,
+                            'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
+                            'date' => $VacationDate->format('Y-m-d'),
+                            'color' => '#d52800',
+                        ];
+                    }
+                }
+            }
+
+            return Response::json($WorkArray);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserWorkGetUser(Request $Request) {
+        if($Request->isMethod('GET')) {
+
+            $StartDate = Carbon::parse($Request->start);
+            $EndDate = Carbon::parse($Request->end);
+
+            $UserWorkCalendar = new UserWorkCalendar();
+            $UserWorkCalendarData = $UserWorkCalendar::where('deleted_at_int', '!=', 0)->where('user_id', $Request->user_id)->whereBetween('work_date', [$StartDate, $EndDate])->get();
+
+            if(count($UserWorkCalendarData) > 0) {
+                $WorkArray = [];
+                foreach($UserWorkCalendarData as $Key => $WorkItem) {
+                    $WorkArray[] = [
+                        'id' => $WorkItem->id,
+                        'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
+                        'date' => $WorkItem->work_date,
+                        'color' => '#526484',
+                    ];
+                }
+            }
+
+            $UserWorkVacation = new UserWorkVacation();
+            $UserWorkVacationList = $UserWorkVacation::whereBetween('date_from', [$StartDate, $EndDate])->where('user_id', $Request->user_id)->whereBetween('date_to', [$StartDate, $EndDate])->get();
+
+            if(!empty($UserWorkVacationList)) {
+                foreach($UserWorkVacationList as $VacationItem) {
+                    $VacationPeriod = carbonPeriod::create(Carbon::parse($VacationItem->date_from), Carbon::parse($VacationItem->date_to)->subDays(1));
                     foreach($VacationPeriod as $VacationDate) {
                         $WorkArray[] = [
                             'id' => $VacationItem->id,
@@ -300,8 +344,7 @@ class UsersAjaxController extends Controller
                 $StartDate = Carbon::parse($Request->vacation_start);
                 $EndDate = Carbon::parse($Request->vacation_end);
 
-                $NewVacation = carbonPeriod::create($StartDate, $EndDate);
-
+                $NewVacation = carbonPeriod::create($StartDate, $EndDate->subDays(1));
                 $VacationBussinesDays = $EndDate->diffInWeekDays($StartDate);
 
                 $UserWorkVacationType = new UserWorkVacationType();
@@ -310,31 +353,34 @@ class UsersAjaxController extends Controller
                 $UserWorkVacation = new UserWorkVacation();
                 $UserWorkVacationList = $UserWorkVacation::where('type_id', $Request->vacation_type)->where('user_id', $Request->vacation_user_id)->get();
 
+                $UserWorkCalendar = new UserWorkCalendar();
+                $UserWorkCalendarList = $UserWorkCalendar::where('user_id', $Request->vacation_user_id)->where('deleted_at_int', '!=', 0)->get();
+
                 if($StartDate->gt($EndDate)) {
-                    return Response::json(['status' => true, 'error' => false, 'can_skip' => false, 'message' => 'თარიღები არჩეულია არასწორად, გთხოვთ გადაამოწმოთ თარიღები !!!']);
+                    return Response::json(['status' => true, 'error' => false, 'skip' => false, 'message' => 'თარიღები არჩეულია არასწორად, გთხოვთ გადაამოწმოთ თარიღები !!!']);
                 }
 
                 if($VacationBussinesDays > $UserWorkVacationTypeData->max_at_one) {
-                    return Response::json(['status' => true, 'error' => false, 'can_skip' => true, 'message' => 'არჩეული სამუშაო დღეები რაოდენობა აღემატება ერთჯერზე ნებადართულს !!!']);
+                    return Response::json(['status' => true, 'error' => false, 'skip' => true, 'message' => 'არჩეული სამუშაო დღეები რაოდენობა აღემატება ერთჯერზე ნებადართულს !!!']);
                 }
 
-                if(($UserWorkVacationList->sum('days_count') + $VacationBussinesDays) > $UserWorkVacationTypeData->max_days) {
-                    $RemainingDays = $UserWorkVacationTypeData->max_days - $UserWorkVacationList->sum('days_count');
-                    return Response::json(['status' => true, 'error' => false, 'can_skip' => true, 'message' => 'თანამშრომელს დარჩენილი აქვს შვებულების '.$RemainingDays.' დღე. თქვენ აირჩიეთ '.$VacationBussinesDays.' დღე !!!']);
-                }
+                foreach($NewVacation as $NewVacationItem) {
+                    if(!empty($UserWorkCalendarList)) {
+                        foreach($UserWorkCalendarList as $CalendarItem) {
+                            if($NewVacationItem->format('Y-m-d') == Carbon::parse($CalendarItem->work_date)->format('Y-m-d')) {
+                                return Response::json(['status' => true, 'error' => true, 'skip' => false,  'message' => $NewVacationItem->format('Y-m-d').' აღნიშნულ თარიღში თანამშრომელი მუშაობს !!!']);
+                            }
+                        }
+                    }
 
-                foreach($UserWorkVacationList as $WorkVacationItem) {
-                    $UsedVacation = carbonPeriod::create($WorkVacationItem->date_from, $WorkVacationItem->date_to);
-                    foreach($UsedVacation as $UsedItem) {
-                        foreach($NewVacation as $NewItem) {
-                           if(Carbon::parse($UsedItem->format('Y-m-d')) == Carbon::parse($NewItem->format('Y-m-d'))) {
-                                return Response::json(['status' => true, 'error' => true, 'can_skip' => false,  'message' => $NewItem->format('Y-m-d').' აღნიშნულ თარიღში თანამშრომელი იმყოფება შვებულებაში !!!']);
-                           }
+                    if(!empty($UserWorkVacationList)) {
+                        foreach($UserWorkVacationList as $WorkVacationItem) {
+                            
                         }
                     }
                 }
 
-                return Response::json(['status' => true, 'error' => false, 'can_skip' => true, 'message' => '']);
+                // return Response::json(['status' => true, 'error' => false, 'skip' => true, 'message' => '']);
             }
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);

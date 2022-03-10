@@ -10,5 +10,6 @@ return [
     'modules' => [
         'Users',
         'Main',
+        'Company',
     ]
 ];
