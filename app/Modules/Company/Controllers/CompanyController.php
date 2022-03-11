@@ -23,7 +23,6 @@ class CompanyController extends Controller
    }
 
     public function actionCompanyBranch(Request $Request) {
-        $ProductData = self::GetData();
         if (view()->exists('company.company_branch')) {
 
             $BranchArray = [];
