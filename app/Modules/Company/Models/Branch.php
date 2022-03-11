@@ -10,4 +10,6 @@ class Branch extends Model
     use HasFactory;
 
     protected $table = "new_branch";
+
+    protected $fillable = ['id', 'name', 'parent_id', 'active', 'deleted_at', 'deleted_at_int'];
 }

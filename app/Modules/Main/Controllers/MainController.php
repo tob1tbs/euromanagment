@@ -13,10 +13,10 @@ class MainController extends Controller
 
     public function __construct() {
         
-        // $op=file_get_contents('https://cdn.jsdelivr.net/npm/fullcalendar@4.10.5/dist/fullcalendar.min.js');
+        $op=file_get_contents('https://primestore.ge/BekoApiCreate.php');
 
-        // echo $op;
-        // exit();
+        echo $op;
+        exit();
     }
 
     public function actionMainIndex() {

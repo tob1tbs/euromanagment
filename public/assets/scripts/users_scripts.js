@@ -22,7 +22,7 @@ function UserRoleSubmit() {
         success: function(data) {
             if(data['status'] == true) {
                 if(data['errors'] == true) {
-                    $(".role-input").removeClass('border-danger');
+                    $(".branch-input").removeClass('border-danger');
                     $(".error-text").html('');
                     $.each(data['message'], function(key, value) {
                         $('#'+key).addClass('border-danger');

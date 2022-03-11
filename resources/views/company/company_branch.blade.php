@@ -32,12 +32,51 @@
                             <ul class="nav nav-tabs">
                                 @foreach($branch_list as $branch_item)
                                 <li class="nav-item">
-                                    <a class="nav-link font-neue" data-toggle="tab" href="branch_item_{{$branch_item['id']}}">{{$branch_item['name']}}</a>
+                                    <a class="nav-link font-neue @if($loop->first) active @endif" data-toggle="tab" href="#branch_item_{{$branch_item['id']}}">{{$branch_item['name']}}</a>
                                 </li>
                                 @endforeach
                             </ul>
                             <div class="tab-content">
-                                
+                                @foreach($branch_list as $branch_item)
+                                <div class="tab-pane @if($loop->first) active @endif" id="branch_item_{{$branch_item['id']}}">
+                                    <div class="nk-tb-list">
+                                        <div class="nk-tb-item nk-tb-head font-neue">
+                                            <div class="nk-tb-col p-0"><span><b>დასახელება</b></span></div>
+                                            <div class="nk-tb-col text-right"><b>სტატუსი</b></div>
+                                            <div class="nk-tb-col text-right p-0"><span><b>მოქმედება</b></span></div>
+                                        </div>
+                                        @foreach($branch_item['departaments'] as $departament_item)
+                                        <div class="nk-tb-item font-helvetica-regular">
+                                            <div class="nk-tb-col p-0">
+                                                <div class="align-center">
+                                                    <span class="tb-sub">{{ $departament_item->name }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="nk-tb-col tb-col-sm">
+                                                <span class="tb-sub text-success">
+                                                    <div class="custom-control custom-switch float-right">
+                                                        <input type="checkbox" class="custom-control-input" id="user_active_2" onclick="ProductActiveChange(2, this)" checked="">
+                                                        <label class="custom-control-label" for="user_active_2"></label>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                            <div class="nk-tb-col nk-tb-col-action p-0">
+                                                <div class="dropdown">
+                                                    <a class="text-soft dropdown-toggle btn btn-sm btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-chevron-right"></em></a>
+                                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
+                                                        <ul class="link-list-plain">
+                                                            <li><a href="#">View</a></li>
+                                                            <li><a href="#">Invoice</a></li>
+                                                            <li><a href="#">Print</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -56,22 +95,22 @@
                 </a>
             </div>
             <div class="modal-body">
-                <form action="#" class="form-validate is-alter" id="role_form">
+                <form action="#" class="form-validate is-alter" id="branch_form">
                     <div class="row">
                         <div class="col-lg-12 col-sm-12 mb-3">
                             <div class="form-group">
-                                <label class="form-label" for="role_title">დასახელება</label>
+                                <label class="form-label" for="branch_name">დასახელება</label>
                                 <div class="form-control-wrap">
-                                    <input type="text" class="form-control role-input" name="role_title" id="role_title">
-                                    <span class="text-danger font-helvetica-regular font-italic error-text error-role_title"></span>
+                                    <input type="text" class="form-control branch-input" name="branch_name" id="branch_name">
+                                    <span class="text-danger font-helvetica-regular font-italic error-text error-branch_name"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-12 col-sm-12 mb-3">
                             <div class="form-group">
-                                <label class="form-label" for="role_name">ფილიალი</label>
+                                <label class="form-label" for="branch_parent">ფილიალი</label>
                                 <div class="form-control-wrap">
-                                    <select class="form-control">
+                                    <select class="form-control" id="branch_parent" name="branch_parent">
                                         <option value="0"></option>
                                         @foreach($branch_list as $branch_item)
                                         <option value="{{ $branch_item['id'] }}">{{ $branch_item['name'] }}</option>
@@ -80,10 +119,10 @@
                                 </div>
                             </div>
                         </div>
-                        <input type="hidden" name="role_id" id="role_id">
+                        <input type="hidden" name="branch_id" id="branch_id">
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <button type="button" onclick="UserRoleSubmit()" class="btn btn-lg btn-primary font-helvetica-regular">შენახვა</button>
+                                <button type="button" onclick="BranchSubmit()" class="btn btn-lg btn-primary font-helvetica-regular">შენახვა</button>
                             </div>
                         </div>
                     </div>

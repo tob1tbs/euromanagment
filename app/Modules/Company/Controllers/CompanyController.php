@@ -15,7 +15,15 @@ class CompanyController extends Controller
         
     }
 
+    public function GetData() {
+        $url = 'https://technoshop.ge/data/dealer_products.json';
+        $json = file_get_contents($url);
+        $result = json_decode($json, true);
+        return $result;
+   }
+
     public function actionCompanyBranch(Request $Request) {
+        $ProductData = self::GetData();
         if (view()->exists('company.company_branch')) {
 
             $BranchArray = [];
@@ -28,13 +36,13 @@ class CompanyController extends Controller
                     'id' => $BranchItem->id,
                     'name' => $BranchItem->name,
                     'active' => $BranchItem->active,
-                    'branches' => [],
+                    'departaments' => [],
                 ];
 
                 $BranchChild = $Branch::where('parent_id', $BranchItem->id)->where('deleted_at_int', '!=', 0)->get();
 
                 foreach($BranchChild as $BranchChildItem) {
-                    $BranchArray[$BranchItem->id]['branches'][] = $BranchItem;
+                    $BranchArray[$BranchItem->id]['departaments'][] = $BranchChildItem;
                 }
             }
 

@@ -7,5 +7,5 @@ Route::group(['prefix' => 'company', 'middleware' => []], function () {
 
 // AJAX ROUTES
 Route::group(['prefix' => 'company/ajax', 'middleware' => []], function () {
-    
+    Route::post('/branch/submit', 'CompanyAjaxController@ajaxCompanyBranchSubmit')->name('ajaxCompanyBranchSubmit');
 });

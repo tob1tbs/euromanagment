@@ -11,14 +11,14 @@
             <div class="nk-block-head">
                 <div class="nk-block-between">
                     <div class="nk-block-head-content">
-                        <h4 class="nk-block-title font-neue">თანამშრომლების ჩამონათვალი</h4>
+                        <h4 class="nk-block-title font-neue">სამუშაო პოზიციები</h4>
                     </div>        
                     <div class="nk-block-head-content">
                         <ul class="nk-block-tools g-3">
                             <li>
                                 <a href="{{ route('actionUsersAdd') }}" class="btn btn-white btn-outline-light">
                                     <em class="icon ni ni-plus"></em>
-                                    <span class="font-helvetica-regular">ახალი პოზიცია</span>
+                                    <span class="font-helvetica-regular">ახალი მომხმარებელი</span>
                                 </a>
                             </li>
                         </ul>
@@ -35,6 +35,10 @@
                                         <thead>
                                             <tr class="nk-tb-item nk-tb-head font-neue">
                                                 <th class="nk-tb-col"><span class="sub-text">პოზიციის დასახელება</span></th>
+                                                <th class="nk-tb-col"><span class="sub-text">ტელეფონის ნომერი</span></th>
+                                                <th class="nk-tb-col"><span class="sub-text">ელ-ფოსტა</span></th>
+                                                <th class="nk-tb-col"><span class="sub-text">წვდომის ჯგუფი</span></th>
+                                                <th class="nk-tb-col"><span class="sub-text">რეგისტრაციის თარიღი</span></th>
                                                 <th class="nk-tb-col"><span class="sub-text">სტატუსი</span></th>
                                                 <th class="nk-tb-col nk-tb-col-tools text-right"></th>
                                             </tr>

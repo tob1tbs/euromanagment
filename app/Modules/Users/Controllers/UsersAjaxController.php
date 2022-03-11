@@ -442,7 +442,7 @@ class UsersAjaxController extends Controller
             } else {
 
                 $UserWorkCalendar = new UserWorkCalendar();
-                $UserWorkCalendarData = $UserWorkCalendar::whereDate('work_date', Carbon::parse($Request->work_date)->format('Y-m-d'))->where('user_id', 1)->where('deleted_at_int', '!=', 0)->first();
+                $UserWorkCalendarData = $UserWorkCalendar::whereDate('work_date', Carbon::parse($Request->work_date)->format('Y-m-d'))->where('user_id', $Request->work_user_id)->where('deleted_at_int', '!=', 0)->first();
 
                 $UserWorkVacation = new UserWorkVacation();
                 $UserWorkVacationList = $UserWorkVacation::where('user_id', $Request->work_user_id)->where('deleted_at_int', '!=', 0)->get();
