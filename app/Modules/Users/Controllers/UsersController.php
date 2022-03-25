@@ -17,7 +17,11 @@ use App\Modules\Users\Models\UserWorkData;
 use App\Modules\Users\Models\UserWorkVacation;
 use App\Modules\Users\Models\UserWorkVacationType;
 
+use App\Modules\Company\Models\Branch;
+
 use Carbon\Carbon;
+
+use Auth;
 
 class UsersController extends Controller
 {
@@ -26,14 +30,31 @@ class UsersController extends Controller
         
     }
 
+    public function actionUsersLogin(Request $Request) {
+        if (view()->exists('users.users_login')) {
+
+            $data = [
+                
+            ];
+
+            return view('users.users_login', $data);
+        } else {
+            abort('404');
+        }
+    }
+
     public function actionUsersIndex(Request $Request) {
         if (view()->exists('users.users_index')) {
 
             $User = new User();
             $UserList = $User::where('deleted_at_int', '!=', 0)->orderBy('id', 'DESC')->get();
 
+            $UserRole = new UserRole();
+            $UserRoleList = $UserRole::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
             $data = [
                 'user_list' => $UserList,
+                'user_role_list' => $UserRoleList,
             ];
 
             return view('users.users_index', $data);
@@ -45,7 +66,16 @@ class UsersController extends Controller
     public function actionUsersAdd() {
         if (view()->exists('users.users_add')) {
 
-            $data = [];
+            $UserWorkPosition = new UserWorkPosition();
+            $UserWorkPositionList = $UserWorkPosition::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $Branch = new Branch();
+            $BranchList = $Branch::where('parent_id', 0)->where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $data = [
+                'work_position_list' => $UserWorkPositionList,
+                'branch_list' => $BranchList,
+            ];
 
             return view('users.users_add', $data);
         } else {
@@ -166,7 +196,6 @@ class UsersController extends Controller
 
                         $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'] = $RenderCalendar;
 
-
                         $UserWorkCalendar = new UserWorkCalendar();
                         $UserWorkCalendarData = $UserWorkCalendar::where('user_id', $UserItem->id)->where('deleted_at_int', '!=', 0)->get();
 
@@ -244,8 +273,11 @@ class UsersController extends Controller
     public function actionUsersPositions(Request $Request) {
         if (view()->exists('users.users_positions')) {
 
+            $UserWorkPosition = new UserWorkPosition();
+            $UserWorkPositionList = $UserWorkPosition::where('deleted_at_int', '!=', 0)->get();
+
             $data = [
-                
+                'user_work_position_list' => $UserWorkPositionList,
             ];
 
             return view('users.users_positions', $data);
@@ -280,5 +312,10 @@ class UsersController extends Controller
         } else {
             abort('404');
         }
+    }
+
+    public function actionUsersLogout(Request $Request) {
+        Auth::logout();
+        return redirect()->route('actionUsersLogin');
     }
 }

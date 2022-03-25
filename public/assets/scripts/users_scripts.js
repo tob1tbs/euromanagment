@@ -438,6 +438,9 @@ function AddSalarySubmit() {
                     NioApp.Toast(data['message'], 'success', {
                         position: 'top-right'
                     });
+                    $(".cell-item-"+data['day']+"-"+data['user_id']).html(data['total']).addClass('table-cell');
+                    $('#add_user_salary_form')[0].reset();
+                    $("#userAddSalary").modal('hide');
                 }
             }
         }
@@ -487,7 +490,9 @@ function DeleteUserSalary() {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(data) {
-                    
+                    if(data['status'] == true) {
+                        location.reload();
+                    }
                 }
             });
         }
@@ -573,6 +578,390 @@ function UserVacationValidate() {
                     }
                 }
             }
+        }
+    });
+}
+
+function UserSubmit() {
+    var form = $('#user_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/submit",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $.each(data['message'], function(key, value) {
+                        $(".error-input").removeClass('border-danger');
+                        $.each(data['message'], function(key, value) {
+                            $('#'+key).addClass('border-danger');
+                            NioApp.Toast(value, 'error', {
+                                position: 'top-right'
+                            });
+                        })
+                    });
+                }
+            } else {
+                
+            }
+        }
+    });
+}
+
+function GetDepartamentList() {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/get/departament",
+        type: "GET",
+        data: {
+            branch_id: $("#user_position_branch").val(),
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $("#user_position_departament").html('');
+                if(data['BranchList'].length > 0) {
+                    $.each(data['BranchList'], function(key, value) {
+                        $("#user_position_departament").append(`<option value="`+value['id']+`">`+value['name']+`</option>`);
+                    });
+                    $("#user_position_departament").removeAttr('disabled');
+                } else {
+                    $("#user_position_departament").append(`<option value="0">გთხოვთ აირჩიოთ ფილიალი</option>`);
+                    $("#user_position_departament").attr('disabled', 'disabled');
+                }
+            } else {
+                $("#user_position_departament").html('');
+                $("#user_position_departament").append(`<option value="0">გთხოვთ აირჩიოთ ფილიალი</option>`);
+                $("#user_position_departament").attr('disabled', 'disabled');
+            }
+        }
+    });
+}
+
+function WorkPositionAdd() {
+    checkPosition = () => {
+
+        if ($("#user_position").val() == 0) {
+           $("#user_position").addClass('border border-danger');
+            positionValid = false;
+            return;
+        } else {
+            $("#user_position").removeClass('border border-danger');
+            positionValid = true;
+        }
+
+        if ($("#user_position_branch").val() == 0) {
+            $("#user_position_branch").addClass('border border-danger');
+            positionValid = false;
+            return;
+        } else {
+            $("#user_position_branch").removeClass('border border-danger');
+            positionValid = true;
+        }
+
+        if ($("#user_position_departament").val() == 0) {
+           $("#user_position_departament").addClass('border border-danger');
+            positionValid = false;
+            return;
+        } else {
+            $("#user_position_departament").removeClass('border border-danger');
+            positionValid = true;
+        }
+
+        if ($("#user_position_salary_type").val() == 0) {
+           $("#user_position_salary_type").addClass('border border-danger');
+            positionValid = false;
+            return;
+        } else {
+            $("#user_position_salary_type").removeClass('border border-danger');
+            positionValid = true;
+        }
+
+        if ($("#user_salary").val() == "") {
+           $("#user_salary").addClass('border border-danger');
+            positionValid = false;
+            return;
+        } else {
+            $("#user_salary").removeClass('border border-danger');
+            positionValid = true;
+        }
+
+        return positionValid;
+    };
+
+    positionValid = checkPosition();
+
+    if(positionValid) {
+
+        $(".user_work_position").append(`
+            <tr class="font-helvetica-regular">
+                <td class="px-2">`+$('#user_position option:selected').html()+`</td>
+                <td>`+$('#user_position_branch option:selected').html()+` / `+$('#user_position_departament option:selected').html()+`</td>
+                <td>`+$('#user_position_salary_type option:selected').html()+` / `+$('#user_salary').val()+`</td>
+                <td>
+                    <span class="font-helvetica-regular" onclick="RemoveWorkPosition(this)" style="cursor: pointer;">პოზიცის წაშლა</span>
+                </td>
+                <input type="hidden" name="position[]" value="`+$("#user_position").val()+`">
+                <input type="hidden" name="branch[]" value="`+$("#user_position_branch").val()+`">
+                <input type="hidden" name="departament[]" value="`+$("#user_position_departament").val()+`">
+                <input type="hidden" name="salary_type[]" value="`+$("#user_position_salary_type").val()+`">
+                <input type="hidden" name="salary[]" value="`+$("#user_salary").val()+`">
+            </tr>
+        `);
+    }
+}
+
+function RemoveWorkPosition(elem) {
+    $(elem).parents('tr').remove();
+}
+
+function UserLogin() {
+    var form = $('#user_login_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/login/submit",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $.each(data['message'], function(key, value) {
+                        NioApp.Toast(value, 'error');
+                    })
+                } else {
+                    window.location.replace(data['redirect_url']);
+                }
+            } else {
+                NioApp.Toast(data['message'], 'error');
+            }
+        }
+    });
+}
+
+function ViewDetailSalary(user_id, position_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/salary/detail",
+        type: "GET",
+        data: {
+            user_id: user_id,
+            position_id: position_id,
+            salary_year: $("#salary_year").val(),
+            salary_month: $("#salary_month").val(),
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $(".user-salary-list, .user_salary-total").html('');
+                var total_sum = data['sum'] + data['month_salary'];
+                $.each(data['UserWorkSalaryList'], function(key, value) {
+                    var total = value['salary'] + value['bonus'] - value['fine'];
+
+                    $(".user-salary-list").append(`
+                        <tr class="text-center">
+                          <td class="text-center">`+value['date']+`</td>
+                          <td class="text-center">`+value['salary']+` ₾</td>
+                          <td class="text-center">`+value['bonus']+` ₾</td>
+                          <td class="text-center">`+value['fine']+` ₾</td>
+                          <td class="text-right">`+total+`₾ </td>
+                        </tr>
+                    `);
+                });
+                $(".user_salary-total").append(`
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>ფიქსირებული: `+data['month_salary']+` ₾ <br>გამომუშავებული: `+data['sum']+` ₾ <br>ჯამი: `+total_sum+` ₾ <br></td>
+                `);
+                $("#userViewDetailSalary").modal('show');
+            }
+        }
+    });
+}
+
+function AddPositionModal() {
+    $(".position-modal-title").html('ახალი პოზიციის დამატება');
+    $('#position_form')[0].reset();
+    $("#position_modal").modal('show');
+}
+
+function PositionSubmit() {
+    var form = $('#position_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/position/submit",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $(".error-input").removeClass('border-danger');
+                    $.each(data['message'], function(key, value) {
+                        $('#'+key).addClass('border-danger');
+                        NioApp.Toast(value, 'error', {
+                            position: 'top-right'
+                        });
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        text: data['message'],
+                        timer: 2000,
+                    });
+                    location.reload();
+                }
+            } else {
+                NioApp.Toast(data['message'], 'error');
+            }
+        }
+    });
+}
+
+function PositionEdit(position_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/position/edit",
+        type: "GET",
+        data: {
+            position_id: position_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $(".position-modal-title").html('პოზიციის რედაქტირება');
+                $('#position_form')[0].reset();
+                $("#position_name").val(data['UserWorkPositionData']['name']);
+                $("#position_id").val(data['UserWorkPositionData']['id']);
+                $("#position_modal").modal('show');
+            }
+        }
+    });
+}
+
+function PositionActiveChange(position_id, elem) {
+    if($(elem).is(":checked")) {
+        position_active = 1;
+    } else {
+        position_active = 0
+    }
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/position/active",
+        type: "POST",
+        data: {
+            position_id: position_id,
+            position_active: position_active,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            return;
+        }
+    });
+}
+
+function PositionDelete(position_id) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ პოზიციის წაშლა?",
+        text: "მომხმარებლები რომელებთაც ააქვთ მინიჭებული აღნიშნული პოზიცია, ავტომატურად მიენიჭება პოზიცია (პოზიციის გარეშე) !!!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/users/ajax/position/delete",
+                type: "POST",
+                data: {
+                    position_id: position_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    Swal.fire({
+                      icon: 'success',
+                      text: data['message'],
+                    })
+                    location.reload();
+                }
+            });
+        }
+    });
+}
+
+function UserPermissionData(user_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/role/get",
+        type: "GET",
+        data: {
+            user_id: user_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $('#role_form')[0].reset();
+                $('#update_role_id option[value="'+data['UserData']['role_id']+'"]').attr('selected','selected');
+                $("#role_user_id").val(data['UserData']['id']);
+                $("#role_modal").modal('show');
+            }
+        }
+    });
+}
+
+function UpdateRoleSubmit() {
+    Swal.fire({
+        title: "ნამდვილად გსურთ ჯგუფის წაშლა?",
+        text: "მომხმარებლები რომელებთაც ააქვთ მინიჭებული აღნიშნული ჯგუფი, ავტომატურად გადავლენ ჯგუფ მოხმარებლებში !!!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/users/ajax/role/update",
+                type: "POST",
+                data: {
+                    role_id: $("#update_role_id").val(),
+                    user_id: $("#role_user_id").val(),
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                   
+                }
+            });
         }
     });
 }

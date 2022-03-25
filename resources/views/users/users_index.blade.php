@@ -18,7 +18,7 @@
                             <li>
                                 <a href="{{ route('actionUsersAdd') }}" class="btn btn-white btn-outline-light">
                                     <em class="icon ni ni-plus"></em>
-                                    <span class="font-helvetica-regular">ახალი მომხმარებელი</span>
+                                    <span class="font-helvetica-regular">ახალი თანამშრომლის</span>
                                 </a>
                             </li>
                         </ul>
@@ -80,6 +80,7 @@
                                                                 <div class="dropdown-menu dropdown-menu-right">
                                                                     <ul class="link-list-opt no-bdr">
                                                                         <li><a href="{{ route('actionUsersView', $user_item->id) }}"><em class="icon ni ni-focus"></em><span>პროფილი</span></a></li>
+                                                                        <li><a href="javascript:;" onclick="UserPermissionData({{ $user_item->id }})"><em class="icon ni ni-focus"></em><span>უფლებების მინიჭება</span></a></li>
                                                                     </ul>
                                                                 </div>
                                                             </div>
@@ -99,6 +100,42 @@
         </div>
     </div>
 </div>  
+<div class="modal fade" id="role_modal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top" role="document">
+        <div class="modal-content modal-xl">
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">მომხმარებლის უფლებები</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form action="#" class="form-validate is-alter" id="role_form">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 mb-3">
+                            <div class="form-group">
+                                <label class="form-label" for="update_role_id">წვდომის ჯგუფი</label>
+                                <div class="form-control-wrap">
+                                    <select class="form-control font-helvetica-regular" name="update_role_id" id="update_role_id">
+                                        @foreach($user_role_list as $role_item)
+                                        <option value="{{ $role_item->id }}">{{ $role_item->title }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="role_user_id" id="role_user_id">
+                        <div class="col-lg-12 mb-3">
+                            <div class="form-group">
+                                <button type="button" onclick="UpdateRoleSubmit()" class="btn btn-lg btn-primary font-helvetica-regular">შენახვა</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('js')

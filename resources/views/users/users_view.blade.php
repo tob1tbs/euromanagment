@@ -63,6 +63,29 @@
                                                 <div class="data-head">
                                                     <h6 class="overline-title font-neue">სამუშაო პოზიცია</h6>
                                                 </div>
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr class="font-neue text-center">
+                                                          <th scope="col">სამუშაო პოზიცია</th>
+                                                          <th scope="col">ხელფასი</th>
+                                                          <th scope="col">ფილიალი / განყოფილება</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($user_data->workData as $work_item)
+                                                    <tr class="font-helvetica-regular text-center">
+                                                        <td>{{ $work_item->userPosition->name}}</td>
+                                                        <td>{{ $work_item->salary }} ₾</td>
+                                                        <td>{{ $work_item->userBranch->name }} / {{ $work_item->userBranchDepartament->name }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                  </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="nk-data data-list">
+                                                <div class="data-head">
+                                                    <h6 class="overline-title font-neue">საკონტაქტი პირები</h6>
+                                                </div>
                                                 <div class="data-item">
                                                     <div class="data-col">
                                                         <span class="data-label font-neue">Language</span>
@@ -84,12 +107,12 @@
 								    <div class="tab-pane" id="vacation_list">
 								        <table class="table table-ulogs">
                                             <thead class="thead-light">
-                                                <tr class="font-neue">
-                                                    <th class="tb-col-time"><span class="overline-title">#</span></th>
-                                                    <th class="tb-col-time"><span class="overline-title">გასვლის თარიღი</span></th>
-                                                    <th class="tb-col-time"><span class="overline-title">დაბრუნების თარიღი</span></th>
-                                                    <th class="tb-col-time"><span class="overline-title">შექმნა</span></th>
-                                                    <th class="tb-col-time"><span class="overline-title">შექმნის თარიღი</span></th>
+                                                <tr>
+                                                    <th class="tb-col-time font-neue"><span class="overline-title">#</span></th>
+                                                    <th class="tb-col-time font-neue"><span class="overline-title">გასვლის თარიღი</span></th>
+                                                    <th class="tb-col-time font-neue"><span class="overline-title">დაბრუნების თარიღი</span></th>
+                                                    <th class="tb-col-time font-neue"><span class="overline-title">შექმნა</span></th>
+                                                    <th class="tb-col-time font-neue"><span class="overline-title">შექმნის თარიღი</span></th>
                                                     <th class="tb-col-action"><span class="overline-title">&nbsp;</span></th>
                                                 </tr>
                                             </thead>

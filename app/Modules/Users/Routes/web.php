@@ -1,7 +1,10 @@
 <?php
 
 // GENERAL ROUTES
-Route::group(['prefix' => 'users', 'middleware' => []], function () {
+Route::get('/login', 'UsersController@actionUsersLogin')->name('actionUsersLogin');
+Route::post('/users/ajax/login/submit', 'UsersAjaxController@ajaxUserLogin')->name('ajaxUserLogin');
+
+Route::group(['prefix' => 'users', 'middleware' => ['login']], function () {
     Route::get('/', 'UsersController@actionUsersIndex')->name('actionUsersIndex');
     Route::get('/add', 'UsersController@actionUsersAdd')->name('actionUsersAdd');
     Route::get('/edit/{user_id}', 'UsersController@actionUsersEdit')->name('actionUsersEdit');
@@ -10,10 +13,16 @@ Route::group(['prefix' => 'users', 'middleware' => []], function () {
     Route::get('/positions', 'UsersController@actionUsersPositions')->name('actionUsersPositions');
     Route::get('/calendar', 'UsersController@actionUsersCalendar')->name('actionUsersCalendar');
     Route::get('/salary', 'UsersController@actionUsersSalary')->name('actionUsersSalary');
+    Route::get('/logout', 'UsersController@actionUsersLogout')->name('actionUsersLogout');
 });
 
 // AJAX ROUTES
-Route::group(['prefix' => 'users/ajax', 'middleware' => []], function () {
+Route::group(['prefix' => 'users/ajax', 'middleware' => ['login']], function () {
+    // USER
+    Route::post('/submit', 'UsersAjaxController@ajaxUserSubmit')->name('ajaxUserSubmit');
+    Route::get('/get/departament', 'UsersAjaxController@ajaxGetDepartamentList')->name('ajaxGetDepartamentList');
+    Route::get('/role/get', 'UsersAjaxController@ajaxUserRoleGet')->name('ajaxUserRoleGet');
+    Route::post('/role/update', 'UsersAjaxController@ajaxUserRoleUpdate')->name('ajaxUserRoleUpdate');
     // USER WORK
     Route::post('/work/add', 'UsersAjaxController@ajaxUserWorkAdd')->name('ajaxUserWorkAdd');
     Route::get('/work/get', 'UsersAjaxController@ajaxUserWorkGet')->name('ajaxUserWorkGet');
@@ -24,6 +33,7 @@ Route::group(['prefix' => 'users/ajax', 'middleware' => []], function () {
     Route::post('/salary/submit', 'UsersAjaxController@ajaxUserSalarySubmit')->name('ajaxUserSalarySubmit');
     Route::get('/salary/view', 'UsersAjaxController@ajaxUserSalaryView')->name('ajaxUserSalaryView');
     Route::post('/salary/delete', 'UsersAjaxController@ajaxUserSalaryDelete')->name('ajaxUserSalaryDelete');
+    Route::get('/salary/detail', 'UsersAjaxController@ajaxUserSalaryDetail')->name('ajaxUserSalaryDetail');
     // USER VACATION
     Route::post('/vacation/validate', 'UsersAjaxController@ajaxUserVacationValidate')->name('ajaxUserVacationValidate');
     Route::post('/vacation/submit', 'UsersAjaxController@ajaxUserVacationSubmit')->name('ajaxUserVacationSubmit');
@@ -36,4 +46,9 @@ Route::group(['prefix' => 'users/ajax', 'middleware' => []], function () {
     Route::post('/role/permission/submit', 'UsersAjaxController@ajaxUserRolePermissionsSubmit')->name('ajaxUserRolePermissionsSubmit');
     Route::post('/role/permission/sync', 'UsersAjaxController@ajaxUserRolePermissionsSync')->name('ajaxUserRolePermissionsSync');
     Route::post('/role/permission/delete', 'UsersAjaxController@ajaxUserRolePermissionsDelete')->name('ajaxUserRolePermissionsDelete');
+    // USERS POSITION
+    Route::post('/position/submit', 'UsersAjaxController@ajaxUserPositionSubmit')->name('ajaxUserPositionSubmit');
+    Route::get('/position/edit', 'UsersAjaxController@ajaxUserPositionEdit')->name('ajaxUserPositionEdit');
+    Route::post('/position/active', 'UsersAjaxController@ajaxUserPositionActive')->name('ajaxUserPositionActive');
+    Route::post('/position/delete', 'UsersAjaxController@ajaxUserPositionDelete')->name('ajaxUserPositionDelete');
 });

@@ -38,7 +38,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               @foreach($user_role_list as $user_role_item)
+                                @foreach($user_role_list as $user_role_item)
                                 <tr class="nk-tb-item">
                                     <td class="nk-tb-col">
                                         <div class="user-card">

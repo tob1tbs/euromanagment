@@ -18,6 +18,6 @@ class UserWorkCalendar extends Model
     }
 
     public function workCreator() {
-        return $this->belongsTo('App\Modules\Users\Models\User', 'user_id', 'id');
+        return $this->belongsTo('App\Modules\Users\Models\User', 'created_by', 'id');
     }
 }

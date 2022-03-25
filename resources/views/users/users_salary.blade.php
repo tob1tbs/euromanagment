@@ -87,9 +87,7 @@
                                                 @for ($i = 0; $i < $days_count; $i++)
                                                 <th></th>
                                                 @endfor
-                                                <th style="border: 1px solid #dbdfea; text-align: center;">ფიქსირებული</th>
-                                                <th style="border: 1px solid #dbdfea; text-align: center;">დღიური</th>
-                                                <th style="border: 1px solid #dbdfea; text-align: center;">ჯამი</th>
+                                                <th style="border: 1px solid #dbdfea; text-align: center;"></th>
                                             </tr>
                                             @foreach($solary_item['data'] as $item)
                                             <tr class="font-helvetica-regular salary-line">
@@ -97,17 +95,15 @@
                                                 @foreach($item['calendar'] as $salary_key => $salary_item)
                                                     @if($salary_item['work_on_this_day'] == 1)
                                                         @if($salary_item['total_day_salary'] == 0)
-                                                        <th class="day-cell" style="border: 1px solid #dbdfea;" onclick="AddUserSalary('{{ $item['user_id'] }}', '{{ $item['position_id'] }}', '{{ $salary_item['date']}}')">{{ $salary_key }}</th>
+                                                        <th class="day-cell cell-item-{{ $salary_key }}-{{ $item['user_id'] }}" style="border: 1px solid #dbdfea;" onclick="AddUserSalary('{{ $item['user_id'] }}', '{{ $item['position_id'] }}', '{{ $salary_item['date']}}', '{{ $salary_item['id'] }}')">{{ $salary_key }}</th>
                                                         @else
-                                                        <th style="border: 1px solid #dbdfea;" class="table-cell day-cell" onclick="ViewUserSalary({{ $salary_item['id'] }})">{{ $salary_item['total_day_salary'] }}</th>
+                                                        <th style="border: 1px solid #dbdfea;" class="table-cell day-cell salary-id-{{ $salary_item['id'] }}" onclick="ViewUserSalary({{ $salary_item['id'] }})">{{ $salary_item['total_day_salary'] }}</th>
                                                         @endif
                                                     @else
-                                                    <th class="day-cell" style="border: 1px solid #dbdfea; " onclick="UserNotWorking({{ $salary_item['date'] }})">{{ $salary_key }}</th>
+                                                    <th style="border: 1px solid #dbdfea; background: #f1f1f1;" onclick="UserNotWorking({{ $salary_item['date'] }})">{{ $salary_key }}</th>
                                                     @endif
                                                 @endforeach
-                                                <th class="text-center" style="border: 1px solid #dbdfea;">{{ $item['basic_salary'] }} ₾</th>
-                                                <th class="text-center" style="border: 1px solid #dbdfea;">{{ $item['total_salary'] }}</span> ₾</th>
-                                                <th class="text-center" style="border: 1px solid #dbdfea;">{{ $item['basic_salary'] + $item['total_salary'] }}</span> ₾</th>
+                                                <th class="text-center font-neue" style="border: 1px solid #dbdfea; cursor: pointer;" onclick="ViewDetailSalary({{ $item['user_id'] }}, {{ $item['position_id'] }})">დეტალურად</th>
                                             </tr>
                                             @endforeach
                                             @endforeach
@@ -168,7 +164,7 @@
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label class="form-label" id="user_fine_salary">ჯარიმა</label>
+                                <label class="form-label" id="user_fine_salary">კომენტარი</label>
                                 <div class="form-control-wrap">
                                     <textarea class="form-control" id="user_salary_comment" name="user_salary_comment"></textarea>
                                 </div>
@@ -182,6 +178,7 @@
                     </div>
                     <input type="hidden" name="salary_user_id" id="salary_user_id">
                     <input type="hidden" name="salary_position" id="salary_position">
+                    <input type="hidden" name="cell_id" id="cell_id">
                 </form>
             </div>
         </div>
@@ -278,6 +275,37 @@
             </div>
         </div>
     </div>
+</div>  
+<div class="modal fade" tabindex="-1" id="userViewDetailSalary">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">თვის დეტალური ხელფასი</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="font-neue">
+                          <th scope="col" style="border-top: none; text-align: center;">თარიღი</th>
+                          <th scope="col" style="border-top: none; text-align: center;">ხელფასი</th>
+                          <th scope="col" style="border-top: none; text-align: center;">ბონუსი</th>
+                          <th scope="col" style="border-top: none; text-align: center;">ჯარიმა</th>
+                          <th scope="col" style="border-top: none; text-align: right;">ჯამი</th>
+                        </tr>
+                    </thead>
+                    <tbody class="user-salary-list font-helvetica-regular">
+                        
+                    </tbody>
+                    <tfoot class="user_salary-total text-right font-helvetica-regular mt-2">
+                        
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <style type="text/css">
     .table-cell {
@@ -291,7 +319,7 @@
         position: relative;
     }
 
-    .salary-line:hover, .day-cell:hover {
+    .day-cell:hover {
         -webkit-box-shadow: inset 0px 0px 0px 3px rgba(49,183,245,1);
         -moz-box-shadow: inset 0px 0px 0px 3px rgba(49,183,245,1);
         box-shadow: inset 0px 0px 0px 3px rgba(49,183,245,1);

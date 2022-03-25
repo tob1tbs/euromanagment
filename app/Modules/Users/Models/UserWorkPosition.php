@@ -11,4 +11,6 @@ class UserWorkPosition extends Model
 
     protected $table = "new_users_work_positions";
 
+    protected $fillable = ['name', 'active', 'deleted_at', 'deleted_at_int', 'updated_at'];
+
 }

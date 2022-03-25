@@ -14,4 +14,12 @@ class UserWorkData extends Model
     public function userPosition() {
         return $this->belongsTo('App\Modules\Users\Models\UserWorkPosition', 'position_id', 'id');
     }
+
+    public function userBranch() {
+        return $this->belongsTo('App\Modules\Company\Models\Branch', 'branch_id', 'id');
+    }
+
+    public function userBranchDepartament() {
+        return $this->belongsTo('App\Modules\Company\Models\Branch', 'departament_id', 'id');
+    }
 }
