@@ -133,6 +133,7 @@
             </div>
             <div class="modal-footer bg-white">
                 <input type="hidden" name="view_work_id" id="view_work_id">
+                <input type="hidden" name="view_event_id" id="view_event_id">
                 <a href="javascript:;" class="btn btn-dim btn-danger font-helvetica-regular" onclick="DeleteUserWork()">წაშლა</a>
             </div>
         </div>
@@ -201,6 +202,7 @@
                                 $(".view_work_date").html(data['UserWorkData']['work_date']);
                                 $(".view_work_creator").html(data['UserWorkData']['work_creator']['name']+' '+data['UserWorkData']['work_creator']['lastname']);
                                 $("#view_work_id").val(data['UserWorkData']['id']);
+                                $("#view_event_id").val(info.event.id);
                                 $("#viewUserWorkModal").modal('show');
                             } else {
                                 Swal.fire({

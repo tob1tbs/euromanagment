@@ -296,7 +296,7 @@ class UsersController extends Controller
             $UserWorkDataList = $UserWorkData::where('user_id', $Request->user_id)->where('deleted_at_int', '!=', 0)->get();
 
             $UserWorkVacation = new UserWorkVacation();
-            $UserWorkVacationList = $UserWorkVacation::where('user_id', $Request->user_id)->get();
+            $UserWorkVacationList = $UserWorkVacation::where('user_id', $Request->user_id)->where('deleted_at_int', '!=', 0)->get();
 
             $UserWorkVacationType = new UserWorkVacationType();
             $UserWorkVacationTypeList = $UserWorkVacationType::where('deleted_at_int', '!=', 0)->get();

@@ -113,7 +113,7 @@
                                                     <th class="tb-col-time font-neue"><span class="overline-title">დაბრუნების თარიღი</span></th>
                                                     <th class="tb-col-time font-neue"><span class="overline-title">შექმნა</span></th>
                                                     <th class="tb-col-time font-neue"><span class="overline-title">შექმნის თარიღი</span></th>
-                                                    <th class="tb-col-action"><span class="overline-title">&nbsp;</span></th>
+                                                    <th class="tb-col-action"><span class="overline-title">წაშლა</span></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -123,8 +123,8 @@
                                                     <td class="tb-col-time"><span class="sub-text">{{ $vacation_item->date_from }}</span></td>
                                                     <td class="tb-col-time"><span class="sub-text">{{ $vacation_item->date_to }}</span></td>
                                                     <td class="tb-col-time"><span class="sub-text">{{ $vacation_item->CreatedBy->name }} {{ $vacation_item->CreatedBy->lastname }}</span></td>
-                                                    <td class="tb-col-time"><span class="sub-text">{{ \Carbon\Carbon::parse($vacation_item->created_at)->format('') }}</span></td>
-                                                    <td class="tb-col-action"></td>
+                                                    <td class="tb-col-time"><span class="sub-text">{{ \Carbon\Carbon::parse($vacation_item->created_at)->format('Y-m-d') }}</span></td>
+                                                    <td class="tb-col-action"><a href="javascript:;" onclick="DeleteVacation({{ $vacation_item->id }})">წაშლა</a></td>
                                                 </tr>
                                                 @endforeach
                                             <tbody>
@@ -213,6 +213,55 @@
         border-radius: 0;
     }
 </style>
+<div class="modal fade" tabindex="-1" id="addUserWorkModal">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">განრიგში ჩამატება</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form action="#" id="add_user_work_modal" class="form-validate is-alter">
+                    <div class="row gx-4 gy-3">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">თანამშრომელი</label>
+                                <div class="form-control-wrap">
+                                    <select class="form-select form-control form-control-lg" data-search="on" id="work_user_id" name="work_user_id">
+                                        <option value="{{ $user_data->id }}">{{ $user_data->name }} {{ $user_data->lastname }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label">თარიღი</label>
+                                <div class="form-control-wrap">
+                                    <div class="form-icon form-icon-left">
+                                        <em class="icon ni ni-calendar"></em>
+                                    </div>
+                                    <input type="text" id="work_date" name="work_date" class="form-control date-picker" data-date-format="yyyy-mm-dd">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <ul class="d-flex justify-content-between gx-4 mt-1">
+                                <li>
+                                    <button id="addEvent" type="button" onclick="addUserWorkSubmit()" class="btn btn-primary font-helvetica-regular">დამატება</button>
+                                </li>
+                                <li>
+                                    <button id="resetEvent" data-dismiss="modal" class="btn btn-danger btn-dim font-helvetica-regular">გათიშვა</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('js')
@@ -244,7 +293,7 @@
                 }
             },
             events: {
-            url: '{{ route('ajaxUserWorkGetUser', $user_data->id) }}',
+            url: '{{ route('ajaxUserWorkGetItem', request()->user_id) }}',
                 failure: function() {
                   document.getElementById('script-warning').style.display = 'block'
                 }
@@ -276,6 +325,7 @@
                                 $(".view_work_date").html(data['UserWorkData']['work_date']);
                                 $(".view_work_creator").html(data['UserWorkData']['work_creator']['name']+' '+data['UserWorkData']['work_creator']['lastname']);
                                 $("#view_work_id").val(data['UserWorkData']['id']);
+                                $("#view_event_id").val(info.event.id);
                                 $("#viewUserWorkModal").modal('show');
                             } else {
                                 Swal.fire({

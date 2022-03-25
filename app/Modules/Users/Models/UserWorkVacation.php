@@ -11,8 +11,14 @@ class UserWorkVacation extends Model
 
     protected $table = "new_users_work_vacation";
 
+    protected $fillable = ['deleted_at', 'deleted_at_int'];
+
     public function CreatedBy() {
         return $this->belongsTo('App\Modules\Users\Models\User', 'created_by', 'id');
+    }
+
+    public function vacationUser() {
+        return $this->belongsTo('App\Modules\Users\Models\User', 'user_id', 'id');
     }
 
 }

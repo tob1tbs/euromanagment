@@ -251,9 +251,9 @@ class UsersAjaxController extends Controller
 
             $UserWorkCalendar = new UserWorkCalendar();
             $UserWorkCalendarData = $UserWorkCalendar::where('deleted_at_int', '!=', 0)->whereBetween('work_date', [$StartDate, $EndDate])->get();
+            $WorkArray = [];
 
             if(count($UserWorkCalendarData) > 0) {
-                $WorkArray = [];
                 foreach($UserWorkCalendarData as $Key => $WorkItem) {
                     $WorkArray[] = [
                         'id' => $WorkItem->id,
@@ -265,7 +265,7 @@ class UsersAjaxController extends Controller
             }
 
             $UserWorkVacation = new UserWorkVacation();
-            $UserWorkVacationList = $UserWorkVacation::whereBetween('date_from', [$StartDate, $EndDate])->whereBetween('date_to', [$StartDate, $EndDate])->get();
+            $UserWorkVacationList = $UserWorkVacation::whereBetween('date_from', [$StartDate, $EndDate])->whereBetween('date_to', [$StartDate, $EndDate])->where('deleted_at_int', '!=', 0)->get();
 
             if(!empty($UserWorkVacationList)) {
                 foreach($UserWorkVacationList as $VacationItem) {
@@ -273,9 +273,55 @@ class UsersAjaxController extends Controller
                     foreach($VacationPeriod as $VacationDate) {
                         $WorkArray[] = [
                             'id' => $VacationItem->id,
-                            'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
+                            'title' => $VacationItem->vacationUser->name.' '.$VacationItem->vacationUser->lastname,
                             'date' => $VacationDate->format('Y-m-d'),
                             'color' => '#d52800',
+                            'is_vacation' => 1,
+                        ];
+                    }
+                }
+            }
+
+            return Response::json($WorkArray);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserWorkGetItem(Request $Request) {
+        if($Request->isMethod('GET')) {
+
+            $StartDate = Carbon::parse($Request->start);
+            $EndDate = Carbon::parse($Request->end);
+
+            $UserWorkCalendar = new UserWorkCalendar();
+            $UserWorkCalendarData = $UserWorkCalendar::where('deleted_at_int', '!=', 0)->whereBetween('work_date', [$StartDate, $EndDate])->where('user_id', $Request->user_id)->get();
+            $WorkArray = [];
+
+            if(count($UserWorkCalendarData) > 0) {
+                foreach($UserWorkCalendarData as $Key => $WorkItem) {
+                    $WorkArray[] = [
+                        'id' => $WorkItem->id,
+                        'title' => $WorkItem->workUser->name.' '.$WorkItem->workUser->lastname,
+                        'date' => $WorkItem->work_date,
+                        'color' => '#526484',
+                    ];
+                }
+            }
+
+            $UserWorkVacation = new UserWorkVacation();
+            $UserWorkVacationList = $UserWorkVacation::whereBetween('date_from', [$StartDate, $EndDate])->whereBetween('date_to', [$StartDate, $EndDate])->where('deleted_at_int', '!=', 0)->where('user_id', $Request->user_id)->get();
+
+            if(!empty($UserWorkVacationList)) {
+                foreach($UserWorkVacationList as $VacationItem) {
+                    $VacationPeriod = carbonPeriod::create(Carbon::parse($VacationItem->date_from), Carbon::parse($VacationItem->date_to)->subDays(1));
+                    foreach($VacationPeriod as $VacationDate) {
+                        $WorkArray[] = [
+                            'id' => $VacationItem->id,
+                            'title' => $VacationItem->vacationUser->name.' '.$VacationItem->vacationUser->lastname,
+                            'date' => $VacationDate->format('Y-m-d'),
+                            'color' => '#d52800',
+                            'is_vacation' => 1,
                         ];
                     }
                 }
@@ -358,7 +404,7 @@ class UsersAjaxController extends Controller
                 $UserWorkVacationTypeData = $UserWorkVacationType::find($Request->vacation_type);
 
                 $UserWorkVacation = new UserWorkVacation();
-                $UserWorkVacationList = $UserWorkVacation::where('type_id', $Request->vacation_type)->where('user_id', $Request->vacation_user_id)->get();
+                $UserWorkVacationList = $UserWorkVacation::where('type_id', $Request->vacation_type)->where('user_id', $Request->vacation_user_id)->where('deleted_at_int', '!=', 0)->get();
 
                 $UserWorkCalendar = new UserWorkCalendar();
                 $UserWorkCalendarList = $UserWorkCalendar::where('user_id', $Request->vacation_user_id)->where('deleted_at_int', '!=', 0)->get();
@@ -382,12 +428,17 @@ class UsersAjaxController extends Controller
 
                     if(!empty($UserWorkVacationList)) {
                         foreach($UserWorkVacationList as $WorkVacationItem) {
-                            
+                            $UserVacationPeriod = carbonPeriod::create($WorkVacationItem->date_from, $WorkVacationItem->date_to)->toArray();
+                            foreach($UserVacationPeriod as $VacationItem) {
+                                if($VacationItem->format('Y-m-d') == Carbon::parse($NewVacationItem)->format('Y-m-d')) {
+                                    return Response::json(['status' => true, 'error' => true, 'skip' => false,  'message' => $NewVacationItem->format('Y-m-d').' აღნიშნულ თარიღში თანამშრომელი იმყოფება შვებულებაში !!!']);                      
+                                }
+                            }
                         }
                     }
                 }
 
-                // return Response::json(['status' => true, 'error' => false, 'skip' => true, 'message' => '']);
+                return Response::json(['status' => true, 'error' => false, 'skip' => true, 'message' => '']);
             }
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
@@ -459,10 +510,10 @@ class UsersAjaxController extends Controller
                 } else {
                     if(!empty($UserWorkVacationList)) {
                         foreach($UserWorkVacationList as $VacationItem) {
-                            $VacationPeriod = carbonPeriod::create($VacationItem->date_from, $VacationItem->date_to);
+                            $VacationPeriod = carbonPeriod::create($VacationItem->date_from, Carbon::parse($VacationItem->date_to)->subDays(1));
                             foreach($VacationPeriod as $PeriodItem) {
                                 if(Carbon::parse($PeriodItem->format('Y-m-d')) == Carbon::parse($Request->work_date)) {
-                                    return Response::json(['status' => true, 'errors' => true, 'message' => ['0' => 'აღნიშნულ თარიღზე თანამშრომელი იმყოფება შვებულებაში.']], 200);
+                                    return Response::json(['status' => true, 'errors' => true, 'message' => ['0' => 'აღნიშნულ თარიღში თანამშრომელი იმყოფება შვებულებაში.']], 200);
                                 }
                             }
                         }
@@ -793,8 +844,20 @@ class UsersAjaxController extends Controller
         if($Request->isMethod('POST')) {
             $User = new User();
             $UserData = $User::find($Request->user_id);
+        }
+    }
 
-            
+    public function ajaxUserVacationDelete(Request $Request) {
+        if($Request->isMethod('POST')) {
+            $UserWorkVacation = new UserWorkVacation();
+            $UserWorkVacation::find($Request->vacation_id)->update([
+                'deleted_at' => Carbon::now(),
+                'deleted_at_int' => 0,
+            ]);
+
+            return Response::json(['status' => true, 'message' => 'შვებულება წარმატებით წაიშალა !!!']);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
         }
     }
 }

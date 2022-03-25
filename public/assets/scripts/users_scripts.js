@@ -357,6 +357,7 @@ function addUserWorkSubmit() {
                         position: 'top-right'
                     });
                     $("#addUserWorkModal").modal('hide');
+                    location.reload();
                 }
             } else {
                 Swal.fire({
@@ -392,6 +393,7 @@ function DeleteUserWork() {
                             position: 'top-right'
                         });
                         $("#viewUserWorkModal").modal('hide');
+                        location.reload();
                     } else {
                         Swal.fire({
                           icon: 'error',
@@ -960,6 +962,34 @@ function UpdateRoleSubmit() {
                 },
                 success: function(data) {
                    
+                }
+            });
+        }
+    });
+}
+
+function DeleteVacation(vacation_id) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ შვებულების წაშლა?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/users/ajax/vacation/delete",
+                type: "POST",
+                data: {
+                    vacation_id: vacation_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if(data['status'] == true) {
+                        location.reload();
+                    }
                 }
             });
         }

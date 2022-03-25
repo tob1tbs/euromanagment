@@ -26,7 +26,7 @@ Route::group(['prefix' => 'users/ajax', 'middleware' => ['login']], function () 
     // USER WORK
     Route::post('/work/add', 'UsersAjaxController@ajaxUserWorkAdd')->name('ajaxUserWorkAdd');
     Route::get('/work/get', 'UsersAjaxController@ajaxUserWorkGet')->name('ajaxUserWorkGet');
-    Route::get('/work/get/user/{user_id}', 'UsersAjaxController@ajaxUserWorkGetUser')->name('ajaxUserWorkGetUser');
+    Route::get('/work/get/item/{user_id}', 'UsersAjaxController@ajaxUserWorkGetItem')->name('ajaxUserWorkGetItem');
     Route::get('/work/event', 'UsersAjaxController@ajaxUserWorkEvent')->name('ajaxUserWorkEvent');
     Route::post('/work/delete', 'UsersAjaxController@ajaxUserWorkDelete')->name('ajaxUserWorkDelete');
     // USER SALARY
@@ -37,6 +37,7 @@ Route::group(['prefix' => 'users/ajax', 'middleware' => ['login']], function () 
     // USER VACATION
     Route::post('/vacation/validate', 'UsersAjaxController@ajaxUserVacationValidate')->name('ajaxUserVacationValidate');
     Route::post('/vacation/submit', 'UsersAjaxController@ajaxUserVacationSubmit')->name('ajaxUserVacationSubmit');
+    Route::post('/vacation/delete', 'UsersAjaxController@ajaxUserVacationDelete')->name('ajaxUserVacationDelete');
     // USERS ROLE
     Route::post('/role/submit', 'UsersAjaxController@ajaxUserRoleSubmit')->name('ajaxUserRoleSubmit');
     Route::post('/role/active', 'UsersAjaxController@ajaxUserRoleActiveChange')->name('ajaxUserRoleActiveChange');
