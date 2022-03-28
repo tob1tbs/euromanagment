@@ -372,6 +372,7 @@ function addUserWorkSubmit() {
 function DeleteUserWork() {
     Swal.fire({
         title: "ნამდვილად გსურთ თანამშრომლის განრიგიდან წაშლა?",
+        text: "თუ თანამშრომელს აღნიშნულ დღეს ერიცხება ხელფასი, ხელფასი წაიშლება !!!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: 'წაშლა',
@@ -782,6 +783,7 @@ function ViewDetailSalary(user_id, position_id) {
                           <td class="text-center">`+value['salary']+` ₾</td>
                           <td class="text-center">`+value['bonus']+` ₾</td>
                           <td class="text-center">`+value['fine']+` ₾</td>
+                          <td class="text-left">`+value['comment']+` ₾</td>
                           <td class="text-right">`+total+`₾ </td>
                         </tr>
                     `);
@@ -791,8 +793,10 @@ function ViewDetailSalary(user_id, position_id) {
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <td>ფიქსირებული: `+data['month_salary']+` ₾ <br>გამომუშავებული: `+data['sum']+` ₾ <br>ჯამი: `+total_sum+` ₾ <br></td>
                 `);
+                $("#salary_view_user_id").val(data['user_id']);
                 $("#userViewDetailSalary").modal('show');
             }
         }
@@ -968,7 +972,7 @@ function UpdateRoleSubmit() {
     });
 }
 
-function DeleteVacation(vacation_id) {
+function DeleteVacation() {
     Swal.fire({
         title: "ნამდვილად გსურთ შვებულების წაშლა?",
         icon: "warning",
@@ -981,7 +985,7 @@ function DeleteVacation(vacation_id) {
                 url: "/users/ajax/vacation/delete",
                 type: "POST",
                 data: {
-                    vacation_id: vacation_id,
+                    vacation_id: $("#view_vacation_id").val(),
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -992,6 +996,57 @@ function DeleteVacation(vacation_id) {
                     }
                 }
             });
+        }
+    });
+}
+
+function ViewVacation(vacation_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/vacation/view",
+        type: "GET",
+        data: {
+            vacation_id: vacation_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $("#view_vacation_id").val(data['UserWorkVacationData']['id']);
+                $(".vacation_user").html(data['UserWorkVacationData']['vacation_user']['name']+' '+data['UserWorkVacationData']['vacation_user']['lastname']);
+                $(".vacation_from").html(data['UserWorkVacationData']['date_from']);
+                $(".vacation_to").html(data['UserWorkVacationData']['date_to']);
+                $(".vacation_days").html(data['UserWorkVacationData']['days_count']);
+                $(".vacation_type").html(data['UserWorkVacationData']['vacation_type']['name']);
+                $(".created_by").html(data['UserWorkVacationData']['created_by']['name']+' '+data['UserWorkVacationData']['created_by']['lastname']);
+                $("#UserVacationViewModal").modal('show');
+            }
+        }
+    });
+}
+
+function ExportUserSalary() {
+    $.ajax({
+        xhrFields: {
+            responseType: 'blob',
+        },
+        url: "/users/ajax/salary/export",
+        type: "GET",
+        data: {
+            user_id: $("#salary_view_user_id").val(),
+            salary_year: $("#salary_year").val(),
+            salary_month: $("#salary_month").val(),
+        },
+        success: function(result, status, xhr) {
+            var disposition = xhr.getResponseHeader('content-disposition');
+            var matches = /"([^"]*)"/.exec(disposition);
+            var blob = new Blob([result], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'balance.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     });
 }

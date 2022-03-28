@@ -26,6 +26,9 @@ use Response;
 use \Carbon\Carbon;
 use \Carbon\CarbonPeriod;
 
+use App\Exports\UserSalaryExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class UsersAjaxController extends Controller
 {
     //ROLE - PERMISSION
@@ -474,6 +477,7 @@ class UsersAjaxController extends Controller
                 $UserWorkVacation->type_id = $Request->vacation_type;
                 $UserWorkVacation->days_count = $VacationBussinesDays;
                 $UserWorkVacation->created_by = Auth::user()->id;
+                $UserWorkVacation->comment = $Request->vacation_comment;
                 $UserWorkVacation->save();
 
                 return Response::json(['status' => true, 'error' => false, 'message' => 'შვებულება წარმატებით დაემატა !!!']);
@@ -554,6 +558,12 @@ class UsersAjaxController extends Controller
 
             $UserWorkCalendar = new UserWorkCalendar();
             $WorkData = $UserWorkCalendar::find($Request->work_id);
+
+            $UserWorkSalary = new UserWorkSalary();
+            $UserWorkSalary::where('user_id', $WorkData->user_id)->whereDate('date', $WorkData->work_date)->update([
+                'deleted_at' => Carbon::now(),
+                'deleted_at_int' => 0,
+            ]);
 
             $WorkData->update([
                 'deleted_at' => Carbon::now(),
@@ -746,13 +756,14 @@ class UsersAjaxController extends Controller
             $UserWorkDataItem = $UserWorkData::where('user_id', $Request->user_id)->where('position_id', $Request->position_id)->where('deleted_at_int', '!=', 0)->first();
 
             $UserWorkSalary = new UserWorkSalary();
-            $UserWorkSalaryList = $UserWorkSalary::where('user_id', $Request->user_id)->whereDate('date', '>=', $StartDate)->whereDate('date', '<=', $EndDate)->where('deleted_at_int', '!=', 0)->get();
+            $UserWorkSalaryList = $UserWorkSalary::where('user_id', $Request->user_id)->whereDate('date', '>=', $StartDate)->whereDate('date', '<=', $EndDate)->orderBy('date', 'DESC')->where('deleted_at_int', '!=', 0)->get();
 
             return Response::json([
                 'status' => true, 
                 'sum' => $UserWorkSalaryList->sum('salary') + $UserWorkSalaryList->sum('bonus') - $UserWorkSalaryList->sum('fine'),
-                'UserWorkSalaryList' => $UserWorkSalaryList, 
+                'user_id' => $UserWorkDataItem->user_id,
                 'month_salary' => $UserWorkDataItem->salary,
+                'UserWorkSalaryList' => $UserWorkSalaryList, 
             ]);
 
         } else {
@@ -858,6 +869,32 @@ class UsersAjaxController extends Controller
             return Response::json(['status' => true, 'message' => 'შვებულება წარმატებით წაიშალა !!!']);
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserVacationView(Request $Request) {
+        if($Request->isMethod('GET') && !empty($Request->vacation_id)) {
+            $UserWorkVacation = new UserWorkVacation();
+            $UserWorkVacationData = $UserWorkVacation::find($Request->vacation_id)->load(['createdBy', 'vacationUser', 'vacationType']);
+
+            return Response::json(['status' => true, 'UserWorkVacationData' => $UserWorkVacationData]);
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserSalaryExport(Request $Request) {
+        if($Request->isMethod('GET') && !empty($Request->user_id)) {
+
+            $Date = $Request->salary_year.'-'.$Request->salary_month;
+            $StartDate = Carbon::parse($Date)->startOfMonth();
+            $EndDate = Carbon::parse($Date)->endOfMonth();
+
+            return Excel::download(new UserSalaryExport($Request->user_id, $StartDate, $EndDate), 'ხელფასი.xlsx');
+
+        } else {
+
         }
     }
 }

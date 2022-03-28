@@ -42,6 +42,12 @@
                                                 </div>
                                                 <div class="data-item">
                                                     <div class="data-col">
+                                                        <span class="data-label font-neue">ფაქტობრივი მისამართი</span>
+                                                        <span class="data-value font-helvetica-regular">{{ $user_data->address }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="data-item">
+                                                    <div class="data-col">
                                                         <span class="data-label font-neue">ტელეფონის ნომერი</span>
                                                         <span class="data-value font-helvetica-regular">{{ $user_data->phone }}</span>
                                                     </div>
@@ -55,7 +61,7 @@
                                                 <div class="data-item">
                                                     <div class="data-col">
                                                         <span class="data-label font-neue">წვდომის ჯგუფი</span>
-                                                        <span class="data-value font-helvetica-regular">{{ $user_data->role_id }}</span>
+                                                        <span class="data-value font-helvetica-regular">{{ $user_data->userRole->title }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -73,7 +79,7 @@
                                                     </thead>
                                                     <tbody>
                                                     @foreach($user_data->workData as $work_item)
-                                                    <tr class="font-helvetica-regular text-center">
+                                                    <tr class="font-helvetica-regular text-center" style="line-height: 40px;">
                                                         <td>{{ $work_item->userPosition->name}}</td>
                                                         <td>{{ $work_item->salary }} ₾</td>
                                                         <td>{{ $work_item->userBranch->name }} / {{ $work_item->userBranchDepartament->name }}</td>
@@ -84,14 +90,16 @@
                                             </div>
                                             <div class="nk-data data-list">
                                                 <div class="data-head">
-                                                    <h6 class="overline-title font-neue">საკონტაქტი პირები</h6>
+                                                    <h6 class="overline-title font-neue">საკონტაქტი ინფორმაცია</h6>
                                                 </div>
+                                                @foreach($user_contact as $contact_item)
                                                 <div class="data-item">
                                                     <div class="data-col">
-                                                        <span class="data-label font-neue">Language</span>
-                                                        <span class="data-value font-helvetica-regular">English (United State)</span>
+                                                        <span class="data-label font-neue">{{ json_decode($contact_item->value)->identy }}</span>
+                                                        <span class="data-value font-helvetica-regular">{{ json_decode($contact_item->value)->phone }}</span>
                                                     </div>
                                                 </div>
+                                                @endforeach
                                             </div>
                                         </div>
 								    </div>
@@ -113,7 +121,7 @@
                                                     <th class="tb-col-time font-neue"><span class="overline-title">დაბრუნების თარიღი</span></th>
                                                     <th class="tb-col-time font-neue"><span class="overline-title">შექმნა</span></th>
                                                     <th class="tb-col-time font-neue"><span class="overline-title">შექმნის თარიღი</span></th>
-                                                    <th class="tb-col-action"><span class="overline-title">წაშლა</span></th>
+                                                    <th class="tb-col-action"><span class="overline-title">მოქმედება</span></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -122,9 +130,13 @@
                                                     <td class="tb-col-time">{{ $vacation_item->id }}</td>
                                                     <td class="tb-col-time"><span class="sub-text">{{ $vacation_item->date_from }}</span></td>
                                                     <td class="tb-col-time"><span class="sub-text">{{ $vacation_item->date_to }}</span></td>
-                                                    <td class="tb-col-time"><span class="sub-text">{{ $vacation_item->CreatedBy->name }} {{ $vacation_item->CreatedBy->lastname }}</span></td>
+                                                    <td class="tb-col-time"><span class="sub-text">{{ $vacation_item->createdBy->name }} {{ $vacation_item->createdBy->lastname }}</span></td>
                                                     <td class="tb-col-time"><span class="sub-text">{{ \Carbon\Carbon::parse($vacation_item->created_at)->format('Y-m-d') }}</span></td>
-                                                    <td class="tb-col-action"><a href="javascript:;" onclick="DeleteVacation({{ $vacation_item->id }})">წაშლა</a></td>
+                                                    <td class="tb-col-action">
+                                                        <a href="javascript:;" onclick="ViewVacation({{ $vacation_item->id }})">
+                                                            <em class="icon ni ni-search"></em>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             <tbody>
@@ -188,6 +200,14 @@
                                 <label class="form-label">დაბრუნების თარიღი</label>
                                 <div class="form-control-wrap">
                                     <input type="date" name="vacation_end" class="form-control date-pick">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">კომენტარი</label>
+                                <div class="form-control-wrap">
+                                    <textarea name="vacation_comment" class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -258,6 +278,86 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="UserVacationViewModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-helvetica-regular">შვებულების დეტალები</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3 align-center">
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label">თანამშრომელი:</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="form-group">
+                            <span class="vacation_user font-helvetica-regular"></span>
+                        </div>
+                    </div> 
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label">გასვლის თარიღი:</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="form-group">
+                            <span class="vacation_from font-helvetica-regular"></span>
+                        </div>
+                    </div> 
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label">დაბრუნების თარიღი:</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="form-group">
+                            <span class="vacation_to font-helvetica-regular"></span>
+                        </div>
+                    </div>   
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label">დღეების რაოდენობა:</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="form-group">
+                            <span class="vacation_days font-helvetica-regular"></span>
+                        </div>
+                    </div>     
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label">შვებულების ტიპი:</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="form-group">
+                            <span class="vacation_type font-helvetica-regular"></span>
+                        </div>
+                    </div>  
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label class="form-label">შექმნა:</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="form-group">
+                            <span class="created_by font-helvetica-regular"></span>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div class="modal-footer bg-white">
+                <input type="hidden" name="view_vacation_id" id="view_vacation_id">
+                <a href="javascript:;" class="btn btn-dim btn-danger font-helvetica-regular" onclick="DeleteVacation()">წაშლა</a>
             </div>
         </div>
     </div>

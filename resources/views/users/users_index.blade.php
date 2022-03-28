@@ -61,7 +61,7 @@
                                                     <span class="tb-amount">{{ $user_item->email }}</span>
                                                 </td>
                                                 <td class="nk-tb-col tb-col-lg">
-
+                                                    <span class="tb-amount">{{ $user_item->userRole->title }}</span>
                                                 </td>
                                                 <td class="nk-tb-col tb-col-md">
                                                     <span>{{ \Carbon\Carbon::parse($user_item->created_at)->format('Y-m-d') }}</span>

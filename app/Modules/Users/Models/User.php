@@ -21,4 +21,8 @@ class User extends Authenticatable
     public function workData() {
         return $this->hasMany('App\Modules\Users\Models\UserWorkData', 'user_id', 'id');
     }
+
+    public function userRole() {
+        return $this->belongsTo('App\Modules\Users\Models\UserRole', 'role_id', 'id');
+    }
 }

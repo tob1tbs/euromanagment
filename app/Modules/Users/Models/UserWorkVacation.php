@@ -13,12 +13,16 @@ class UserWorkVacation extends Model
 
     protected $fillable = ['deleted_at', 'deleted_at_int'];
 
-    public function CreatedBy() {
+    public function createdBy() {
         return $this->belongsTo('App\Modules\Users\Models\User', 'created_by', 'id');
     }
 
     public function vacationUser() {
         return $this->belongsTo('App\Modules\Users\Models\User', 'user_id', 'id');
+    }
+
+    public function vacationType() {
+        return $this->belongsTo('App\Modules\Users\Models\UserWorkVacationType', 'type_id', 'id');
     }
 
 }

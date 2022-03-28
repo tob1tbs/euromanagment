@@ -16,6 +16,7 @@ use App\Modules\Users\Models\UserWorkCalendar;
 use App\Modules\Users\Models\UserWorkData;
 use App\Modules\Users\Models\UserWorkVacation;
 use App\Modules\Users\Models\UserWorkVacationType;
+use App\Modules\Users\Models\UserContact;
 
 use App\Modules\Company\Models\Branch;
 
@@ -301,11 +302,15 @@ class UsersController extends Controller
             $UserWorkVacationType = new UserWorkVacationType();
             $UserWorkVacationTypeList = $UserWorkVacationType::where('deleted_at_int', '!=', 0)->get();
 
+            $UserContact = new UserContact();
+            $UserContactList = $UserContact::where('user_id', $Request->user_id)->where('deleted_at_int', '!=', 0)->get();
+
             $data = [
                 'user_data' => $UserData,
                 'user_work_data' => $UserWorkDataList,
                 'user_work_vacation' => $UserWorkVacationList,
                 'user_work_vacation_type_list' => $UserWorkVacationTypeList,
+                'user_contact' => $UserContactList,
             ];
 
             return view('users.users_view', $data);

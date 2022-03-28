@@ -44,7 +44,7 @@
                                                 <em class="passcode-icon icon-show icon ni ni-eye"></em>
                                                 <em class="passcode-icon icon-hide icon ni ni-eye-off"></em>
                                             </a>
-                                            <input type="user_password" class="form-control form-control-lg" id="user_password" name="user_password">
+                                            <input type="password" class="form-control form-control-lg" id="user_password" name="user_password">
                                         </div>
                                     </div>
                                     <div class="form-group">

@@ -277,12 +277,13 @@
     </div>
 </div>  
 <div class="modal fade" tabindex="-1" id="userViewDetailSalary">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl" role="document" style="min-width: 80%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title font-neue">თვის დეტალური ხელფასი</h5>
-                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                    <em class="icon ni ni-cross"></em>
+                <a href="javascript:;" onclick="ExportUserSalary()" class="btn btn-dim btn-outline-primary">
+                    <em class="icon ni ni-chevron-down-circle"></em>
+                    <span class="font-neue">ექპორტი</span> 
                 </a>
             </div>
             <div class="modal-body p-0">
@@ -293,6 +294,7 @@
                           <th scope="col" style="border-top: none; text-align: center;">ხელფასი</th>
                           <th scope="col" style="border-top: none; text-align: center;">ბონუსი</th>
                           <th scope="col" style="border-top: none; text-align: center;">ჯარიმა</th>
+                          <th scope="col" style="border-top: none; text-align: left;">კომენტარი</th>
                           <th scope="col" style="border-top: none; text-align: right;">ჯამი</th>
                         </tr>
                     </thead>
@@ -302,6 +304,7 @@
                     <tfoot class="user_salary-total text-right font-helvetica-regular mt-2">
                         
                     </tfoot>
+                    <input type="hidden" name="salary_view_user_id" id="salary_view_user_id">
                 </table>
             </div>
         </div>
