@@ -60,14 +60,9 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nk-menu-item">
-                        <a href="{{ route('actionMainIndex') }}" class="nk-menu-link">
-                            <span class="nk-menu-text">გაყიდვა</span>
-                        </a>
-                    </li>
                     <li class="nk-menu-item has-sub">
                         <a href="#" class="nk-menu-link nk-menu-toggle">
-                            <span class="nk-menu-text">გაყიდვა</span>
+                            <span class="nk-menu-text">პროდუქცია</span>
                         </a>
                         <ul class="nk-menu-sub">
                             <li class="nk-menu-item">
@@ -90,7 +85,17 @@
                                     <span class="nk-menu-text">მომწოდებლები</span>
                                 </a>
                             </li>
+                            <li class="nk-menu-item">
+                                <a href="{{ route('actionUsersCalendar') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">ნაშთები</span>
+                                </a>
+                            </li>
                         </ul>
+                    </li>
+                    <li class="nk-menu-item">
+                        <a href="{{ route('actionMainIndex') }}" class="nk-menu-link">
+                            <span class="nk-menu-text">გაყიდვა</span>
+                        </a>
                     </li>
                     <li class="nk-menu-item has-sub">
                         <a href="#" class="nk-menu-link nk-menu-toggle">
