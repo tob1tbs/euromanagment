@@ -23,7 +23,7 @@ class UserSalaryExport implements FromCollection, WithMapping, WithHeadings
     }
 
     public function collection() {
-        return $this->salary_data->all();
+       
     }
 
     public function headings(): array
