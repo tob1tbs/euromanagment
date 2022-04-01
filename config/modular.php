@@ -11,5 +11,9 @@ return [
         'Users',
         'Main',
         'Company',
+        'Products',
+        'Dashboard',
+        'Parameters',
+        'Customers',
     ]
 ];

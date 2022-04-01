@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ka" class="js">
 <head>
-    <title>DevLion CMS V 1.0</title>
+    <title>WMS Software V 1.0</title>
     <meta charset="utf-8">
     <meta name="author" content="Foxes">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

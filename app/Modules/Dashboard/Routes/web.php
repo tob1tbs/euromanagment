@@ -7,5 +7,5 @@ Route::group(['prefix' => 'dashboards', 'middleware' => []], function () {
 
 // AJAX ROUTES
 Route::group(['prefix' => 'dashboards/ajax', 'middleware' => []], function () {
-    
+    Route::get('/get/fields', 'DashboardAjaxController@ajaxGetCustomerFields')->name('ajaxGetCustomerFields');
 });

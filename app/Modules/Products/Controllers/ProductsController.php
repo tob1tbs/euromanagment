@@ -16,13 +16,26 @@ class ProductsController extends Controller
     }
 
     public function actionProductsIndex(Request $Request) {
-        if (view()->exists('products.product_index')) {
+        if (view()->exists('products.products_index')) {
 
             $data = [
                 
             ];
             
-            return view('products.product_index', $data);
+            return view('products.products_index', $data);
+        } else {
+            abort('404');
+        }
+    }
+
+    public function actionProductsAdd(Request $Request) {
+        if (view()->exists('products.products_add')) {
+
+            $data = [
+                
+            ];
+            
+            return view('products.products_add', $data);
         } else {
             abort('404');
         }
@@ -42,6 +55,19 @@ class ProductsController extends Controller
     }
 
     public function actionProductVendor(Request $Request) {
+        if (view()->exists('products.products_vendors')) {
+
+            $data = [
+                
+            ];
+            
+            return view('products.products_vendors', $data);
+        } else {
+            abort('404');
+        }
+    }
+
+    public function actionUsersBrands(Request $Request) {
         if (view()->exists('products.products_vendors')) {
 
             $data = [

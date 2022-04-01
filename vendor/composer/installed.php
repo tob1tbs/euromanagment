@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'b40b3d27f66a250aac829185a86670c2b5931de3',
+        'reference' => '46addccdeea726be1fa9f6bae066bca033bf653e',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -418,7 +418,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'b40b3d27f66a250aac829185a86670c2b5931de3',
+            'reference' => '46addccdeea726be1fa9f6bae066bca033bf653e',
             'dev_requirement' => false,
         ),
         'laravel/sail' => array(
@@ -608,6 +608,15 @@
             'install_path' => __DIR__ . '/../opis/closure',
             'aliases' => array(),
             'reference' => '06e2ebd25f2869e54a306dda991f7db58066f7f6',
+            'dev_requirement' => false,
+        ),
+        'owen-it/laravel-auditing' => array(
+            'pretty_version' => 'v13.0.2',
+            'version' => '13.0.2.0',
+            'type' => 'package',
+            'install_path' => __DIR__ . '/../owen-it/laravel-auditing',
+            'aliases' => array(),
+            'reference' => 'f7cff2efd616541969655bcb674c460ab0018cc6',
             'dev_requirement' => false,
         ),
         'phar-io/manifest' => array(
@@ -823,8 +832,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0',
-                1 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                1 => '1.0|2.0',
             ),
         ),
         'psr/simple-cache' => array(

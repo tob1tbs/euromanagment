@@ -171,6 +171,7 @@ return [
         UniSharp\LaravelFilemanager\LaravelFilemanagerServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        OwenIt\Auditing\AuditingServiceProvider::class,
         /*
          * Application Service Providers...
          */

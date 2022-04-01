@@ -15,7 +15,19 @@ class CustomersController extends Controller
         //
     }
 
-    public function actionCustomersIndex() {
+    public function actionCustomersIndex(Request $Request) {
         //
+    }
+
+    public function actionCustomersAdd(Request $Request) {
+        //
+    }
+
+    public function actionCustomersEdit(Request $Request) {
+        //
+    }
+
+    public function actionCustomersView(Request $Request) {
+
     }
 }
