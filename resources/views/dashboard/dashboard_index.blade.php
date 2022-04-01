@@ -26,41 +26,63 @@
                                     <div class="card card-bordered card-stretch">
                                         <div class="card-inner p-0">
                                             <form id="dashboard_form" class="row">
-                                                <div class="col-9">
-                                                    <div class="row p-3">
+                                                <div class="col-7">
+                                                    
+                                                </div>
+                                                <div class="col-5">
+                                                    <div class="row p-2">
+                                                        <div class="col-12 mt-2">
+                                                            <div class="form-group">
+                                                                <label class="form-label" for="search_query">ძებნა</label>
+                                                                <input type="text" class="form-control focus" id="search_query" placeholder="დასახელება, შტრიხკოდი">
+                                                            </div>
+                                                        </div>
                                                         <div class="col-12">
-                                                            <div class="form-group">
-                                                                <label class="form-label">მომხმარებლის ტიპი</label>
-                                                                <div class="form-control-wrap">
-                                                                    <select class="form-control" id="customer_type" name="customer_type" onchange="getCustomerFields()">
-                                                                        <option value="0"></option>
-                                                                        @foreach($customer_type as $type_item)
-                                                                        <option value="{{ $type_item->id }}">{{ $type_item->value }}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-                                                            </div>
+                                                            <ul class="nav nav-tabs font-neue">
+                                                                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tabItem1">პროდუქცია</a></li>
+                                                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tabItem2">კატეგორიები</a></li>
+                                                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tabItem3">ბრენდები</a></li>
+                                                            </ul>
                                                         </div>
-                                                        <div class="col-lg-10">
-                                                            <div class="form-group">
-                                                                <label class="form-label">პირადი ნომერი</label>
-                                                                <div class="form-control-wrap">
-                                                                    
+                                                        <div class="col-12 mt-2">
+                                                            <div class="tab-content">
+                                                                <div class="tab-pane active" id="tabItem1">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                            <div class="card card-bordered">
+                                                                                <img src="..." class="card-img-top" alt="">
+                                                                                <div class="card-inner">
+                                                                                    <h5 class="card-title">Card with stretched link</h5>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                            <div class="card card-bordered">
+                                                                                <img src="..." class="card-img-top" alt="">
+                                                                                <div class="card-inner">
+                                                                                    <h5 class="card-title">Card with stretched link</h5>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                                                            <div class="card card-bordered">
+                                                                                <img src="..." class="card-img-top" alt="">
+                                                                                <div class="card-inner">
+                                                                                    <h5 class="card-title">Card with stretched link</h5>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <div class="form-group">
-                                                                <label class="form-label">მომხმარებლის ტიპი</label>
-                                                                <div class="form-control-wrap">
-                                                                    
+                                                                <div class="tab-pane" id="tabItem2">
+                                                                    <p>2</p>
+                                                                </div>
+                                                                <div class="tab-pane" id="tabItem3">
+                                                                    <p>3</p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-3">
-                                                    
                                                 </div>
                                             </form>
                                         </div>         
