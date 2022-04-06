@@ -3,7 +3,7 @@
 // GENERAL ROUTES
 Route::group(['prefix' => 'products', 'middleware' => []], function () {
     Route::get('/', 'ProductsController@actionProductsIndex')->name('actionProductsIndex');
-    Route::get('/add', 'ProductsController@actionProductAdd')->name('actionProductAdd');
+    Route::get('/add', 'ProductsController@actionProductsAdd')->name('actionProductsAdd');
     Route::get('/categories', 'ProductsController@actionProductCategory')->name('actionProductCategory');
     Route::get('/vendors', 'ProductsController@actionProductVendor')->name('actionProductVendor');
     Route::get('/brands', 'ProductsController@actionUsersBrands')->name('actionUsersBrands');

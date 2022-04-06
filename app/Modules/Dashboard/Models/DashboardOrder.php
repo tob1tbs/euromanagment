@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Modules\Orders\Models;
+namespace App\Modules\Dashboard\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderItem extends Model
+class DashboardOrder extends Model
 {
     use HasFactory;
+
+    protected $table = "new_orders";
 }

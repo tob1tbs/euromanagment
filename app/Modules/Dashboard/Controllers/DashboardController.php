@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Modules\Dashboard\Models\Dashboard;
+use App\Modules\Dashboard\Models\DashboardOrder;
 use App\Modules\Customers\Models\CustomerType;
 
 class DashboardController extends Controller
@@ -27,6 +28,22 @@ class DashboardController extends Controller
             ];
             
             return view('dashboard.dashboard_index', $data);
+        } else {
+            abort('404');
+        }
+    }
+
+    public function actionDashboardOrders(Request $Request) {
+        if (view()->exists('dashboard.dashboard_orders')) {
+
+            $DashboardOrder = new DashboardOrder();
+            $DashboardOrderList = $DashboardOrder::where('deleted_at_int', '!=', 0)->get();
+
+            $data = [
+                'order_list' => $DashboardOrderList,
+            ];
+            
+            return view('dashboard.dashboard_orders', $data);
         } else {
             abort('404');
         }

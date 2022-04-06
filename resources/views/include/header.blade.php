@@ -92,10 +92,22 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nk-menu-item">
-                        <a href="{{ route('actionDashboardIndex') }}" class="nk-menu-link">
-                            <span class="nk-menu-text">გაყიდვა</span>
+                    <li class="nk-menu-item has-sub">
+                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                            <span class="nk-menu-text">Dashboard</span>
                         </a>
+                        <ul class="nk-menu-sub">
+                            <li class="nk-menu-item">
+                                <a href="{{ route('actionDashboardIndex') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">გაყიდვა</span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="{{ route('actionDashboardOrders') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">შეკვეთები</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nk-menu-item">
                         <a href="{{ route('actionParametersIndex') }}" class="nk-menu-link">

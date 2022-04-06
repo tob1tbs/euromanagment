@@ -3,6 +3,7 @@
 // GENERAL ROUTES
 Route::group(['prefix' => 'dashboards', 'middleware' => []], function () {
     Route::get('/', 'DashboardController@actionDashboardIndex')->name('actionDashboardIndex');
+    Route::get('/orders', 'DashboardController@actionDashboardOrders')->name('actionDashboardOrders');
 });
 
 // AJAX ROUTES

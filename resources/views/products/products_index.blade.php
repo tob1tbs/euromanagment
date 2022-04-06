@@ -104,6 +104,22 @@
                                                                                 </div>
                                                                                 <div class="col-6">
                                                                                     <div class="form-group">
+                                                                                        <label class="font-helvetica-regular overline-title overline-title-alt">ფილიალი</label>
+                                                                                        <select class="form-control form-select-sm" name="branch_id">
+                                                                                            <option value="0"></option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-6">
+                                                                                    <div class="form-group">
+                                                                                        <label class="font-helvetica-regular overline-title overline-title-alt">განყოფილება</label>
+                                                                                        <select class="form-control form-select-sm" name="departament_id">
+                                                                                            <option value="0"></option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-6">
+                                                                                    <div class="form-group">
                                                                                         <label class="font-helvetica-regular overline-title overline-title-alt">რაოდენობა<br></label>
                                                                                         <input type="number" class="form-control" name="product_count" value="{{ request()->product_count }}">
                                                                                     </div>
@@ -126,16 +142,8 @@
                                                                                 </div>
                                                                                 <div class="col-6">
                                                                                     <div class="form-group">
-                                                                                        <label class="font-helvetica-regular overline-title overline-title-alt">მდგომარეობა</label>
-                                                                                        <select class="form-control form-select-sm" name="product_condition">
-                                                                                           
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="col-12">
-                                                                                    <div class="form-group">
                                                                                         <label class="font-helvetica-regular overline-title overline-title-alt">სორტირება</label>
-                                                                                        <select class="form-select form-select-sm" name="product_sort">
+                                                                                        <select class="form-control form-select-sm" name="product_sort">
                                                                                             
                                                                                         </select>
                                                                                     </div>
