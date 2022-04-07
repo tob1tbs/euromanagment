@@ -69,4 +69,32 @@ class ServiceRsController extends Controller
                     </soap12:Envelope>';
         return self::sendSoap($soap_url, $post_fields);
     }
+
+    public function serviceRsSendOverhead() {
+        $soap_url = "https://services.rs.ge/WayBillService/WayBillService.asmx?op=get_waybill_units";
+        $post_fields = '<?xml version="1.0" encoding="utf-8"?>
+                    <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+                      <soap12:Body>
+                        <get_waybill_units xmlns="http://tempuri.org/">
+                          <su>'.$soap_user.'</su>
+                          <sp>'.$soap_password.'</sp>
+                        </get_waybill_units>
+                      </soap12:Body>
+                    </soap12:Envelope>';
+        return self::sendSoap($soap_url, $post_fields);
+    }
+
+    public function serviceRsSendWoodOverhead() {
+        $soap_url = "https://services.rs.ge/WayBillService/WayBillService.asmx?op=get_waybill_units";
+        $post_fields = '<?xml version="1.0" encoding="utf-8"?>
+                    <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+                      <soap12:Body>
+                        <get_waybill_units xmlns="http://tempuri.org/">
+                          <su>'.$soap_user.'</su>
+                          <sp>'.$soap_password.'</sp>
+                        </get_waybill_units>
+                      </soap12:Body>
+                    </soap12:Envelope>';
+        return self::sendSoap($soap_url, $post_fields);
+    }
 }

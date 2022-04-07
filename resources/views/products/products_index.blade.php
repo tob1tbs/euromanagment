@@ -21,7 +21,7 @@
                                                 <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-toggle="dropdown"><em class="icon ni ni-plus"></em></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <ul class="link-list-opt no-bdr font-helvetica-regular">
-                                                        <li><a href="{{ route('actionProductAdd') }}"><span>პროდუქტის დამატება</span></a></li>
+                                                        <li><a href="{{ route('actionProductsAdd') }}"><span>პროდუქტის დამატება</span></a></li>
                                                     </ul>
                                                 </div>
                                             </div>
