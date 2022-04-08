@@ -394,3 +394,48 @@ function GetWarehouseList() {
         }
     });
 }
+
+function ProductSubmit() {
+    var form = $('#product_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/products/ajax/submit",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $.each(data['message'], function(key, value) {
+                        $(".error-input").removeClass('border-danger');
+                        $.each(data['message'], function(key, value) {
+                            $('#'+key).addClass('border-danger');
+                            NioApp.Toast(value, 'error', {
+                                position: 'top-right'
+                            });
+                        })
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        text: data['message'],
+                        timer: 2000,
+                    });
+                    location.reload();
+                }
+            } else {
+                NioApp.Toast(data['message'], 'error', {
+                    position: 'top-right'
+                });
+            }
+        }
+    });
+}

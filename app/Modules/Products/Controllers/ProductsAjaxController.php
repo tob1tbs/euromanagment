@@ -262,18 +262,41 @@ class ProductsAjaxController extends Controller
                 'required' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
             );
             $validator = Validator::make($Request->all(), [
-                'vendor_name' => 'required|max:255',
+                'product_name' => 'required|max:255',
+                'product_unit' => 'required|max:255',
+                'vendor_price' => 'required|max:255',
+                'retail_price' => 'required|max:255',
+                'wholesale_price' => 'required|max:255',
             ], $messages);
 
             if ($validator->fails()) {
                 return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
             } else {
                 $Product = new Product();
-                $Product::updateOrCreate(
+                $InsertProduct = $Product::updateOrCreate(
                     ['id' => $Request->product_id],
                     [
                         'id' => $Request->product_id,
+                        'parent_id' => $Request->parent_product,
+                        'name' => $Request->product_name,
+                        'category_id' => $Request->product_category,
+                        'brand_id' => $Request->product_brand,
+                        'vendor_id' => $Request->product_vendor,
+                        'count' => $Request->product_count,
+                        'unit_id' => $Request->product_unit,
+                        'warehouse_id' => $Request->product_warehouse,
                     ],
+                );
+
+                $ProductPrice = new ProductPrice();
+                $ProductPrice::updateOrCreate(
+                    [
+                        'id' => $Request->product_price_id,
+                        'product_id' => $InsertProduct->id,
+                        'vendor_price' => $Request->product_vendor_price,
+                        'retail_price' => $Request->product_retail_price,
+                        'wholesale_price' => $Request->product_wholesale_price,
+                    ]
                 );
             }
         } else {

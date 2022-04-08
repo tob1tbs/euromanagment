@@ -63,9 +63,9 @@
 			                    </div>
 			                    <div class="col-lg-4 mb-2">
 			                        <div class="form-group">
-			                            <label class="form-label font-helvetica-regular" for="product_brand">მომწოდებელი</label>
+			                            <label class="form-label font-helvetica-regular" for="product_vendor">მომწოდებელი</label>
 			                            <div class="form-control-wrap">
-			                                <select class="form-control" name="product_brand" id="product_brand">
+			                                <select class="form-control" name="product_vendor" id="product_vendor">
 			                                	@foreach($vendor_list as $vendor_item)
 			                                	<option value="{{ $vendor_item->id }}">{{ $vendor_item->name }}</option>
 			                                	@endforeach
@@ -118,7 +118,7 @@
 			                        <div class="form-group">
 			                            <label class="form-label font-helvetica-regular" for="product_vendor_price">ასაღები ფასი</label>
 			                            <div class="form-control-wrap">
-			                                <input type="text" class="form-control" name="product_vendor_price" id="product_vendor_price">
+			                                <input type="number" class="form-control" name="product_vendor_price" id="product_vendor_price" value="0">
 			                            </div>
 			                        </div>
 			                    </div>
@@ -126,7 +126,7 @@
 			                        <div class="form-group">
 			                            <label class="form-label font-helvetica-regular" for="product_retail_price">საცალო ფასი</label>
 			                            <div class="form-control-wrap">
-			                                <input type="text" class="form-control" name="product_retail_price" id="product_retail_price">
+			                                <input type="number" class="form-control" name="product_retail_price" id="product_retail_price" value="0">>
 			                            </div>
 			                        </div>
 			                    </div>
@@ -134,7 +134,7 @@
 			                        <div class="form-group">
 			                            <label class="form-label font-helvetica-regular" for="product_wholesale_price">საბითუმო ფასი</label>
 			                            <div class="form-control-wrap">
-			                                <input type="text" class="form-control" name="product_wholesale_price" id="product_wholesale_price">
+			                                <input type="number" class="form-control" name="product_wholesale_price" id="product_wholesale_price" value="0">>
 			                            </div>
 			                        </div>
 			                    </div>
