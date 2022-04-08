@@ -25,25 +25,6 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <div class="dropdown">
-                                                <a href="#" class="dropdown-toggle btn btn-light font-helvetica-regular ml-2" data-toggle="dropdown">ნაშთები</a>
-                                                <div class="dropdown-menu" style="min-width: 300px;">
-                                                    <ul class="link-check font-helvetica-regular">
-                                                        <li><span>Excel</span></li>
-                                                        <li><a href="javascript:;" onclick="ProductBalanceExport()">
-                                                            <em class="icon ni ni-download"></em><span>არსებული ნაშთების ჩამოტვირთვა</span></a>
-                                                        </li>
-                                                        <li><a href="javascript:;" onclick="ProductBalanceUpload()">
-                                                            <em class="icon ni ni-upload"></em><span>ახალი ნაშთების ატვირთვა</span></a>
-                                                        </li>
-                                                    </ul>
-                                                    <ul class="link-check font-helvetica-regular">
-                                                        <li><a href="{{ route('actionProductBalanceHistory') }}">
-                                                            <em class="icon ni ni-file-plus"></em><span>ნაშთების ცვლილების ისტორია</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
                                         </li>
                                     </ul>
                                 </div>

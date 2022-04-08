@@ -104,7 +104,12 @@
                             </li>
                             <li class="nk-menu-item">
                                 <a href="{{ route('actionDashboardOrders') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">შეკვეთები</span>
+                                    <span class="nk-menu-text">გაყიდვების ისტორია</span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="{{ route('actionDashboardReports') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">რეპორტები</span>
                                 </a>
                             </li>
                         </ul>

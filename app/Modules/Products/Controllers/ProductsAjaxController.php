@@ -10,6 +10,9 @@ use App\Modules\Products\Models\Product;
 use App\Modules\Products\Models\ProductVendor;
 use App\Modules\Products\Models\ProductCategory;
 use App\Modules\Products\Models\ProductBrand;
+use App\Modules\Products\Models\ProductPrice;
+
+use App\Modules\Company\Models\Branch;   
 
 use Validator;
 use Response;
@@ -234,6 +237,44 @@ class ProductsAjaxController extends Controller
                 return Response::json(['status' => true, 'ProductBrandData' => $ProductBrandData]);
             } else {
                 return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+            }
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxProductWarehouseGet(Request $Request) {
+        if($Request->isMethod('GET') && !empty($Request->branch_id)) {
+            $Branch = new Branch();
+            $WarehouseList = $Branch::where('deleted_at_int', '!=', 0)->where('parent_id', $Request->branch_id)->where('is_warehouse', 1)->get();
+
+            if(!empty($WarehouseList)) {
+                return Response::json(['status' => true, 'WarehouseList' => $WarehouseList]);
+            }
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxProductSubmit(Request $Request) {
+        if($Request->isMethod('POST')) {
+            $messages = array(
+                'required' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
+            );
+            $validator = Validator::make($Request->all(), [
+                'vendor_name' => 'required|max:255',
+            ], $messages);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
+            } else {
+                $Product = new Product();
+                $Product::updateOrCreate(
+                    ['id' => $Request->product_id],
+                    [
+                        'id' => $Request->product_id,
+                    ],
+                );
             }
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);

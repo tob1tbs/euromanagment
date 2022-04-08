@@ -27,4 +27,6 @@ Route::group(['prefix' => 'products/ajax', 'middleware' => []], function () {
     Route::post('/brands/active', 'ProductsAjaxController@ajaxProductBrandActive')->name('ajaxProductBrandActive');
     Route::post('/brands/delete', 'ProductsAjaxController@ajaxProductBrandDelete')->name('ajaxProductBrandDelete');
     Route::get('/brands/get', 'ProductsAjaxController@ajaxProductBrandGet')->name('ajaxProductBrandGet');
+    //
+    Route::get('/warehouse/get', 'ProductsAjaxController@ajaxProductWarehouseGet')->name('ajaxProductWarehouseGet');
 });

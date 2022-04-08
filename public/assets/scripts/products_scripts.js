@@ -367,3 +367,30 @@ function BrandEdit(brand_id) {
         }
     });
 }
+
+function GetWarehouseList() {
+	$.ajax({
+        dataType: 'json',
+        url: "/products/ajax/warehouse/get",
+        type: "GET",
+        data: {
+            branch_id: $("#product_branch").val(),
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $("#product_warehouse").html('');
+                
+                if(data['WarehouseList'].length > 0) {
+                    $.each(data['WarehouseList'], function(key, value) {
+                        $("#product_warehouse").append(
+                            `<option value="`+value['id']+`">`+value['name']+`</option>`
+                        );
+                    });
+                    $("#product_warehouse").attr('disabled', false);
+                } else {
+                    $("#product_warehouse").attr('disabled', true);
+                }
+            }
+        }
+    });
+}

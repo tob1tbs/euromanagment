@@ -12,4 +12,8 @@ class Branch extends Model
     protected $table = "new_branch";
 
     protected $fillable = ['id', 'name', 'parent_id', 'active', 'deleted_at', 'deleted_at_int'];
+
+    public function parentBranch() {
+        return $this->belongsTo('App\Modules\Company\Models\Branch', 'parent_id', 'id');
+    }
 }

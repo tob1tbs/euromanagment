@@ -48,4 +48,20 @@ class DashboardController extends Controller
             abort('404');
         }
     }
+
+    public function actionDashboardReports(Request $Request) {
+        if (view()->exists('dashboard.dashboard_reports')) {
+
+            $DashboardOrder = new DashboardOrder();
+            $DashboardOrderList = $DashboardOrder::where('deleted_at_int', '!=', 0)->get();
+
+            $data = [
+                'order_list' => $DashboardOrderList,
+            ];
+            
+            return view('dashboard.dashboard_reports', $data);
+        } else {
+            abort('404');
+        }
+    }
 }

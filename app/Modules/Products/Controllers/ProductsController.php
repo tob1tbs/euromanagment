@@ -10,6 +10,9 @@ use App\Modules\Products\Models\Product;
 use App\Modules\Products\Models\ProductCategory;
 use App\Modules\Products\Models\ProductVendor;
 use App\Modules\Products\Models\ProductBrand;
+use App\Modules\Products\Models\ProductUnit;
+
+use App\Modules\Company\Models\Branch;     
 
 class ProductsController extends Controller
 {
@@ -34,8 +37,27 @@ class ProductsController extends Controller
     public function actionProductsAdd(Request $Request) {
         if (view()->exists('products.products_add')) {
 
+            $Product = new Product();
+            $ParentProduct = $Product::where('parent_id', 0)->where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $ProductCategory = new ProductCategory();
+            $ProductCategoryList = $ProductCategory::where('deleted_at_int', '!=', 0)->get();
+
+            $ProductBrand = new ProductBrand();
+            $ProductBrandList = $ProductBrand::where('deleted_at_int', '!=', 0)->get();
+
+            $ProductVendor = new ProductVendor();
+            $ProductVendorList = $ProductVendor::where('deleted_at_int', '!=', 0)->get();
+
+            $Branch = new Branch();
+            $BranchList = $Branch::where('deleted_at_int', '!=', 0)->where('parent_id', 0)->where('is_warehouse', 0)->get();
+
             $data = [
-                
+                'parent_products' => $ParentProduct,
+                'categories_list' => $ProductCategoryList,
+                'brand_list' => $ProductBrandList,
+                'vendor_list' => $ProductVendorList,
+                'branch_list' => $BranchList,
             ];
             
             return view('products.products_add', $data);
@@ -95,8 +117,11 @@ class ProductsController extends Controller
     public function actionProductBalance(Request $Request) {
         if (view()->exists('products.products_balance')) {
 
+            $Branch = new Branch();
+            $BranchList = $Branch::where('deleted_at_int', '!=', 0)->where('is_warehouse', 1)->get();
+
             $data = [
-                
+                'warehouse_list' => $BranchList,
             ];
             
             return view('products.products_balance', $data);
