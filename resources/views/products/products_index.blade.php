@@ -154,7 +154,7 @@
                                         <div class="card-inner p-0">
                                             <div class="nk-tb-list nk-tb-ulist">
                                                 <div class="nk-tb-item nk-tb-head font-helvetica-regular">
-                                                    <div class="nk-tb-col"><span># პროდუქტის დასახელება</span></div>
+                                                    <div class="nk-tb-col"><span># პროდუქტის დასახელებaა</span></div>
                                                     <div class="nk-tb-col tb-col-mb"><span>კატეგორია / ქვეკატეგორია</span></div>
                                                     <div class="nk-tb-col tb-col-md"><span>ბრენდი</span></div>
                                                     <div class="nk-tb-col tb-col-md"><span>ფასი</span></div>
@@ -163,6 +163,7 @@
                                                     <div class="nk-tb-col tb-col-md"><span>სტატუსი</span></div>
                                                     <div class="nk-tb-col nk-tb-col-tools">&nbsp;</div>
                                                 </div>
+                                                
                                             </div>
                                         </div>         
                                     </div>

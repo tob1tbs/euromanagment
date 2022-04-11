@@ -126,7 +126,7 @@
 			                        <div class="form-group">
 			                            <label class="form-label font-helvetica-regular" for="product_retail_price">საცალო ფასი</label>
 			                            <div class="form-control-wrap">
-			                                <input type="number" class="form-control" name="product_retail_price" id="product_retail_price" value="0">>
+			                                <input type="number" class="form-control" name="product_retail_price" id="product_retail_price" value="0">
 			                            </div>
 			                        </div>
 			                    </div>
@@ -134,7 +134,7 @@
 			                        <div class="form-group">
 			                            <label class="form-label font-helvetica-regular" for="product_wholesale_price">საბითუმო ფასი</label>
 			                            <div class="form-control-wrap">
-			                                <input type="number" class="form-control" name="product_wholesale_price" id="product_wholesale_price" value="0">>
+			                                <input type="number" class="form-control" name="product_wholesale_price" id="product_wholesale_price" value="0">
 			                            </div>
 			                        </div>
 			                    </div>

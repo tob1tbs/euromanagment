@@ -10,4 +10,6 @@ class ProductPrice extends Model
     use HasFactory;
 
     protected $table = "new_product_price";
+
+    protected $fillable = ['id', 'product_id', 'vendor_price', 'retail_price', 'wholesale_price'];
 }

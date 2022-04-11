@@ -25,11 +25,6 @@ class ProductsAjaxController extends Controller
         
     }
 
-    public function ajaxProductSubmit(Request $Request) {
-
-    }
-
-
     public function ajaxProductCategoriesSubmit(Request $Request) {
         if($Request->isMethod('POST')) {
             $messages = array(
@@ -263,10 +258,10 @@ class ProductsAjaxController extends Controller
             );
             $validator = Validator::make($Request->all(), [
                 'product_name' => 'required|max:255',
-                'product_unit' => 'required|max:255',
-                'vendor_price' => 'required|max:255',
-                'retail_price' => 'required|max:255',
-                'wholesale_price' => 'required|max:255',
+                // 'product_unit' => 'required|max:255',
+                'product_vendor_price' => 'required|max:255',
+                'product_retail_price' => 'required|max:255',
+                'product_wholesale_price' => 'required|max:255',
             ], $messages);
 
             if ($validator->fails()) {
@@ -283,7 +278,7 @@ class ProductsAjaxController extends Controller
                         'brand_id' => $Request->product_brand,
                         'vendor_id' => $Request->product_vendor,
                         'count' => $Request->product_count,
-                        'unit_id' => $Request->product_unit,
+                        'unit_id' => 1,
                         'warehouse_id' => $Request->product_warehouse,
                     ],
                 );
@@ -298,6 +293,8 @@ class ProductsAjaxController extends Controller
                         'wholesale_price' => $Request->product_wholesale_price,
                     ]
                 );
+
+                return Response::json(['status' => true, 'message' => 'პროდუქტი წარმატებით დაემატა !!!']);
             }
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);

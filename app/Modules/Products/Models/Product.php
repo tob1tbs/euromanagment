@@ -11,6 +11,8 @@ class Product extends Model
 
     protected $table = "new_products";
 
+    protected $fillable = ['id', 'parent_id', 'name', 'count', 'unit_id', 'warehouse_id', 'category_id', 'brand_id', 'photo', 'active'];
+
     public function productCategory() {
         return $this->belongsTo('App\Modules\Products\Models\ProductCategory', 'category_id', 'id');
     }
