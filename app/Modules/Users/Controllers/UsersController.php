@@ -198,7 +198,11 @@ class UsersController extends Controller
                         $SalaryArray[$Item->position_id]['data'][$UserItem->id]['calendar'] = $RenderCalendar;
 
                         $UserWorkCalendar = new UserWorkCalendar();
-                        $UserWorkCalendarData = $UserWorkCalendar::where('user_id', $UserItem->id)->where('deleted_at_int', '!=', 0)->get();
+                        $UserWorkCalendarData = $UserWorkCalendar::where('user_id', $UserItem->id)
+                        ->whereMonth('work_date', $Request->salary_month)
+                        ->whereYear('work_date', $Request->salary_year)
+                        ->where('deleted_at_int', '!=', 0)
+                        ->get();
 
                         foreach($UserWorkCalendarData as $CalendarItem) {
                             if($CalendarItem->user_id == $UserItem->id) {
