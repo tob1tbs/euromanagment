@@ -17,8 +17,12 @@ class Product extends Model
         return $this->belongsTo('App\Modules\Products\Models\ProductCategory', 'category_id', 'id');
     }
 
+    public function productBrand() {
+        return $this->hasOne('App\Modules\Products\Models\ProductBrand', 'id', 'brand_id');
+    }
+
     public function productPrice() {
-        return $this->hasMany('App\Modules\Products\Models\ProductBrand', 'brand_id', 'id');
+        return $this->hasMany('App\Modules\Products\Models\ProductPrice', 'product_id', 'id')->orderBy('id', 'DESC');
     }
 
     public function productUnit() {

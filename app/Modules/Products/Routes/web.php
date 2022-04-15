@@ -4,11 +4,12 @@
 Route::group(['prefix' => 'products', 'middleware' => []], function () {
     Route::get('/', 'ProductsController@actionProductsIndex')->name('actionProductsIndex');
     Route::get('/add', 'ProductsController@actionProductsAdd')->name('actionProductsAdd');
+    Route::get('/edit/{id}', 'ProductsController@actionProductsEdit')->name('actionProductsEdit');
     Route::get('/categories', 'ProductsController@actionProductsCategory')->name('actionProductsCategory');
     Route::get('/vendors', 'ProductsController@actionProductsVendor')->name('actionProductsVendor');
     Route::get('/brands', 'ProductsController@actionUsersBrands')->name('actionUsersBrands');
-    Route::get('/balance', 'ProductsController@actionProductBalance')->name('actionProductBalance');
-    Route::get('/balance/history', 'ProductsController@actionProductBalanceHistory')->name('actionProductBalanceHistory');
+    Route::get('/balance/history', 'ProductsController@actionProductsBalanceHistory')->name('actionProductsBalanceHistory');
+    Route::get('/balance/history/{id}', 'ProductsController@actionProductsBalanceHistoryList')->name('actionProductsBalanceHistoryList');
 });
 
 // AJAX ROUTES
@@ -29,5 +30,9 @@ Route::group(['prefix' => 'products/ajax', 'middleware' => []], function () {
     Route::get('/brands/get', 'ProductsAjaxController@ajaxProductBrandGet')->name('ajaxProductBrandGet');
     //
     Route::get('/warehouse/get', 'ProductsAjaxController@ajaxProductWarehouseGet')->name('ajaxProductWarehouseGet');
+    //
+    Route::get('/count/', 'ProductsAjaxController@ajaxProductCountGet')->name('ajaxProductCountGet');
+    Route::post('/count/submit', 'ProductsAjaxController@ajaxProductSubmitGet')->name('ajaxProductSubmitGet');
+    //
     Route::post('/submit', 'ProductsAjaxController@ajaxProductSubmit')->name('ajaxProductSubmit');
 });

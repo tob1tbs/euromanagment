@@ -429,12 +429,68 @@ function ProductSubmit() {
                         text: data['message'],
                         timer: 2000,
                     });
-                    location.reload();
+                    window.location.replace(data['redirect_url']);
                 }
             } else {
                 NioApp.Toast(data['message'], 'error', {
                     position: 'top-right'
                 });
+            }
+        }
+    });
+}
+
+function UpdateProductCount(product_id, elem) {
+    $.ajax({
+        dataType: 'json',
+        url: "/products/ajax/count",
+        type: "GET",
+        data: {
+            product_id: product_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $('#product_count_form')[0].reset();
+                $("#product_count").val(data['ProductData']['count']);
+                $("#product_count_id").val(data['ProductData']['id']);
+                $("#CountUploadModal").modal('show');
+            }
+        }
+    });
+}
+
+function ProductCountSubmit() {
+    var form = $('#product_count_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/products/ajax/count/submit",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $(".check-input").removeClass('border-danger'); 
+                    $(".text-error").html('');
+                    $.each(data['message'], function(key, value) {
+                        $("#"+key).addClass('border-danger');
+                        $("."+key+"-error").html(value);
+                    });
+                } else {
+                    Swal.fire({
+                      icon: 'success',
+                      text: data['message'],
+                    })
+                    location.reload();
+                }
             }
         }
     });

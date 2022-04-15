@@ -86,7 +86,10 @@
 			                            <label class="form-label font-helvetica-regular" for="product_unit">ერთეული</label>
 			                            <div class="form-control-wrap">
 			                                <select class="form-control" name="product_unit" id="product_unit">
-			                                	
+			                                	<option value="0"></option>
+		                                		@foreach($unit_list as $unit_item)
+		                                		<option value="{{ $unit_item->id }}">{{ $unit_item->name }}</option>
+		                                		@endforeach
 			                                </select>
 			                            </div>
 			                        </div>

@@ -11,6 +11,8 @@ use App\Modules\Products\Models\ProductCategory;
 use App\Modules\Products\Models\ProductVendor;
 use App\Modules\Products\Models\ProductBrand;
 use App\Modules\Products\Models\ProductUnit;
+use App\Modules\Products\Models\ProductCountLog;
+use App\Modules\Products\Models\ProductCountLogItem;
 
 use App\Modules\Company\Models\Branch;     
 
@@ -24,8 +26,11 @@ class ProductsController extends Controller
     public function actionProductsIndex(Request $Request) {
         if (view()->exists('products.products_index')) {
 
+            $Product = new Product();
+            $ProductList = $Product::where('deleted_at_int', '!=', 0)->get();
+
             $data = [
-                
+                'product_list' => $ProductList,
             ];
             
             return view('products.products_index', $data);
@@ -49,6 +54,9 @@ class ProductsController extends Controller
             $ProductVendor = new ProductVendor();
             $ProductVendorList = $ProductVendor::where('deleted_at_int', '!=', 0)->get();
 
+            $ProductUnit = new ProductUnit();
+            $ProductUnitList = $ProductUnit::where('deleted_at_int', '!=', 0)->get();
+
             $Branch = new Branch();
             $BranchList = $Branch::where('deleted_at_int', '!=', 0)->where('parent_id', 0)->where('is_warehouse', 0)->get();
 
@@ -58,6 +66,7 @@ class ProductsController extends Controller
                 'brand_list' => $ProductBrandList,
                 'vendor_list' => $ProductVendorList,
                 'branch_list' => $BranchList,
+                'unit_list' => $ProductUnitList,
             ];
             
             return view('products.products_add', $data);
@@ -114,17 +123,39 @@ class ProductsController extends Controller
         }
     }
 
-    public function actionProductBalance(Request $Request) {
-        if (view()->exists('products.products_balance')) {
+    public function actionProductsBalanceHistory(Request $Request) {
+        if (view()->exists('products.products_balance_history')) {
 
-            $Branch = new Branch();
-            $BranchList = $Branch::where('deleted_at_int', '!=', 0)->where('is_warehouse', 1)->get();
+            $ProductCountLog = new ProductCountLog();
+            $ProductCountLogData = $ProductCountLog::where('deleted_at_int', '!=', 0)->get();
 
             $data = [
-                'warehouse_list' => $BranchList,
+                'product_count_log_list' => $ProductCountLogData,
             ];
-            
-            return view('products.products_balance', $data);
+
+            return view('products.products_balance_history', $data);
+        } else {
+            abort('404');
+        }
+    }
+
+    public function actionProductsBalanceHistoryList(Request $Request) {
+        if (view()->exists('products.products_balance_history_items')) {
+
+            $ProductCountLog = new ProductCountLog();
+            $ProductCountLogData = $ProductCountLog::find($Request->id);
+
+            $LogArray = [];
+
+            $ProductCountLogItem = new ProductCountLogItem();
+            $ProductCountLogItemList = $ProductCountLogItem::where('log_id', $Request->id)->get();
+
+            $data = [
+                'product_count_log' => $ProductCountLogData,
+                'product_count_log_item_list' => $ProductCountLogItemList,
+            ];
+
+            return view('products.products_balance_history_items', $data);
         } else {
             abort('404');
         }

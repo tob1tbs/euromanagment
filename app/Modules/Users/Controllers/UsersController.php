@@ -199,8 +199,8 @@ class UsersController extends Controller
 
                         $UserWorkCalendar = new UserWorkCalendar();
                         $UserWorkCalendarData = $UserWorkCalendar::where('user_id', $UserItem->id)
-                        ->whereMonth('work_date', $Request->salary_month)
-                        ->whereYear('work_date', $Request->salary_year)
+                        ->whereMonth('work_date', $SalaryMonth)
+                        ->whereYear('work_date', $SalaryYear)
                         ->where('deleted_at_int', '!=', 0)
                         ->get();
 

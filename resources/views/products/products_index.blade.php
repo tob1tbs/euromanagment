@@ -25,6 +25,31 @@
                                                     </ul>
                                                 </div>
                                             </div>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-light font-helvetica-regular ml-2" data-toggle="dropdown">ნაშთები</a>
+                                                <div class="dropdown-menu" style="min-width: 300px;">
+                                                    <ul class="link-check font-helvetica-regular">
+                                                        <li><span>Excel</span></li>
+                                                        <li><a href="javascript:;" onclick="ProductBalanceExport()">
+                                                            <em class="icon ni ni-download"></em><span>არსებული ნაშთების ჩამოტვირთვა</span></a>
+                                                        </li>
+                                                        <li><a href="javascript:;" onclick="ProductBalanceUpload()">
+                                                            <em class="icon ni ni-upload"></em><span>ახალი ნაშთების ატვირთვა</span></a>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="link-check font-helvetica-regular">
+                                                        <li class="font-neue"><span>სინქრონიზაცია</span></li>
+                                                        <li><a href="#">
+                                                            <em class="icon ni ni-reload-alt"></em><span>API NAME</span></a>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="link-check font-helvetica-regular">
+                                                        <li><a href="{{ route('actionProductsBalanceHistory') }}">
+                                                            <em class="icon ni ni-file-plus"></em><span>ნაშთების ცვლილების ისტორია</span></a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
@@ -154,16 +179,98 @@
                                         <div class="card-inner p-0">
                                             <div class="nk-tb-list nk-tb-ulist">
                                                 <div class="nk-tb-item nk-tb-head font-helvetica-regular">
-                                                    <div class="nk-tb-col"><span># პროდუქტის დასახელებaა</span></div>
-                                                    <div class="nk-tb-col tb-col-mb"><span>კატეგორია / ქვეკატეგორია</span></div>
+                                                    <div class="nk-tb-col"><span># პროდუქტის დასახელება</span></div>
+                                                    <div class="nk-tb-col"><span>ერთეული</span></div>
+                                                    <div class="nk-tb-col tb-col-mb"><span>კატეგორია</span></div>
                                                     <div class="nk-tb-col tb-col-md"><span>ბრენდი</span></div>
-                                                    <div class="nk-tb-col tb-col-md"><span>ფასი</span></div>
+                                                    <div class="nk-tb-col tb-col-md"><span>ასაღები ფასი</span></div>
+                                                    <div class="nk-tb-col tb-col-md"><span>საცალო ფასი / საბითუმო ფასი</span></div>
                                                     <div class="nk-tb-col tb-col-lg"><span>დამატების თარიღი</span></div>
                                                     <div class="nk-tb-col tb-col-lg"><span>ნაშთი</span></div>
                                                     <div class="nk-tb-col tb-col-md"><span>სტატუსი</span></div>
                                                     <div class="nk-tb-col nk-tb-col-tools">&nbsp;</div>
                                                 </div>
-                                                
+                                                @foreach($product_list as $product_item)
+                                                <div class="nk-tb-item font-helvetica-regular">
+                                                    <div class="nk-tb-col">
+                                                        <div class="user-card">
+                                                            <div class="user-info">
+                                                                <span class="tb-lead"> # {{ $product_item->id }} {{ $product_item->name_ge }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-mb">
+                                                        <span class="tb-lead-sub">
+                                                            {{ $product_item->productUnit->name }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-mb">
+                                                        <span class="tb-lead-sub">
+                                                            {{ $product_item->productCategory->name }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-md">
+                                                        <span class="tb-date">
+                                                            @if(!empty($product_item->brand_id))
+                                                                {{ $product_item->productBrand->name }}
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-lg">
+                                                        <span class="tb-date">
+                                                            @if(!empty($product_item->productPrice))
+                                                            {{ $product_item->productPrice[0]->vendor_price / 100 }} ₾
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-lg">
+                                                        <span class="tb-date">
+                                                            @if(!empty($product_item->productPrice))
+                                                            {{ $product_item->productPrice[0]->retail_price / 100 }} ₾
+                                                            /
+                                                            {{ $product_item->productPrice[0]->wholesale_price / 100 }} ₾
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-md">
+                                                        {{ \Carbon\Carbon::parse($product_item->created_at)->format('Y-m-d') }}
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-md">
+                                                            <span class="badge badge-success" style="cursor: pointer;" onclick="UpdateProductCount({{ $product_item->id}}, this)">{{ $product_item->count }}</span>
+                                                    </div>
+                                                    <div class="nk-tb-col tb-col-lg">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="product_active_{{ $product_item->id }}" onclick="ProductActiveChange({{ $product_item->id }}, this)" @if($product_item->active == 1) checked @endif>
+                                                            <label class="custom-control-label" for="product_active_{{ $product_item->id }}"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nk-tb-col nk-tb-col-tools">
+                                                        <ul class="nk-tb-actions gx-1">
+                                                            <li>
+                                                                <div class="drodown">
+                                                                    <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                                                    <div class="dropdown-menu dropdown-menu-right" style="min-width: 250px; width: 100%;">
+                                                                        <ul class="link-list-opt no-bdr">
+                                                                            <li>
+                                                                                <a href="{{ route('actionProductsEdit', $product_item->id) }}">
+                                                                                    <em class="icon ni ni-dot"></em>
+                                                                                    <span>რედაქტირება</span>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="javascript:;" onclick="ProductDelete({{ $product_item->id }})" class="text-danger">
+                                                                                    <em class="icon ni ni-trash"></em>
+                                                                                    <span>პროდუქტის წაშლა</span>
+                                                                                </a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                @endforeach 
                                             </div>
                                         </div>         
                                     </div>
@@ -228,5 +335,5 @@
 @endsection
 
 @section('js')
-<script src="{{ url('assets/products/products_scripts.js') }}"></script>
+<script src="{{ url('assets/scripts/products_scripts.js') }}"></script>
 @endsection

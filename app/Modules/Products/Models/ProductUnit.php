@@ -9,5 +9,5 @@ class ProductUnit extends Model
 {
     use HasFactory;
 
-    protected $table = "new_product_unit";
+    protected $table = "new_product_units";
 }

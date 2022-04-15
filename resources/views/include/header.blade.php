@@ -85,11 +85,6 @@
                                     <span class="nk-menu-text">მომწოდებლები</span>
                                 </a>
                             </li>
-                            <li class="nk-menu-item">
-                                <a href="{{ route('actionProductBalance') }}" class="nk-menu-link">
-                                    <span class="nk-menu-text">ნაშთები</span>
-                                </a>
-                            </li>
                         </ul>
                     </li>
                     <li class="nk-menu-item has-sub">

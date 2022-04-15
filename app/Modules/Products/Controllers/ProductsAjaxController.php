@@ -11,6 +11,8 @@ use App\Modules\Products\Models\ProductVendor;
 use App\Modules\Products\Models\ProductCategory;
 use App\Modules\Products\Models\ProductBrand;
 use App\Modules\Products\Models\ProductPrice;
+use App\Modules\Products\Models\ProductCountLog;
+use App\Modules\Products\Models\ProductCountLogItem;
 
 use App\Modules\Company\Models\Branch;   
 
@@ -224,7 +226,7 @@ class ProductsAjaxController extends Controller
     }
 
     public function ajaxProductBrandGet(Request $Request) {
-        if($Request->isMethod('GET') && !empty($Request->brand_id) && $Request->brand_id != 1) {
+        if($Request->isMethod('GET') && !empty($Request->brand_id)) {
             $ProductBrand = new ProductBrand();
             $ProductBrandData = $ProductBrand::find($Request->brand_id);
 
@@ -258,7 +260,7 @@ class ProductsAjaxController extends Controller
             );
             $validator = Validator::make($Request->all(), [
                 'product_name' => 'required|max:255',
-                // 'product_unit' => 'required|max:255',
+                'product_unit' => 'required|max:255',
                 'product_vendor_price' => 'required|max:255',
                 'product_retail_price' => 'required|max:255',
                 'product_wholesale_price' => 'required|max:255',
@@ -285,19 +287,71 @@ class ProductsAjaxController extends Controller
 
                 $ProductPrice = new ProductPrice();
                 $ProductPrice::updateOrCreate(
+                    ['id' => $Request->product_price_id],
                     [
                         'id' => $Request->product_price_id,
                         'product_id' => $InsertProduct->id,
-                        'vendor_price' => $Request->product_vendor_price,
-                        'retail_price' => $Request->product_retail_price,
-                        'wholesale_price' => $Request->product_wholesale_price,
-                    ]
+                        'vendor_price' => $Request->product_vendor_price * 100,
+                        'retail_price' => $Request->product_retail_price * 100,
+                        'wholesale_price' => $Request->product_wholesale_price * 100,
+                    ],
                 );
 
-                return Response::json(['status' => true, 'message' => 'პროდუქტი წარმატებით დაემატა !!!']);
+                return Response::json(['status' => true, 'message' => 'პროდუქტი წარმატებით დაემატა !!!', 'redirect_url' => route('actionProductsIndex')]);
             }
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxProductCountGet(Request $Request) {
+        if($Request->isMethod('GET') && !empty($Request->product_id)) {
+
+            $Product = new Product();
+            $ProductData = $Product::find($Request->product_id);
+
+            return Response::json(['status' => true, 'ProductData' => $ProductData]);
+
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxProductSubmitGet(Request $Request) {
+        if($Request->isMethod('POST') && !empty($Request->product_count_id)) {
+            $messages = array(
+                'required' => 'გთხოვთ შეიყვანოთ პროდუქტის დასახელება',
+            );
+
+            $validator = Validator::make($Request->all(), [
+                'product_count' => 'required|max:255',
+            ], $messages);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
+            } else {
+
+                $ProductCountLog = new ProductCountLog();
+                $ProductCountLog->user_id = 1;
+                $ProductCountLog->method = 'Manual';
+                $ProductCountLog->save();
+
+                $Product = new Product();
+                $ProductData = $Product::find($Request->product_count_id);
+
+                $ProductCountLogItem = new ProductCountLogItem();
+                $ProductCountLogItem->product_id = $ProductData->id;
+                $ProductCountLogItem->value_old = $ProductData->count;
+                $ProductCountLogItem->value_new = $Request->product_count;
+                $ProductCountLogItem->log_id = $ProductCountLog->id;
+                $ProductCountLogItem->save();
+
+                $ProductData->update(['count' => $Request->product_count]);
+
+                return Response::json(['status' => true, 'message' => 'ნაშთი წარმატებით შეიცვალა']);
+            }
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!']);
         }
     }
 }

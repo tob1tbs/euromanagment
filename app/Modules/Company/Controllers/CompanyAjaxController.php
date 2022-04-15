@@ -37,8 +37,8 @@ class CompanyAjaxController extends Controller
                     [
                         'id' => $Request->branch_id,
                         'name' => $Request->branch_name,
-                        'parent_id' => $Request->branch_parent,
-                    ],
+                        'parent_id' => $Request->branch_parent, 
+                   ],
                 );
 
                 return Response::json(['status' => true, 'errors' => false, 'message' => 'ფილიალი / განყოფილება წარმატებით დაემატა'], 200);
