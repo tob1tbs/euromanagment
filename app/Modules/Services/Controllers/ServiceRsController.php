@@ -16,6 +16,8 @@ class ServiceRsController extends Controller
 
     public function __construct() {
         //
+        $this->soap_user = 'arbo:205273498';
+        $this->soap_password = 'Madart2020';
     }
 
     public function serviceRsSendSoap($soap_url, $post_fields) {
@@ -42,59 +44,17 @@ class ServiceRsController extends Controller
     }
 
     public function serviceRsGetWaybillByNumber($waybill_number) {
-        $soap_url = "https://services.rs.ge/WayBillService/WayBillService.asmx?op=get_waybill_by_number";
+        $soap_url = "https://services.rs.ge/WayBillService/WayBillService.asmx?op=is_vat_payer_tin";
         $post_fields = '<?xml version="1.0" encoding="utf-8"?>
                             <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
                               <soap12:Body>
-                                <get_waybill_by_number xmlns="http://tempuri.org/">
-                                  <su>'.$soap_user.'</su>
-                                  <sp>'.$soap_password.'</sp>
-                                  <waybill_number>'.$waybill_number.'</waybill_number>
-                                </get_waybill_by_number>
+                                <is_vat_payer_tin  xmlns="http://tempuri.org/">
+                                  <su>'.$this->soap_user.'</su>
+                                  <sp>'.$this->soap_password.'</sp>
+                                  <un_id>404425083</un_id>
+                                </is_vat_payer_tin >
                               </soap12:Body>
                             </soap12:Envelope>';
-        return self::sendSoap($soap_url, $post_fields);
-    }
-
-    public function serviceRsGetWaybillUnits() {
-        $soap_url = "https://services.rs.ge/WayBillService/WayBillService.asmx?op=get_waybill_units";
-        $post_fields = '<?xml version="1.0" encoding="utf-8"?>
-                    <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-                      <soap12:Body>
-                        <get_waybill_units xmlns="http://tempuri.org/">
-                          <su>'.$soap_user.'</su>
-                          <sp>'.$soap_password.'</sp>
-                        </get_waybill_units>
-                      </soap12:Body>
-                    </soap12:Envelope>';
-        return self::sendSoap($soap_url, $post_fields);
-    }
-
-    public function serviceRsSendOverhead() {
-        $soap_url = "https://services.rs.ge/WayBillService/WayBillService.asmx?op=get_waybill_units";
-        $post_fields = '<?xml version="1.0" encoding="utf-8"?>
-                    <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-                      <soap12:Body>
-                        <get_waybill_units xmlns="http://tempuri.org/">
-                          <su>'.$soap_user.'</su>
-                          <sp>'.$soap_password.'</sp>
-                        </get_waybill_units>
-                      </soap12:Body>
-                    </soap12:Envelope>';
-        return self::sendSoap($soap_url, $post_fields);
-    }
-
-    public function serviceRsSendWoodOverhead() {
-        $soap_url = "https://services.rs.ge/WayBillService/WayBillService.asmx?op=get_waybill_units";
-        $post_fields = '<?xml version="1.0" encoding="utf-8"?>
-                    <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-                      <soap12:Body>
-                        <get_waybill_units xmlns="http://tempuri.org/">
-                          <su>'.$soap_user.'</su>
-                          <sp>'.$soap_password.'</sp>
-                        </get_waybill_units>
-                      </soap12:Body>
-                    </soap12:Envelope>';
-        return self::sendSoap($soap_url, $post_fields);
+        return self::serviceRsSendSoap($soap_url, $post_fields);
     }
 }

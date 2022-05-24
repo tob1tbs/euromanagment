@@ -10,6 +10,8 @@ use App\Modules\Dashboard\Models\Dashboard;
 use App\Modules\Dashboard\Models\DashboardOrder;
 use App\Modules\Customers\Models\CustomerType;
 
+use App\Modules\Services\Controllers\ServiceRsController;
+
 class DashboardController extends Controller
 {
 
@@ -17,7 +19,8 @@ class DashboardController extends Controller
         //
     }
 
-    public function actionDashboardIndex(Request $Request) {
+    public function actionDashboardIndex(Request $Request, ServiceRsController $ServiceRsController) {
+        dd($ServiceRsController->serviceRsGetWaybillByNumber('0667805421'));
         if (view()->exists('dashboard.dashboard_index')) {
 
             $CustomerType = new CustomerType();

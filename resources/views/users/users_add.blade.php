@@ -92,7 +92,7 @@
 	                                            <tr>
 	                                                <th class="tb-col-time font-neue px-2"><span class="overline-title">პოზიციის დასახელება</span></th>
 	                                                <th class="tb-col-time font-neue"><span class="overline-title">ფილიალი / განყოფილება</span></th>
-	                                                <th class="tb-col-time font-neue"><span class="overline-title">ანაზღაურების ტიპი / ანაზღაურება</span></th>
+	                                                <th class="tb-col-time font-neue"><span class="overline-title">ხელშეკრულების ტიპი / ანაზღაურების ტიპი / ანაზღაურება</span></th>
 	                                                <th class="tb-col-action"><span class="overline-title">&nbsp;</span></th>
 	                                            </tr>
 	                                        </thead>
@@ -134,7 +134,18 @@
 											      	</select>
 										      	</div>
 	                                    	</div>
-	                                    	<div class="col-lg-6 mt-2">
+	                                    	<div class="col-lg-4 mt-2">
+	                                    		<div class="form-group">
+						                            <label class="form-label font-helvetica-regular" for="user_position_contract_type">ხელშეკრულების ტიპი</label>
+		                                    		<select class="form-control" id="user_position_contract_type">
+		                                    			<option value="0"></option>
+		                                    			@foreach($contract_type as $type_item)
+		                                    			<option value="{{ $type_item->id }}">{{ $type_item->name }}</option>
+														@endforeach
+											      	</select>
+										      	</div>
+	                                    	</div>
+	                                    	<div class="col-lg-4 mt-2">
 	                                    		<div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_position_salary_type">ხელფასის ტიპი</label>
 		                                    		<select class="form-control" id="user_position_salary_type">
@@ -145,7 +156,7 @@
 											      	</select>
 										      	</div>
 	                                    	</div>
-	                                    	<div class="col-lg-6 mt-2">
+	                                    	<div class="col-lg-4 mt-2">
 	                                    		<div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_salary">ხელფასი</label>
 						                            <input type="number" class="form-control error-input" id="user_salary">

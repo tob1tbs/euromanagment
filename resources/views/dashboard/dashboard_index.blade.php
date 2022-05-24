@@ -26,21 +26,11 @@
                                     <div class="card card-bordered card-stretch mt-3">
                                         <div class="card-inner p-0">
                                             <div class="row">
-                                                <div class="col-8">
+                                                <div class="col-7">
                                                     <div style="background: #f9f9f9; border-right: 1px solid #dedede;">
                                                         <div class="row">
                                                             <div class="col-12">
-                                                                <div class="col-12 mb-2 p-2">
-                                                                    <div class="form-group">
-                                                                        <label class="form-label">პროდუქტი</label>
-                                                                        <select class="form-select form-control form-control-lg" data-search="on">
-                                                                            <option value="0">პროდუქტის ძიება...</option>
-                                                                            <option value="1">0000000220-123</option>
-                                                                            <option value="2">431</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <table class="table table-striped" style="border-top: 1px solid #dedede;">
+                                                                <table class="table table-striped">
                                                                     <thead>
                                                                         <tr class="font-neue">
                                                                             <th scope="col">დასახელება</th>
@@ -51,74 +41,27 @@
                                                                             <th scope="col">მოქმედება</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <th scope="row">1</th>
-                                                                            <td>Mark</td>
-                                                                            <td>Otto</td>
-                                                                            <td>@mdo</td>
-                                                                            <td>
-                                                                                <div class="custom-control custom-control-sm custom-checkbox">
-                                                                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                                                                    <label class="custom-control-label" for="customCheck2"></label>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>@mdo</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th scope="row">1</th>
-                                                                            <td>Mark</td>
-                                                                            <td>Otto</td>
-                                                                            <td>@mdo</td>
-                                                                            <td>
-                                                                                <div class="custom-control custom-control-sm custom-checkbox">
-                                                                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                                                                    <label class="custom-control-label" for="customCheck2"></label>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>@mdo</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <th scope="row">1</th>
-                                                                            <td>Mark</td>
-                                                                            <td>Otto</td>
-                                                                            <td>@mdo</td>
-                                                                            <td>
-                                                                                <div class="custom-control custom-control-sm custom-checkbox">
-                                                                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                                                                    <label class="custom-control-label" for="customCheck2"></label>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>@mdo</td>
-                                                                        </tr>
+                                                                    <tbody class="product-dashboard-list">
+                                                                        
                                                                     </tbody>
                                                                 </table>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-4">
+                                                <div class="col-5">
                                                     <div class="row p-3">
-                                                        <div class="col-6 mb-2">
+                                                        <div class="col-12">
                                                             <div class="form-group">
-                                                                <label class="form-label">მომხმარებლის ტიპი</label>
-                                                                <select class="form-control">
-                                                                    
-                                                                </select>
+                                                                <label class="form-label" for="product_search">მოძებნეთ პროდუქტი...</label>
+                                                                <div class="form-control-wrap">
+                                                                    <input type="text" class="form-control" id="product_search" name="product_search" placeholder="საძიებო სიტყვა..." onkeyup="GetProductList()">
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-6 mb-2">
-                                                            <div class="form-group">
-                                                                <label class="form-label">ს.კოდი / პირადი ნომერი</label>
-                                                                <input type="number" class="form-control" name="">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-12 mb-2">
-                                                            <div class="form-group">
-                                                                <label class="form-label">მომხმარებლის ტიპი</label>
-                                                                <select class="form-control">
-                                                                    
-                                                                </select>
+                                                        <div class="col-12 mt-2">
+                                                            <div class="row product-search-body">
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
@@ -131,6 +74,68 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ProductInfoModal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-top" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">ინფორმაცია პროდუქტზე</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form action="#" class="form-validate is-alter" novalidate="novalidate" id="product_info">
+                    <div class="row">
+                        <div class="col-9 mb-2">
+                            <div class="form-group">
+                                <label class="form-label font-helvetica-regular" for="product_name">პროდუქტი / კოდი</label>
+                                <div class="form-control-wrap">
+                                    <input type="text" class="form-control check-input" name="product_name" id="product_name" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3 mb-2">
+                            <div class="form-group">
+                                <label class="form-label font-helvetica-regular" for="product_unit">ერთეული</label>
+                                <div class="form-control-wrap">
+                                    <input type="text" class="form-control check-input" name="product_unit" id="product_unit" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label font-helvetica-regular" for="product_vendor_price">პროდუქტის ასაღები ფასი</label>
+                                <div class="form-control-wrap">
+                                    <input type="text" class="form-control check-input" name="product_vendor_price" id="product_vendor_price" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label font-helvetica-regular" for="product_retail_price">პროდუქტის საცალო ფასი</label>
+                                <div class="form-control-wrap">
+                                    <input type="text" class="form-control check-input" name="product_retail_price" id="product_retail_price" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label font-helvetica-regular" for="product_wholesale_price">პროდუქტის საბითუმო ფასი</label>
+                                <div class="form-control-wrap">
+                                    <input type="text" class="form-control check-input" name="product_wholesale_price" id="product_wholesale_price" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 mt-2">
+                            <button class="btn btn-success font-neue" type="button" onclick="AddToCart()">შეკვეთაში დამატება</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="product_id" id="product_id">
+                </form>
             </div>
         </div>
     </div>

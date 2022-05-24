@@ -709,7 +709,7 @@ function WorkPositionAdd() {
             <tr class="font-helvetica-regular">
                 <td class="px-2">`+$('#user_position option:selected').html()+`</td>
                 <td>`+$('#user_position_branch option:selected').html()+` / `+$('#user_position_departament option:selected').html()+`</td>
-                <td>`+$('#user_position_salary_type option:selected').html()+` / `+$('#user_salary').val()+`</td>
+                <td>`+$('#user_position_contract_type option:selected').html()+` /`+$('#user_position_salary_type option:selected').html()+` / `+$('#user_salary').val()+`</td>
                 <td>
                     <span class="font-helvetica-regular" onclick="RemoveWorkPosition(this)" style="cursor: pointer;">პოზიცის წაშლა</span>
                 </td>
@@ -717,6 +717,7 @@ function WorkPositionAdd() {
                 <input type="hidden" name="branch[]" value="`+$("#user_position_branch").val()+`">
                 <input type="hidden" name="departament[]" value="`+$("#user_position_departament").val()+`">
                 <input type="hidden" name="salary_type[]" value="`+$("#user_position_salary_type").val()+`">
+                <input type="hidden" name="contract_type[]" value="`+$("#user_position_contract_type").val()+`">
                 <input type="hidden" name="salary[]" value="`+$("#user_salary").val()+`">
             </tr>
         `);

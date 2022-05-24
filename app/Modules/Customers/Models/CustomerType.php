@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerType extends Model
 {
     use HasFactory;
-	
-	protected $table = "new_customer_types";
 
+    protected $table = "new_customers_type";
 }

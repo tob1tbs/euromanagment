@@ -34,5 +34,9 @@ Route::group(['prefix' => 'products/ajax', 'middleware' => []], function () {
     Route::get('/count/', 'ProductsAjaxController@ajaxProductCountGet')->name('ajaxProductCountGet');
     Route::post('/count/submit', 'ProductsAjaxController@ajaxProductSubmitGet')->name('ajaxProductSubmitGet');
     //
+    Route::get('/price/history', 'ProductsAjaxController@ajaxProductPriceHistory')->name('ajaxProductPriceHistory');
+    Route::post('/price/update', 'ProductsAjaxController@ajaxProductPriceUpdate')->name('ajaxProductPriceUpdate');
+    Route::post('/price/delete', 'ProductsAjaxController@ajaxProductPriceDelete')->name('ajaxProductPriceDelete');
+    //
     Route::post('/submit', 'ProductsAjaxController@ajaxProductSubmit')->name('ajaxProductSubmit');
 });

@@ -9,5 +9,8 @@ Route::group(['prefix' => 'dashboards', 'middleware' => []], function () {
 
 // AJAX ROUTES
 Route::group(['prefix' => 'dashboards/ajax', 'middleware' => []], function () {
-    Route::get('/get/fields', 'DashboardAjaxController@ajaxGetCustomerFields')->name('ajaxGetCustomerFields');
+    Route::get('/get/products', 'DashboardAjaxController@ajaxGetProductsList')->name('ajaxGetProductsList');
+    Route::get('/get/product/data', 'DashboardAjaxController@ajaxGetProductData')->name('ajaxGetProductData');
+    // CART
+    Route::post('/cart/add', 'DashboardAjaxController@ajaxAddToCart')->name('ajaxAddToCart');
 });

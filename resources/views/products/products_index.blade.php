@@ -38,12 +38,6 @@
                                                         </li>
                                                     </ul>
                                                     <ul class="link-check font-helvetica-regular">
-                                                        <li class="font-neue"><span>სინქრონიზაცია</span></li>
-                                                        <li><a href="#">
-                                                            <em class="icon ni ni-reload-alt"></em><span>API NAME</span></a>
-                                                        </li>
-                                                    </ul>
-                                                    <ul class="link-check font-helvetica-regular">
                                                         <li><a href="{{ route('actionProductsBalanceHistory') }}">
                                                             <em class="icon ni ni-file-plus"></em><span>ნაშთების ცვლილების ისტორია</span></a>
                                                         </li>
@@ -206,7 +200,7 @@
                                                     </div>
                                                     <div class="nk-tb-col tb-col-mb">
                                                         <span class="tb-lead-sub">
-                                                            {{ $product_item->productCategory->name }}
+                                                            {{ $product_item->productCategory->name }} @if($product_item->productCategory->active == 0) <em class="icon ni ni-alert-circle color-warning" title="აღნიშნული კატეგორიის გათიშულია."  data-toggle="tooltip" data-placement="top"></em> @endif
                                                         </span>
                                                     </div>
                                                     <div class="nk-tb-col tb-col-md">
@@ -251,6 +245,24 @@
                                                                     <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
                                                                     <div class="dropdown-menu dropdown-menu-right" style="min-width: 250px; width: 100%;">
                                                                         <ul class="link-list-opt no-bdr">
+                                                                            <li>
+                                                                                <a href="javascript:;" onclick="ProductPriceHistory({{ $product_item->id }})">
+                                                                                    <em class="icon ni ni-dot"></em>
+                                                                                    <span>ფასების ისტორია</span>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="javascript:;" onclick="UpdateProductPrice({{ $product_item->id }})">
+                                                                                    <em class="icon ni ni-dot"></em>
+                                                                                    <span>ნაშთების ისტორია</span>
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="javascript:;" onclick="UpdateProductPrice({{ $product_item->id }})">
+                                                                                    <em class="icon ni ni-dot"></em>
+                                                                                    <span>ფასის რედაქტირება</span>
+                                                                                </a>
+                                                                            </li>
                                                                             <li>
                                                                                 <a href="{{ route('actionProductsEdit', $product_item->id) }}">
                                                                                     <em class="icon ni ni-dot"></em>
@@ -327,6 +339,97 @@
                         </div>
                     </div>
                     <button type="button" class="btn btn-success font-helvetica-regular" onclick="ProductCountSubmit()">განახლება</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="PriceHistoryModal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-top" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">ფასის ცვლილების ისტორია</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body price-history-body" style="max-height: 400px;">
+                <form class="row" id="get_product_price_history">
+                    <div class="col-4">
+                        
+                    </div>
+                    <div class="col-4">
+                        
+                    </div>
+                    <div class="col-12">
+                        <ul class="nav nav-tabs mt-n3">
+                            <li class="nav-item font-neue">
+                                <a class="nav-link active" data-toggle="tab" href="#tabItem1">ცვლილების დიაგრამა</a>
+                            </li>
+                            <li class="nav-item font-neue">
+                                <a class="nav-link" data-toggle="tab" href="#tabItem2">ცვლილების ცხრილი</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tabItem1" style="height: 300px;">
+                                <canvas class="line-chart" id="solidLineChart"></canvas>
+                            </div>
+                            <div class="tab-pane" id="tabItem2">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr class="font-neue">
+                                            <th scope="col">შეცვლის თარიღი</th>
+                                            <th scope="col">ასაღები ფასი</th>
+                                            <th scope="col">საცალო ფასი</th>
+                                            <th scope="col">საბითუმო</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="price-history-table-body">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ProductPriceUpdateModal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-top" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">ფასის რედაქტირება</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <em class="icon ni ni-cross"></em>
+                </a>
+            </div>
+            <div class="modal-body price-history-body" style="max-height: 400px;">
+                 <form action="#" class="form-validate is-alter row" novalidate="novalidate" id="update_product_price_form">
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="form-label font-helvetica-regular" for="update_vendor_price">ასაღები ფასი</label>
+                        <div class="form-control-wrap">
+                            <input type="number" class="form-control check-input" name="update_vendor_price" id="update_vendor_price">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="form-label font-helvetica-regular" for="update_retail_price">საცალო ფასი</label>
+                        <div class="form-control-wrap">
+                            <input type="number" class="form-control check-input" name="update_retail_price" id="update_retail_price">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 col-sm-12">
+                        <label class="form-label font-helvetica-regular" for="update_wholesale_price">საბითუმო ფასი</label>
+                        <div class="form-control-wrap">
+                            <input type="number" class="form-control check-input" name="update_wholesale_price" id="update_wholesale_price">
+                        </div>
+                    </div>
+                    <div class="form-group col-12">
+                        <button type="button" class="btn btn-success font-helvetica-regular" onclick="ProductPriceSubmit()">განახლება</button>
+                    </div>
+                    <input type="hidden" name="update_price_product_id" id="update_price_product_id">
                 </form>
             </div>
         </div>

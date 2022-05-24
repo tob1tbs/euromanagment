@@ -19,6 +19,7 @@ use App\Modules\Company\Models\Branch;
 use Validator;
 use Response;
 use \Carbon\Carbon;
+use \Carbon\CarbonPeriod;
 
 class ProductsAjaxController extends Controller
 {
@@ -350,6 +351,105 @@ class ProductsAjaxController extends Controller
 
                 return Response::json(['status' => true, 'message' => 'ნაშთი წარმატებით შეიცვალა']);
             }
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxProductPriceHistory(Request $Request) {
+        if($Request->isMethod('GET') && !empty($Request->product_id)) {
+
+            $StartDate = Carbon::now()->startOfMonth();
+            $EndDate = Carbon::now()->endOfMonth();
+
+            $DatePeriod = CarbonPeriod::create($StartDate->format('Y-m-d'), $EndDate->format('Y-m-d'));
+
+            $DayLabels = [];
+            $PriceVendorLabel = [];
+            $PriceRetailLabel = [];
+            $PriceWholesaleLabel = [];
+
+            $ProductPrice = new ProductPrice();
+            $PriceItemList = $ProductPrice::select('vendor_price', 'retail_price', 'wholesale_price', 'created_at', 'id')
+                                        ->where('product_id', $Request->product_id)
+                                        ->whereMonth('created_at', $StartDate->format('m'))
+                                        ->orderBy('created_at', 'DESC')
+                                        ->where('deleted_at_int', '!=', 0)
+                                        ->get();
+
+            for($i=count($DatePeriod); $i >= 1; $i--){
+                $PriceItem = $ProductPrice::select('vendor_price', 'retail_price', 'wholesale_price', 'created_at')
+                                            ->where('product_id', $Request->product_id)
+                                            ->whereDay('created_at', $i)
+                                            ->whereMonth('created_at', $StartDate->format('m'))
+                                            ->orderBy('created_at', 'DESC')
+                                            ->where('deleted_at_int', '!=', 0)
+                                            ->first();
+
+                if($PriceItem == null) {
+                    $PriceVendor = 0;
+                    $PriceRetail = 0;
+                    $PriceWholesale = 0;
+                } else {
+                    $PriceVendor = $PriceItem->vendor_price / 100;
+                    $PriceRetail = $PriceItem->retail_price / 100;
+                    $PriceWholesale = $PriceItem->wholesale_price / 100;
+                }
+
+                $DayLabels[] = $i;
+                $PriceVendorLabel[$i] = $PriceVendor;
+                $PriceRetailLabel[$i] = $PriceRetail;
+                $PriceWholesaleLabel[$i] = $PriceWholesale;
+            }
+
+            return Response::json([
+                'status' => true, 
+                'PriceItemList' => $PriceItemList,
+                'DayLabels' => json_encode($DayLabels),
+                'PriceVendorLabel' => json_encode(array_values($PriceVendorLabel), true),
+                'PriceRetailLabel' => json_encode(array_values($PriceRetailLabel)),
+                'PriceWholesaleLabel' => json_encode(array_values($PriceWholesaleLabel)),
+            ]);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან!']);
+        }
+    }
+
+    public function ajaxProductPriceUpdate(Request $Request) {
+        if($Request->isMethod('POST') && !empty($Request->update_price_product_id)) {
+            $messages = array(
+                'required' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
+            );
+            $validator = Validator::make($Request->all(), [
+                
+            ], $messages);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
+            } else {
+                $ProductPrice = new ProductPrice();
+                $ProductPrice->product_id = $Request->update_price_product_id;
+                $ProductPrice->vendor_price = $Request->update_vendor_price * 100;
+                $ProductPrice->retail_price = $Request->update_retail_price * 100;
+                $ProductPrice->wholesale_price = $Request->update_wholesale_price * 100;
+                $ProductPrice->save();
+
+                return Response::json(['status' => true, 'message' => 'ფასი წარმატებით შეიცვალა.']);
+            }
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxProductPriceDelete(Request $Request) {
+        if($Request->isMethod('POST')) {
+            $ProductPrice = new ProductPrice();
+            $ProductPrice::find($Request->item_id)->update([
+                'deleted_at' => Carbon::now(),
+                'deleted_at_int' => 0,
+            ]);
+
+            return Response::json(['status' => true, 'message' => 'ფასი წარმატებით წაიშალა.']);
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!']);
         }

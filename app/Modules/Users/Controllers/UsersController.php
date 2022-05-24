@@ -17,6 +17,7 @@ use App\Modules\Users\Models\UserWorkData;
 use App\Modules\Users\Models\UserWorkVacation;
 use App\Modules\Users\Models\UserWorkVacationType;
 use App\Modules\Users\Models\UserContact;
+use App\Modules\Users\Models\UserContractType;
 
 use App\Modules\Company\Models\Branch;
 
@@ -73,9 +74,13 @@ class UsersController extends Controller
             $Branch = new Branch();
             $BranchList = $Branch::where('parent_id', 0)->where('deleted_at_int', '!=', 0)->where('active', 1)->get();
 
+            $UserContractType = new UserContractType();
+            $UserContractTypeList = $UserContractType::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
             $data = [
                 'work_position_list' => $UserWorkPositionList,
                 'branch_list' => $BranchList,
+                'contract_type' => $UserContractTypeList,
             ];
 
             return view('users.users_add', $data);

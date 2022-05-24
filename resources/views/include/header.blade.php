@@ -109,6 +109,23 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nk-menu-item has-sub">
+                        <a href="#" class="nk-menu-link nk-menu-toggle">
+                            <span class="nk-menu-text">კლიენტები</span>
+                        </a>
+                        <ul class="nk-menu-sub">
+                            <li class="nk-menu-item">
+                                <a href="{{ route('actionCustomersIndex') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">კლიენტების ჩამონათვალი</span>
+                                </a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="{{ route('actionDashboardReports') }}" class="nk-menu-link">
+                                    <span class="nk-menu-text">ლოიალობის პროგრამა</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="nk-menu-item">
                         <a href="{{ route('actionParametersIndex') }}" class="nk-menu-link">
                             <span class="nk-menu-text">პარამეტრები</span>

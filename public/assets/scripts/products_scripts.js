@@ -495,3 +495,132 @@ function ProductCountSubmit() {
         }
     });
 }
+
+function ProductPriceHistory(product_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/products/ajax/price/history",
+        type: "GET",
+        data: {
+            product_id: product_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                var ctx = document.getElementById('solidLineChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: JSON.parse(data['DayLabels']),
+                        dataUnit: 'BTC',
+                        lineTension: 0,
+                        legend: true,
+                        datasets: [{
+                            label: "ფასი ცვლილება თვის ჭრილში, (ასაღები ფასი)",
+                            backgroundColor: 'transparent',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: JSON.parse(data['PriceVendorLabel']),
+                        }, 
+                        {
+                            label: "ფასი ცვლილება თვის ჭრილში, (საცალო ფასი)",
+                            backgroundColor: 'transparent',
+                            borderColor: 'rgb(255, 255, 0)',
+                            data: JSON.parse(data['PriceRetailLabel']),
+                        }, 
+                        {
+                            label: "ფასი ცვლილება თვის ჭრილში, (საბითუმო ფასი)",
+                            backgroundColor: 'transparent',
+                            borderColor: 'rgb(255, 0, 255)',
+                            data: JSON.parse(data['PriceWholesaleLabel']),
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                    }
+                });
+                $(".price-history-table-body").html('');
+                $.each(data['PriceItemList'], function(key, value) {
+                    $(".price-history-table-body").append(`
+                        <tr class="history-table-item-`+value['id']+`">
+                            <td>`+value['created_at']+`</td>
+                            <td>`+value['vendor_price'] / 100+` ₾</td>
+                            <td>`+value['retail_price'] / 100+` ₾</td>
+                            <td>`+value['wholesale_price'] / 100+` ₾</td>
+                            <th>
+                                <em class="icon ni ni-trash text-danger" style="font-size: 21px; cursor: pointer;" onclick="DeletePriceChangeItem(`+value['id']+`)"></em>
+                            </th>
+                        </tr>
+                    `);
+                });
+                $("#PriceHistoryModal").modal('show');
+            }
+        }
+    });
+}
+
+function DeletePriceChangeItem(item_id) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ ფასის ცვლილების წაშლა?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/products/ajax/price/delete",
+                type: "POST",
+                data: {
+                    item_id: item_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    Swal.fire({
+                      icon: 'success',
+                      text: data['message'],
+                    })
+                    $(".history-table-item-"+item_id).remove();
+                    location.reload();
+                }
+            });
+        }
+    });
+}
+
+function UpdateProductPrice(product_id) {
+    $('#update_product_price_form')[0].reset();
+    $("#update_price_product_id").val(product_id);
+    $("#ProductPriceUpdateModal").modal('show');
+}
+
+function ProductPriceSubmit() {
+    var form = $('#update_product_price_form')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/products/ajax/price/update",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                Swal.fire({
+                  icon: 'success',
+                  text: data['message'],
+                })
+                location.reload();
+            }
+        }
+    });
+}
+
+  

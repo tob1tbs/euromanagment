@@ -16,18 +16,28 @@ class CustomersController extends Controller
     }
 
     public function actionCustomersIndex(Request $Request) {
-        //
+        if (view()->exists('customers.customers_index')) {
+
+            $data = [
+                
+            ];
+            
+            return view('customers.customers_index', $data);
+        } else {
+            abort('404');
+        }
     }
 
     public function actionCustomersAdd(Request $Request) {
-        //
-    }
+        if (view()->exists('customers.customers_add')) {
 
-    public function actionCustomersEdit(Request $Request) {
-        //
-    }
-
-    public function actionCustomersView(Request $Request) {
-
+            $data = [
+                
+            ];
+            
+            return view('customers.customers_add', $data);
+        } else {
+            abort('404');
+        }
     }
 }

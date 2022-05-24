@@ -75,6 +75,42 @@ class ProductsController extends Controller
         }
     }
 
+    public function actionProductsEdit(Request $Request) {
+        if (view()->exists('products.products_edit')) {
+
+            $Product = new Product();
+            $ParentProduct = $Product::where('parent_id', 0)->where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $ProductCategory = new ProductCategory();
+            $ProductCategoryList = $ProductCategory::where('deleted_at_int', '!=', 0)->get();
+
+            $ProductBrand = new ProductBrand();
+            $ProductBrandList = $ProductBrand::where('deleted_at_int', '!=', 0)->get();
+
+            $ProductVendor = new ProductVendor();
+            $ProductVendorList = $ProductVendor::where('deleted_at_int', '!=', 0)->get();
+
+            $ProductUnit = new ProductUnit();
+            $ProductUnitList = $ProductUnit::where('deleted_at_int', '!=', 0)->get();
+
+            $Branch = new Branch();
+            $BranchList = $Branch::where('deleted_at_int', '!=', 0)->where('parent_id', 0)->where('is_warehouse', 0)->get();
+
+            $data = [
+                'parent_products' => $ParentProduct,
+                'categories_list' => $ProductCategoryList,
+                'brand_list' => $ProductBrandList,
+                'vendor_list' => $ProductVendorList,
+                'branch_list' => $BranchList,
+                'unit_list' => $ProductUnitList,
+            ];
+            
+            return view('products.products_edit', $data);
+        } else {
+            abort('404');
+        }
+    }
+
     public function actionProductsCategory(Request $Request) {
         if (view()->exists('products.products_categories')) {
 
