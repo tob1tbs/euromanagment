@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Modules\Dashboard\Models\Dashboard;
-use App\Modules\Customers\Models\CustomerField;
+use App\Modules\Customers\Models\Customer;
 
 use App\Modules\Products\Models\Product;
 
+use Validator;
 use Response;
 use Cart;
 
@@ -34,22 +35,6 @@ class DashboardAjaxController extends Controller
 				'status' => true, 
 				'CustomerFieldList' => $CustomerFieldList,
 				'CustomerList' => $CustomerList,
-			]);
-
-		} else {
-			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
-		}
-	}
-
-	public function ajaxGetCustomerData(Request $Request) {
-		if($Request->isMethod('GET') && !empty($Request->customer_id)) {
-			
-			$Customer = new Customer();
-			$CustomerData = $Customer::find($Request->customer_id);
-
-			return Response::json([
-				'status' => true, 
-				'CustomerData' => $CustomerData,
 			]);
 
 		} else {
@@ -112,6 +97,48 @@ class DashboardAjaxController extends Controller
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 		}
 	}
+
+	public function ajaxCartClear(Request $Request) {
+		if($Request->isMethod('POST')) {
+
+			Cart::clear();
+
+			return Response::json(['status' => true]);
+
+		} else {
+			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+		}
+	}
+
+	public function ajaxGetCustomerData(Request $Request) {
+		if($Request->isMethod('GET')) {
+			$messages = array(
+                'required' => 'გთხოვთ აირჩიოთ ყველა აუცილებელი ველი.',
+                'customer_type.not_in' => 'გთხოვთ აირჩიოთ ყველა აუცილებელი ველი.',
+            );
+            $validator = Validator::make($Request->all(), [
+                'customer_type' => 'required|max:255|not_in:0',
+                'customer_code' => 'required|max:255',
+            ], $messages);
+
+            if ($validator->fails()) {
+                return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
+            } else {
+
+            	$Customer = new Customer();
+            	$CustomerData = $Customer::where('code', $Request->customer_code)->where('type', $Request->customer_type)->where('active', 1)->where('deleted_at_int', '!=', 0)->first();
+
+            	if(empty($CustomerData)) {
+            		return Response::json(['status' => true, 'errors' => true, 'message' => [0 => 'აღნიშნული მომხმარებელი ვერ მოიძებნა.']]);
+            	} else {
+            		return Response::json(['status' => true, 'errors' => false, 'CustomerData' => $CustomerData]);
+            	}
+
+            }
+		} else {
+			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+		}
+	} 
 
 	public function ajaxDashboardSubmit(Request $Request) {
 		if($Request->isMethod('POST')) {

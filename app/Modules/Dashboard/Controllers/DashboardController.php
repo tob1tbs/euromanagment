@@ -10,6 +10,8 @@ use App\Modules\Dashboard\Models\Dashboard;
 use App\Modules\Dashboard\Models\DashboardOrder;
 use App\Modules\Customers\Models\CustomerType;
 
+use Carbon\Carbon;
+
 use App\Modules\Services\Controllers\ServiceRsController;
 
 class DashboardController extends Controller
@@ -20,7 +22,6 @@ class DashboardController extends Controller
     }
 
     public function actionDashboardIndex(Request $Request, ServiceRsController $ServiceRsController) {
-        dd($ServiceRsController->serviceRsGetWaybillByNumber('0667805421'));
         if (view()->exists('dashboard.dashboard_index')) {
 
             $CustomerType = new CustomerType();
@@ -43,7 +44,10 @@ class DashboardController extends Controller
             $DashboardOrderList = $DashboardOrder::where('deleted_at_int', '!=', 0)->get();
 
             $data = [
+                'year_list' => $this->yearList(),   
+                'month_list' => $this->monthList(),   
                 'order_list' => $DashboardOrderList,
+                'current_date' => Carbon::now()->locale('ka_GE'),
             ];
             
             return view('dashboard.dashboard_orders', $data);

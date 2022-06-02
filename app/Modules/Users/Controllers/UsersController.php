@@ -118,9 +118,6 @@ class UsersController extends Controller
 
     public function actionUsersSalary(Request $Request) {
         if (view()->exists('users.users_salary')) { 
-
-            $CurrentDate = Carbon::now()->locale('ka_GE');
-
             $User = new User();
             $UsersList = $User::where('deleted_at_int', '!=', 0)->where('active', 1);
 
@@ -248,7 +245,7 @@ class UsersController extends Controller
             $data = [
                 'year_list' => $this->yearList(),   
                 'month_list' => $this->monthList(),   
-                'current_date' => $CurrentDate,
+                'current_date' => Carbon::now()->locale('ka_GE'),
                 'days_count' => $DaysInMonth,
                 'salary_data' => $SalaryArray,
                 'work_position' => $UserWorkPositionList,
