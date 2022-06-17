@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="form-label-group">
-                                            <label class="form-label" for="user_password">პაროლის აღდგენა</label>
+                                            <label class="form-label" for="user_password">პაროლი</label>
                                             <a class="link link-primary font-helvetica-regular link-sm" href="javascript:;">დაგავიწყდა პაროლი?</a>
                                         </div>
                                         <div class="form-control-wrap">

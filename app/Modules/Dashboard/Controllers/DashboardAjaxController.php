@@ -23,13 +23,10 @@ class DashboardAjaxController extends Controller
 	}
 
 	public function ajaxGetCustomerFields(Request $Request) {
-		if($Request->isMethod('GET') && !empty($Request->type_id)) {
-
-			$CustomerField = new CustomerField();
-			$CustomerFieldList = $CustomerField::where('type_id', $Request->type_id)->where('deleted_at_int', '!=', 0)->where('active', 1)->first();
+		if($Request->isMethod('GET') && !empty($Request->customer_type)) {
 
 			$Customer = new Customer();
-			$CustomerList = $Customer::where('type_id', $Request->type_id)->where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+			$CustomerList = $Customer::where('type_id', $Request->customer_type)->where('deleted_at_int', '!=', 0)->where('active', 1)->get();
 
 			return Response::json([
 				'status' => true, 

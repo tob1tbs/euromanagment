@@ -95,7 +95,7 @@
                                                 @foreach($item['calendar'] as $salary_key => $salary_item)
                                                     @if($salary_item['work_on_this_day'] == 1)
                                                         @if($salary_item['total_day_salary'] == 0)
-                                                        <th class="day-cell cell-item-{{ $salary_key }}-{{ $item['user_id'] }}" style="border: 1px solid #dbdfea;" onclick="AddUserSalary('{{ $item['user_id'] }}', '{{ $item['position_id'] }}', '{{ $salary_item['date']}}', '{{ $salary_item['id'] }}')">{{ $salary_key }}</th>
+                                                        <th class="box-shadow day-cell cell-item-{{ $salary_key }}-{{ $item['user_id'] }}" style="border: 1px solid #dbdfea;" onclick="AddUserSalary('{{ $item['user_id'] }}', '{{ $item['position_id'] }}', '{{ $salary_item['date']}}', '{{ $salary_item['id'] }}')">{{ $salary_key }}</th>
                                                         @else
                                                         <th style="border: 1px solid #dbdfea;" class="table-cell day-cell salary-id-{{ $salary_item['id'] }}" onclick="ViewUserSalary({{ $salary_item['id'] }})">{{ $salary_item['total_day_salary'] }}</th>
                                                         @endif
@@ -328,6 +328,12 @@
         box-shadow: inset 0px 0px 0px 3px rgba(49,183,245,1);
         cursor: pointer;
         opacity: 1;
+    }
+
+    .box-shadow {
+        box-shadow: 0px 0px 0px 3px rgba(255,0,0,1) inset;
+        -webkit-box-shadow: 0px 0px 0px 3px rgba(255,0,0,1) inset;
+        -moz-box-shadow: 0px 0px 0px 3px rgba(255,0,0,1) inset;
     }
 </style>
 @endsection

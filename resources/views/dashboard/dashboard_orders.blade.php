@@ -23,7 +23,7 @@
                                 </div>
                                 <form action="#">
                                     <div class="row g-4">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_year">წელი</label>
                                                 <div class="form-control-wrap">
@@ -35,7 +35,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_month">თვე</label>
                                                 <div class="form-control-wrap">
@@ -48,6 +48,16 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="form-label" for="order_status">შეკვეთის სტატუსი</label>
+                                                <div class="form-control-wrap">
+                                                    <select class="form-control" id="order_status" name="order_status">
+                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_search_query">სწრაფი ძებნა</label>
                                                 <div class="form-control-wrap ">

@@ -39,7 +39,6 @@
                                         <th scope="col">რაოდენობა</th>
                                         <th scope="col">ერთეული</th>
                                         <th scope="col">ჯამი</th>
-                                        <th scope="col">RS</th>
                                         <th scope="col">მოქმედება</th>
                                     </tr>
                                 </thead>
@@ -58,12 +57,7 @@
                                             </td>
                                             <td>{{ $cart_item->attributes->unit }}</td>
                                             <td>{{ $cart_item->quantity * ($cart_item->price / 100) }} ₾</td>
-                                            <td>
-                                                <div class="custom-control custom-control-sm custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input" id="customCheck2" checked>
-                                                    <label class="custom-control-label" for="customCheck2"></label>
-                                                </div>
-                                            </td>
+
                                             <td>
 
                                             </td>
@@ -104,8 +98,8 @@
                                         <div class="form-control-wrap">
                                             <select class="form-control" id="order_customer_type" name="order_customer_type">
                                                 <option value="0"></option>
-                                                @foreach($customer_type as $customer_item)
-                                                <option value="{{ $customer_item->id }}">{{ $customer_item->name }}</option>
+                                                @foreach($customer_type['customer_type'] as $customer_k => $customer_value)
+                                                <option value="{{ $customer_k }}">{{ $customer_value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

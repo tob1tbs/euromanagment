@@ -120,7 +120,7 @@
                                 </a>
                             </li>
                             <li class="nk-menu-item">
-                                <a href="{{ route('actionDashboardReports') }}" class="nk-menu-link">
+                                <a href="{{ route('actionCustomersLoality') }}" class="nk-menu-link">
                                     <span class="nk-menu-text">ლოიალობის პროგრამა</span>
                                 </a>
                             </li>

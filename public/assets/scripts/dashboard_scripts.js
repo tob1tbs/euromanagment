@@ -104,18 +104,12 @@ function AddToCart() {
                                 <td>
                                     <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
                                         <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus"><em class="icon ni ni-minus"></em></button>
-                                        <input type="number" class="form-control number-spinner" value="0">
+                                        <input type="number" class="form-control number-spinner" value="`+value['quantity']+`">
                                         <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus"><em class="icon ni ni-plus"></em></button>
                                     </div> 
                                 </td>
-                                <td>`+value['quantity']+` `+value['attributes']['unit']+`</td>
+                                <td>`+value['attributes']['unit']+`</td>
                                 <td>@mdo</td>
-                                <td>
-                                    <div class="custom-control custom-control-sm custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck2" checked>
-                                        <label class="custom-control-label" for="customCheck2"></label>
-                                    </div>
-                                </td>
                                 <td>
 
                                 </td>

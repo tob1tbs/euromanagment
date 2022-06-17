@@ -24,11 +24,8 @@ class DashboardController extends Controller
     public function actionDashboardIndex(Request $Request, ServiceRsController $ServiceRsController) {
         if (view()->exists('dashboard.dashboard_index')) {
 
-            $CustomerType = new CustomerType();
-            $CustomerTypeList = $CustomerType::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
-
             $data = [
-                'customer_type' => $CustomerTypeList,
+                'customer_type' => $this->customerFields(),
             ];
             
             return view('dashboard.dashboard_index', $data);

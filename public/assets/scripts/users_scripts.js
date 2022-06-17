@@ -441,7 +441,7 @@ function AddSalarySubmit() {
                     NioApp.Toast(data['message'], 'success', {
                         position: 'top-right'
                     });
-                    $(".cell-item-"+data['day']+"-"+data['user_id']).html(data['total']).addClass('table-cell');
+                    $(".cell-item-"+data['day']+"-"+data['user_id']).html(data['total']).addClass('table-cell').removeClass('box-shadow').prop("onclick", ViewUserSalary());
                     $('#add_user_salary_form')[0].reset();
                     $("#userAddSalary").modal('hide');
                 }
