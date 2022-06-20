@@ -30,18 +30,18 @@
                     <div class="card card-bordered">
                         <div class="card-inner">
                             <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link font-neue active" data-toggle="tab" href="#client_item_3">კომპანიები</a>
+                                </li>
                             	<li class="nav-item">
-                                    <a class="nav-link font-neue active" data-toggle="tab" href="#client_item_1">იურიდიული პირები</a>
+                                    <a class="nav-link font-neue" data-toggle="tab" href="#client_item_1">ინდივიდუალური მეწარმეები</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link font-neue" data-toggle="tab" href="#client_item_2">ფიზიკური პირები</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link font-neue" data-toggle="tab" href="#client_item_3">კომპანიები</a>
-                                </li>
                             </ul>
                             <div class="tab-content">
-                            	<div class="tab-pane active" id="client_item_1">
+                            	<div class="tab-pane" id="client_item_1">
                                     <table class="datatable-init nk-tb-list nk-tb-ulist" data-auto-responsive="false">
                                         <thead>
                                             <tr class="nk-tb-item nk-tb-head font-neue">
@@ -158,7 +158,7 @@
                                         </tbody>
                                     </table> 
                                 </div>
-                                <div class="tab-pane" id="client_item_3">
+                                <div class="tab-pane active" id="client_item_3">
                                     <table class="datatable-init nk-tb-list nk-tb-ulist" data-auto-responsive="false">
                                         <thead>
                                             <tr class="nk-tb-item nk-tb-head font-neue">

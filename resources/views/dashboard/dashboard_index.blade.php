@@ -50,16 +50,17 @@
                                             <td>{{ $cart_item->price / 100 }} ₾</td>
                                             <td>
                                                 <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
-                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus"><em class="icon ni ni-minus"></em></button>
-                                                    <input type="number" class="form-control number-spinner" value="{{ $cart_item->quantity }}">
-                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus"><em class="icon ni ni-plus"></em></button>
+                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus" onclick="UpdateQuantity({{ $cart_item->id }}, 'minus')"><em class="icon ni ni-minus"></em></button>
+                                                    <input type="number" class="form-control number-spinner item-quantity-{{ $cart_item->id }}" value="{{ $cart_item->quantity }}">
+                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus" onclick="UpdateQuantity({{ $cart_item->id }}, 'plus')"><em class="icon ni ni-plus"></em></button>
                                                 </div>
                                             </td>
                                             <td>{{ $cart_item->attributes->unit }}</td>
                                             <td>{{ $cart_item->quantity * ($cart_item->price / 100) }} ₾</td>
-
                                             <td>
-
+                                                <a href="javascript:;" onclick="RemoveFromCart({{ $cart_item->id }})" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                                    <em class="icon ni ni-trash"></em>
+                                                </a>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -82,7 +83,7 @@
                                       <td colspan="7">
                                             <div class="float-right">
                                                 <button class="btn btn-danger font-neue" onclick="ClearCart()">შეკვეთის გასუფთავება</button>
-                                                <button class="btn btn-success font-neue">შეკვეთის განთავსება</button>
+                                                <button class="btn btn-success font-neue" onclick="OrderSubmit()">შეკვეთის განთავსება</button>
                                             </div>
                                       </td>
                                     </tr>
@@ -113,12 +114,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12">
-                                    <div class="customer-data-body"></div>
-                                </div>
-                                <div class="col-12 mb-2">
+                                <div class="col-12 mb-2 d-flex justify-content-center">
                                     <button class="btn btn-success font-neue" onclick="ExportCustomerData()">ექსპროტი</button>
                                     <button class="btn btn-danger font-neue ml-2" onclick="ClearCustomerFields()">გასუფთავება</button>
+                                </div>
+                                <div class="col-12">
+                                    <div class="customer-data-body"></div>
                                 </div>
                             </div>
                         </div>
@@ -190,6 +191,10 @@
         </div>
     </div>
 </div>
+<form id="order_detail">
+    <input type="hidden" name="customer_type" id="customer_type">        
+    <input type="hidden" name="customer_id" id="customer_id">        
+</form>
 @endsection
 
 @section('js')

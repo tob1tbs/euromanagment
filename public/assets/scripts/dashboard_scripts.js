@@ -99,7 +99,7 @@ function AddToCart() {
                     $.each(data['CartData'], function(key, value) {
                         $(".product-dashboard-list").append(`
                             <tr class="dashboard-item-`+value['id']+` font-helvetica-regular">
-                                <th>#`+value['id']+` - `+value['name']+`</th>
+                                <th>`+value['name']+`</th>
                                 <td>Mark</td>
                                 <td>
                                     <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
@@ -109,9 +109,11 @@ function AddToCart() {
                                     </div> 
                                 </td>
                                 <td>`+value['attributes']['unit']+`</td>
-                                <td>@mdo</td>
+                                <td>`+(value['quantity'] * value['price']).toFixed() / 100+` ₾</td>
                                 <td>
-
+                                    <a href="javascript:;" onclick="RemoveFromCart(`+value['id']+`)" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                        <em class="icon ni ni-trash"></em>
+                                    </a>
                                 </td>
                             </tr>
                         `);
@@ -176,9 +178,6 @@ function ExportCustomerData() {
             customer_type: $("#order_customer_type").val(),
             customer_code: $("#order_customer_code").val(),
         },
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
         success: function(data) {
             $(".customer-data-body").html('');
             if(data['status'] == true) {
@@ -189,21 +188,20 @@ function ExportCustomerData() {
                         });
                     })
                 } else {
-                    console.log(123);
-                    if(data['CustomerData']['type'] == 1) {
+                    if(data['type'] == 1) {
                         html = `
-                            <div class="nk-wg-card card card-bordered h-100">
+                            <div class="nk-wg-card card card-bordered h-100 mb-2">
                                 <div class="card-inner h-100">
                                     <div class="nk-iv-wg2">
                                         <div class="nk-iv-wg2-title">
                                             <h6 class="title font-neue">კლიენტი:</h6>
                                         </div>
                                         <div class="nk-iv-wg2-text">
-                                            <div class="nk-iv-wg2-amount ui-v2 font-neue" style="font-size: 16px;">`+JSON.parse(data['CustomerData']['data'])['name']+` `+JSON.parse(data['CustomerData']['data'])['lastname']+`</div>
+                                            <div class="nk-iv-wg2-amount ui-v2 font-neue" style="font-size: 16px;">`+data['CustomerData']['name']+` `+data['CustomerData']['lastname']+`</div>
                                             <ul class="nk-iv-wg2-list">
                                                 <li>
                                                     <span class="item-label font-neue">პირადი ნომერი</span>
-                                                    <span class="item-value">`+data['CustomerData']['code']+`</span>
+                                                    <span class="item-value">`+data['CustomerData']['personal_id']+`</span>
                                                 </li>
                                                 <li>
                                                     <span class="item-label font-neue">ტელფონის ნომერი</span>
@@ -215,12 +213,86 @@ function ExportCustomerData() {
                                                 </li>
                                                 <li>
                                                     <span class="item-label font-neue">მისამართი</span>
-                                                    <span class="item-value font-helvetica-regular">`+JSON.parse(data['CustomerData']['data'])['address']+`</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['address']+`</span>
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div class="nk-iv-wg2-cta">
-                                            <a href="#" class="btn btn-success btn-block font-neue">არჩევა</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    if(data['type'] == 2) {
+                        html = `
+                            <div class="nk-wg-card card card-bordered h-100 mb-2">
+                                <div class="card-inner h-100">
+                                    <div class="nk-iv-wg2">
+                                        <div class="nk-iv-wg2-title">
+                                            <h6 class="title font-neue">კლიენტი:</h6>
+                                        </div>
+                                        <div class="nk-iv-wg2-text">
+                                            <div class="nk-iv-wg2-amount ui-v2 font-neue" style="font-size: 16px;">
+                                                <span class="badge badge-success font-helvetica-regular">ი/მ</span>
+                                                `+data['CustomerData']['name']+` `+data['CustomerData']['lastname']+`
+                                            </div>
+                                            <ul class="nk-iv-wg2-list">
+                                                <li>
+                                                    <span class="item-label font-neue">პირადი ნომერი</span>
+                                                    <span class="item-value">`+data['CustomerData']['personal_id']+`</span>
+                                                </li>
+                                                <li>
+                                                    <span class="item-label font-neue">ტელფონის ნომერი</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['phone']+`</span>
+                                                </li>
+                                                <li>
+                                                    <span class="item-label font-neue">ელ-ფოსტა</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['email']+`</span>
+                                                </li>
+                                                <li>
+                                                    <span class="item-label font-neue">მისამართი</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['address']+`</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    if(data['type'] == 3) {
+                        html = `
+                            <div class="nk-wg-card card card-bordered h-100 mb-2">
+                                <div class="card-inner h-100">
+                                    <div class="nk-iv-wg2">
+                                        <div class="nk-iv-wg2-title">
+                                            <h6 class="title font-neue">კლიენტი:</h6>
+                                        </div>
+                                        <div class="nk-iv-wg2-text">
+                                            <div class="nk-iv-wg2-amount ui-v2 font-neue" style="font-size: 16px;">
+                                            `+data['CustomerData']['name']+`
+                                            </div>
+                                            <ul class="nk-iv-wg2-list">
+                                                <li>
+                                                    <span class="item-label font-neue">საიდენტიფიკაციო კოდი:</span>
+                                                    <span class="item-value">`+data['CustomerData']['code']+`</span>
+                                                </li>
+                                                <li>
+                                                    <span class="item-label font-neue">მისამართი</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['address']+`</span>
+                                                </li>
+                                                <li>
+                                                    <span class="item-label font-neue">საკონტაქტო პირი:</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['contact']+`</span>
+                                                </li>
+                                                <li>
+                                                    <span class="item-label font-neue">ტელეფონის ნომერი:</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['phone']+`</span>
+                                                </li>
+                                                <li>
+                                                    <span class="item-label font-neue">ელ-ფოსტა</span>
+                                                    <span class="item-value font-helvetica-regular">`+data['CustomerData']['email']+`</span>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -243,4 +315,121 @@ function ExportCustomerData() {
 function ClearCustomerFields() {
     $("#order_customer_type").val('');
     $("#order_customer_code").val('');
+    $(".customer-data-body").html('');
+}
+
+
+$("#order_customer_type").change(function() {
+    $("#order_customer_code").val('');
+    $(".customer-data-body").html('');
+});
+
+function SelectCustomerData(customer_id, customer_type) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ აღნიშნული კლიენტის არჩევა",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'არჩევა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $('#order_detail')[0].reset();
+            $("#customer_type").val(customer_type);
+            $("#customer_id").val(customer_id);
+        }
+    });
+}
+
+function RemoveFromCart(item_id) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ კალათიდან წაშლა",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/dashboards/ajax/cart/remove",
+                type: "POST",
+                data: {
+                    item_id: item_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if(data['status'] == true) {
+                        $(".product-dashboard-list").html('');
+                        if(Object.keys(data['CartData']).length > 0) {
+                            $.each(data['CartData'], function(key, value) {
+                                $(".product-dashboard-list").append(`
+                                    <tr class="dashboard-item-`+value['id']+` font-helvetica-regular">
+                                        <th>`+value['name']+`</th>
+                                        <td>Mark</td>
+                                        <td>
+                                            <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
+                                                <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus"><em class="icon ni ni-minus"></em></button>
+                                                <input type="number" class="form-control number-spinner" value="`+value['quantity']+`">
+                                                <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus"><em class="icon ni ni-plus"></em></button>
+                                            </div> 
+                                        </td>
+                                        <td>`+value['attributes']['unit']+`</td>
+                                        <td>`+(value['quantity'] * value['price']).toFixed() / 100+` ₾</td>
+                                        <td>
+                                            <a href="javascript:;" onclick="RemoveFromCart(`+value['id']+`)" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                                <em class="icon ni ni-trash"></em>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `);
+                            });
+                        } else {
+                            $(".tfoot-buttons").html('');
+                            $(".product-dashboard-list").append(`
+                                <tr style="background-color: white;">
+                                    <th colspan="7">
+                                        <div class="example-alert">
+                                            <div class="alert alert-info alert-icon">
+                                                <em class="icon ni ni-alert-circle"></em> 
+                                                <strong class="font-helvetica-regular">შეკვეთა ცარიელია.</strong>
+                                            </div>
+                                        </div>
+                                    </th>
+                                </tr>
+                            `);
+                        }
+                    }
+                }
+            });
+        }
+    });
+}
+
+function UpdateQuantity(item_id, action) {
+
+    if(action == 'plus') {
+        var quantity = $(".item-quantity-"+item_id).val() + 1;
+    }
+
+    if(action == 'minus') {
+        var quantity = $(".item-quantity-"+item_id).val() - 1;
+    }
+
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/cart/quantity",
+        type: "POST",
+        data: {
+            quantity: quantity,
+            item_id: item_id ,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                
+            }
+        }
+    });
 }

@@ -16,4 +16,6 @@ Route::group(['prefix' => 'dashboards/ajax', 'middleware' => []], function () {
     // CART
     Route::post('/cart/add', 'DashboardAjaxController@ajaxAddToCart')->name('ajaxAddToCart');
     Route::post('/cart/clear', 'DashboardAjaxController@ajaxCartClear')->name('ajaxCartClear');
+    Route::post('/cart/remove', 'DashboardAjaxController@ajaxCartRemove')->name('ajaxCartRemove');
+    Route::post('/cart/quantity', 'DashboardAjaxController@ajaxCartUpdateQuantity')->name('ajaxCartUpdateQuantity');
 });
