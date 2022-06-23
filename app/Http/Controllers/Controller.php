@@ -22,6 +22,17 @@ class Controller extends BaseController
         return $YearList;
     }
 
+    public function orderStatus() {
+        $OrderStatus = [
+            '1' => 'ახალი შეკვეთა',
+            '2' => 'მიმდინარე შეკვეთა',
+            '3' => 'დასრულებული',
+            '4' => 'გაუქმებული',
+        ];
+
+        return $OrderStatus;
+    }
+
     public function customerFields() {
         $FieldList = [
             'customer_type' => [

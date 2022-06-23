@@ -10,4 +10,13 @@ class DashboardOrderItem extends Model
     use HasFactory;
 
     protected $table = "new_orders_item";
+
+    protected $fillable = [
+        'item_id',
+        'order_id',
+        'price',
+        'quantity',
+        'deleted_at_int',
+        'deleted_at',
+    ];
 }

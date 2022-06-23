@@ -100,16 +100,16 @@ function AddToCart() {
                         $(".product-dashboard-list").append(`
                             <tr class="dashboard-item-`+value['id']+` font-helvetica-regular">
                                 <th>`+value['name']+`</th>
-                                <td>Mark</td>
+                                <td>`+value['attributes']['unit']+`</td>
                                 <td>
                                     <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
-                                        <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus"><em class="icon ni ni-minus"></em></button>
-                                        <input type="number" class="form-control number-spinner" value="`+value['quantity']+`">
-                                        <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus"><em class="icon ni ni-plus"></em></button>
+                                        <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus" onclick="UpdateQuantityMinus(`+value['id']+`)"><em class="icon ni ni-minus"></em></button>
+                                        <input type="number" class="form-control number-spinner item-quantity-`+value['id']+`" value="`+value['quantity']+`">
+                                        <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus" onclick="UpdateQuantityPlus(`+value['id']+`)"><em class="icon ni ni-plus"></em></button>
                                     </div> 
                                 </td>
-                                <td>`+value['attributes']['unit']+`</td>
-                                <td>`+(value['quantity'] * value['price']).toFixed() / 100+` ₾</td>
+                                <td>`+(value['price'] / 100).toFixed(2)+`</td>
+                                <td class="total_price-`+value['id']+`">`+(value['quantity'] * value['price']).toFixed() / 100+` ₾</td>
                                 <td>
                                     <a href="javascript:;" onclick="RemoveFromCart(`+value['id']+`)" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
                                         <em class="icon ni ni-trash"></em>
@@ -122,15 +122,23 @@ function AddToCart() {
                     $(".tfoot-buttons").html('');
                     $(".tfoot-buttons").append(`
                         <tr>
-                            <td colspan="6">
-                                <div class="float-right">
+                            <td colspan="2">
+                                <div>
                                     <button class="btn btn-danger font-neue" onclick="ClearCart()">შეკვეთის გასუფთავება</button>
-                                    <button class="btn btn-success font-neue">შეკვეთის განთავსება</button>
+                                    <button class="btn btn-success font-neue" onclick="MakeOrder()">შეკვეთის განთავსება</button>
                                 </div>
+                            </td>
+                            <td>
+                                <center><span class="badge badge-success item-counts">`+data['total_quantity']+`</span></center>
+                            </td>
+                            <td></td>
+                            <td colspan="3">
+                                <span class="badge badge-success item_total_price">`+data['cart_total']+` ₾</span>
                             </td>
                         </tr>
                     `);
                 $("#ProductInfoModal").modal('hide');
+                NioApp.NumberSpinner();
             } else {
                 
             }
@@ -300,6 +308,8 @@ function ExportCustomerData() {
                         `;
                     }
                     $(".customer-data-body").append(html);
+                    $("#customer_type").val(data['type']);
+                    $("#customer_id").val(data['CustomerData']['id']);
                 }
             } else {
                 $.each(data['message'], function(key, value) {
@@ -365,16 +375,16 @@ function RemoveFromCart(item_id) {
                                 $(".product-dashboard-list").append(`
                                     <tr class="dashboard-item-`+value['id']+` font-helvetica-regular">
                                         <th>`+value['name']+`</th>
-                                        <td>Mark</td>
+                                        <td>`+value['attributes']['unit']+`</td>
                                         <td>
                                             <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
-                                                <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus"><em class="icon ni ni-minus"></em></button>
-                                                <input type="number" class="form-control number-spinner" value="`+value['quantity']+`">
-                                                <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus"><em class="icon ni ni-plus"></em></button>
+                                                <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus" onclick="UpdateQuantityMinus(`+value['id']+`)"><em class="icon ni ni-minus"></em></button>
+                                                <input type="number" class="form-control number-spinner item-quantity-`+value['id']+`" value="`+value['quantity']+`">
+                                                <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus" onclick="UpdateQuantityPlus(`+value['id']+`)"><em class="icon ni ni-plus"></em></button>
                                             </div> 
                                         </td>
-                                        <td>`+value['attributes']['unit']+`</td>
-                                        <td>`+(value['quantity'] * value['price']).toFixed() / 100+` ₾</td>
+                                        <td>`+(value['price'] / 100).toFixed(2)+`</td>
+                                        <td class="total_price-`+value['id']+`">`+(value['quantity'] * value['price']).toFixed() / 100+` ₾</td>
                                         <td>
                                             <a href="javascript:;" onclick="RemoveFromCart(`+value['id']+`)" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
                                                 <em class="icon ni ni-trash"></em>
@@ -398,6 +408,11 @@ function RemoveFromCart(item_id) {
                                 </tr>
                             `);
                         }
+                        NioApp.NumberSpinner();
+
+                        $(".item-counts, .item_total_price").html('');
+                        $(".item_total_price").append(data['cart_total']+' ₾');
+                        $(".item-counts").append(data['total_quantity']);
                     }
                 }
             });
@@ -405,22 +420,13 @@ function RemoveFromCart(item_id) {
     });
 }
 
-function UpdateQuantity(item_id, action) {
-
-    if(action == 'plus') {
-        var quantity = $(".item-quantity-"+item_id).val() + 1;
-    }
-
-    if(action == 'minus') {
-        var quantity = $(".item-quantity-"+item_id).val() - 1;
-    }
-
+function UpdateQuantityPlus(item_id) {
     $.ajax({
         dataType: 'json',
         url: "/dashboards/ajax/cart/quantity",
         type: "POST",
         data: {
-            quantity: quantity,
+            quantity: parseInt($(".item-quantity-"+item_id).val()) + 1,
             item_id: item_id ,
         },
         headers: {
@@ -428,7 +434,115 @@ function UpdateQuantity(item_id, action) {
         },
         success: function(data) {
             if(data['status'] == true) {
-                
+                $(".item-counts, .item_total_price").html('');
+                $(".item_total_price").append(data['cart_total']+' ₾');
+                $(".item-counts").append(data['total_quantity']);
+                $(".total_price-"+item_id).html('');
+                $(".total_price-"+item_id).append((data['item_total_price'].toFixed(2))+' ₾');
+            }
+        }
+    });
+}
+
+function UpdateQuantityMinus(item_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/cart/quantity",
+        type: "POST",
+        data: {
+            quantity: parseInt($(".item-quantity-"+item_id).val()) - 1,
+            item_id: item_id ,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $(".item-counts, .item_total_price").html('');
+                $(".item_total_price").append(data['cart_total']+' ₾');
+                $(".item-counts").append(data['total_quantity']);
+                $(".total_price-"+item_id).html('');
+                $(".total_price-"+item_id).append((data['item_total_price'].toFixed(2))+' ₾');
+            }
+        }
+    });
+}
+
+function MakeOrder() {
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/cart/submit",
+        type: "POST",
+        data: {
+            order_id: $("#order_id").val(),
+            customer_type: $("#customer_type").val(),
+            customer_id: $("#customer_id").val() ,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    $.each(data['message'], function(key, value) {
+                        NioApp.Toast(value, 'error', {
+                            position: 'top-right'
+                        });
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        text: data['message'][0],
+                        timer: 2000,
+                    });
+                    window.location.replace(data['redirect_url']);
+                }
+            }
+        }
+    });
+}
+
+function RejectOrder(order_id) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ შეკვეთის გაუქმება",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'წაშლა',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/dashboards/ajax/order/reject",
+                type: "POST",
+                data: {
+                    order_id: order_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if(data['status'] == true) {
+                       
+                    }
+                }
+            });
+        }
+    });
+}
+
+function OrderModal(order_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/order/get",
+        type: "GET",
+        data: {
+            order_id: order_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $(".modal-order-number").html('').append(data['DashboardOrderData']['id']);
+                $(".modal-order-date").html('').append(new Date(data['DashboardOrderData']['created_at']));
+                $("#OrderModal").modal('show');
             }
         }
     });

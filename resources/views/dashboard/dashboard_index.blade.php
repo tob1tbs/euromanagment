@@ -35,9 +35,9 @@
                                 <thead>
                                     <tr class="font-neue">
                                         <th scope="col">დასახელება</th>
-                                        <th scope="col">ფასი</th>
-                                        <th scope="col">რაოდენობა</th>
                                         <th scope="col">ერთეული</th>
+                                        <th scope="col">რაოდენობა</th>
+                                        <th scope="col">ფასი</th>
                                         <th scope="col">ჯამი</th>
                                         <th scope="col">მოქმედება</th>
                                     </tr>
@@ -47,16 +47,16 @@
                                         @foreach(Cart::getContent() as $cart_item)
                                         <tr class="dashboard-item-{{ $cart_item->id }} font-helvetica-regular">
                                             <th>{{ $cart_item->name }}</th>
-                                            <td>{{ $cart_item->price / 100 }} ₾</td>
+                                            <td>{{ $cart_item->attributes->unit }}</td>
                                             <td>
                                                 <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
-                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus" onclick="UpdateQuantity({{ $cart_item->id }}, 'minus')"><em class="icon ni ni-minus"></em></button>
+                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus" onclick="UpdateQuantityMinus({{ $cart_item->id }})"><em class="icon ni ni-minus"></em></button>
                                                     <input type="number" class="form-control number-spinner item-quantity-{{ $cart_item->id }}" value="{{ $cart_item->quantity }}">
-                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus" onclick="UpdateQuantity({{ $cart_item->id }}, 'plus')"><em class="icon ni ni-plus"></em></button>
+                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus" onclick="UpdateQuantityPlus({{ $cart_item->id }})"><em class="icon ni ni-plus"></em></button>
                                                 </div>
                                             </td>
-                                            <td>{{ $cart_item->attributes->unit }}</td>
-                                            <td>{{ $cart_item->quantity * ($cart_item->price / 100) }} ₾</td>
+                                            <td>{{ $cart_item->price / 100 }} ₾</td>
+                                            <td class="total_price-{{ $cart_item->id }}">{{ $cart_item->quantity * ($cart_item->price / 100) }} ₾</td>
                                             <td>
                                                 <a href="javascript:;" onclick="RemoveFromCart({{ $cart_item->id }})" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
                                                     <em class="icon ni ni-trash"></em>
@@ -80,11 +80,18 @@
                                 <tfoot class="tfoot-buttons">
                                     @if(count(Cart::getContent()) > 0)
                                     <tr>
-                                      <td colspan="7">
-                                            <div class="float-right">
+                                      <td colspan="2">
+                                            <div>
                                                 <button class="btn btn-danger font-neue" onclick="ClearCart()">შეკვეთის გასუფთავება</button>
-                                                <button class="btn btn-success font-neue" onclick="OrderSubmit()">შეკვეთის განთავსება</button>
+                                                <button class="btn btn-success font-neue" onclick="MakeOrder()">შეკვეთის განთავსება</button>
                                             </div>
+                                      </td>
+                                      <td>
+                                          <center><span class="badge badge-success item-counts">{{ Cart::getTotalQuantity() }}</span></center>
+                                      </td>
+                                      <td></td>
+                                      <td colspan="3">
+                                          <span class="badge badge-success item_total_price">{{ Cart::getTotal() / 100 }} ₾</span>
                                       </td>
                                     </tr>
                                     @endif
@@ -192,6 +199,7 @@
     </div>
 </div>
 <form id="order_detail">
+    <input type="hidden" name="order_id" id="order_id">        
     <input type="hidden" name="customer_type" id="customer_type">        
     <input type="hidden" name="customer_id" id="customer_id">        
 </form>
