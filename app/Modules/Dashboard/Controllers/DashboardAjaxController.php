@@ -256,7 +256,7 @@ class DashboardAjaxController extends Controller
 	public function ajaxOrderGet(Request $Request) {
 		if($Request->isMethod('GET') && !empty($Request->order_id)) {
 			$DashboardOrder = new DashboardOrder();
-			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->load('orderItems.orderItemData')->load('customerType')->load('customerCompany');
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->load('orderItems.orderItemData')->load('orderItems.orderItemData.productUnit')->load('customerType')->load('customerCompany');
 
 			$DashboardOrderOverhead = new DashboardOrderOverhead();
 			$DashboardOrderOverheadList = $DashboardOrderOverhead->where('order_id', $Request->order_id)->get()->load(['deletedBy', 'createdBy']);

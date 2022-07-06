@@ -112,8 +112,11 @@ class DashboardController extends Controller
     public function actionDashboardOrdersPrint(Request $Request) {
         if (view()->exists('dashboard.dashboard_print')) {
 
+            $DashboardOrder = new DashboardOrder();
+            $DashboardOrderData = $DashboardOrder->find($Request->order_id);
+
             $data = [
-                'customer_type' => $this->customerFields(),
+                'order_data' => $DashboardOrderData,
             ];
             
             return view('dashboard.dashboard_print', $data);

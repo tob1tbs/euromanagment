@@ -13,7 +13,7 @@
 
     @yield('css')
 </head>
-<body class="bg-white" onload="printPromot()">
+<body class="bg-white" >
     <div class="nk-block">
         <div class="invoice invoice-print">
             <div class="invoice-wrap">
@@ -37,55 +37,63 @@
                     </div>
                     <div class="invoice-contact">
                         <span class="overline-title font-neue">დამკვეთი</span>
+                        @if($order_data->customer_type == 1)
                         <div class="invoice-contact-info">
-                            <h4 class="title font-neue">შპს "ევრო-ვაგონკა"</h4>
+                            <h4 class="title font-neue">ფ/პ {{ $order_data->customerType->name }} {{ $order_data->customerType->lastname }}</h4>
                             <ul class="list-plain">
-                                <li><em class="icon ni ni-chevron-right-circle fs-18px"></em><span class=" font-helvetica-regular">ს/კ: 430030708</span></li>
+                                <li><em class="icon ni ni-chevron-right-circle fs-18px"></em><span class=" font-helvetica-regular">პ/ნ: {{ $order_data->customerType->personal_id }}</span></li>
+                                <li><em class="icon ni ni-map-pin-fill fs-18px"></em><span class=" font-helvetica-regular">მისამართი: {{ $order_data->customerType->lastname }}</span></li>
                             </ul>
                         </div>
+                        @elseif($order_data->customer_type == 2)
+                        <div class="invoice-contact-info">
+                            <h4 class="title font-neue">ი/მ {{ $order_data->customerType->name }} {{ $order_data->customerType->lastname }}</h4>
+                            <ul class="list-plain">
+                                <li><em class="icon ni ni-chevron-right-circle fs-18px"></em><span class=" font-helvetica-regular">ს/კ: {{ $order_data->customerType->personal_id }}</span></li>
+                                <li><em class="icon ni ni-map-pin-fill fs-18px"></em><span class=" font-helvetica-regular">მისამართი: {{ $order_data->customerType->address }}</span></li>
+                            </ul>
+                        </div>
+                        @elseif($order_data->customer_type == 3)
+                        <div class="invoice-contact-info">
+                            <h4 class="title font-neue">{{ $order_data->customerCompany->name }}</h4>
+                            <ul class="list-plain">
+                                <li><em class="icon ni ni-chevron-right-circle fs-18px"></em><span class=" font-helvetica-regular">ს/კ: {{ $order_data->customerCompany->code }}</span></li>
+                                <li><em class="icon ni ni-map-pin-fill fs-18px"></em><span class=" font-helvetica-regular">მისამართი: {{ $order_data->customerCompany->address }}</span></li>
+                            </ul>
+                        </div>
+                        @endif
                     </div>
                 </div><!-- .invoice-head -->
                 <div class="invoice-bills">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th class="w-150px">Item ID</th>
-                                    <th class="w-60">Description</th>
-                                    <th>Price</th>
-                                    <th>Qty</th>
-                                    <th>Amount</th>
+                                <tr class="font-neue">
+                                    <th class="w-150px">კოდი</th>
+                                    <th class="w-60">დასახელება</th>
+                                    <th>ღირებულება</th>
+                                    <th>ერთეული</th>
+                                    <th>რეოდენობა</th>
+                                    <th>ჯამი</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>24108054</td>
-                                    <td>Dashlite - Conceptual App Dashboard - Regular License</td>
-                                    <td>$40.00</td>
-                                    <td>5</td>
-                                    <td>$200.00</td>
+                                @foreach($order_data->orderItems as $OrderItem)
+                                <tr class="font-helvetica-regular">
+                                    <td>{{ $OrderItem->orderItemData->id }}</td>
+                                    <td>{{ $OrderItem->orderItemData->name }}</td>
+                                    <td>₾{{ $OrderItem->price / 100}}</td>
+                                    <td>{{ $OrderItem->orderItemData->productUnit->name }}</td>
+                                    <td>{{ $OrderItem->quantity }}</td>
+                                    <td>₾{{ $OrderItem->quantity * ($OrderItem->price / 100) }}</td>
                                 </tr>
+                                @endforeach
                             </tbody>
                             <tfoot>
-                                <tr>
-                                    <td colspan="2"></td>
-                                    <td colspan="2">Subtotal</td>
-                                    <td>$435.00</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"></td>
-                                    <td colspan="2">Processing fee</td>
-                                    <td>$10.00</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"></td>
-                                    <td colspan="2">TAX</td>
-                                    <td>$43.50</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"></td>
-                                    <td colspan="2">Grand Total</td>
-                                    <td>$478.50</td>
+                                <tr class="font-neue">
+                                    <td colspan="3"></td>
+                                    <td colspan="2"><strong>ჯამური ღირებულება:</strong></td>
+                                    <td>₾{{ $order_data->total_price / 100 }}</td>
                                 </tr>
                             </tfoot>
                         </table>

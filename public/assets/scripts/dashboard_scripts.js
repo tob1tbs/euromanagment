@@ -596,6 +596,7 @@ function OrderModal(order_id) {
                             <td>`+value['id']+`</td>
                             <td>`+value['order_item_data']['name']+`</td>
                             <td>`+value['price'] / 100+`₾</td>
+                            <td>`+value['order_item_data']['product_unit']['name']+`</td>
                             <td>`+value['quantity']+`</td>
                             <td>`+value['quantity'] * value['price'] / 100+`₾</td>
                             <td>
