@@ -706,7 +706,7 @@ function SendOverhead() {
                         text: data['message'],
                         timer: 2000,
                     });
-                    // location.reload();
+                    location.reload();
                 }
             }  
         }
