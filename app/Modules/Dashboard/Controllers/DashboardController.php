@@ -11,6 +11,7 @@ use App\Modules\Dashboard\Models\DashboardOrder;
 use App\Modules\Customers\Models\CustomerType;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 use App\Modules\Services\Controllers\ServiceRsController;
 
@@ -52,10 +53,13 @@ class DashboardController extends Controller
                 $DashboardOrderList = $DashboardOrderList->where('status', $Request->order_status);
             }
 
+            if($Request->has('rs_status') && !empty($Request->rs_status)) {
+                $DashboardOrderList = $DashboardOrderList->where('rs_send', $Request->rs_status);
+            }
+
             if($Request->has('order_search_query') && !empty($Request->order_search_query)) {
                 $DashboardOrderList->where(function($query) use ($Request) {
                     $query->where('id', 'like', '%'.$Request->order_search_query.'%');
-                    // $query->orWhere('user_lastname', 'like', '%'.$Request->order_search_query.'%');
                 });
             }
 
@@ -65,6 +69,7 @@ class DashboardController extends Controller
                 'year_list' => $this->yearList(),   
                 'month_list' => $this->monthList(),   
                 'order_status' => $this->orderStatus(),   
+                'rs_status' => $this->rsStatus(),   
                 'order_list' => $DashboardOrderList,
                 'current_date' => Carbon::now()->locale('ka_GE'),
             ];
@@ -79,13 +84,39 @@ class DashboardController extends Controller
         if (view()->exists('dashboard.dashboard_reports')) {
 
             $DashboardOrder = new DashboardOrder();
-            $DashboardOrderList = $DashboardOrder::where('deleted_at_int', '!=', 0)->get();
+            $DashboardOrderList = $DashboardOrder::where('deleted_at_int', '!=', 0);
+
+            $DashboardOrderList = $DashboardOrderList->get();
+
+            $OrderStatistic = [
+                'canceled' => $DashboardOrderList->where('status', 4)->sum('id'),
+                'in_progres' => $DashboardOrderList->where('status', 2)->sum('id'),
+                'complated' => $DashboardOrderList->where('status', 3)->sum('id'),
+            ];
 
             $data = [
+                'year_list' => $this->yearList(),   
+                'month_list' => $this->monthList(),   
+                'order_status' => $this->orderStatus(),
+                'OrderStatistic' => json_encode(array_values($OrderStatistic), true),
                 'order_list' => $DashboardOrderList,
+                'current_date' => Carbon::now()->locale('ka_GE'),
             ];
             
             return view('dashboard.dashboard_reports', $data);
+        } else {
+            abort('404');
+        }
+    }
+
+    public function actionDashboardOrdersPrint(Request $Request) {
+        if (view()->exists('dashboard.dashboard_print')) {
+
+            $data = [
+                'customer_type' => $this->customerFields(),
+            ];
+            
+            return view('dashboard.dashboard_print', $data);
         } else {
             abort('404');
         }

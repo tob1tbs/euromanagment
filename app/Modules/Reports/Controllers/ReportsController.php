@@ -14,8 +14,4 @@ class ReportsController extends Controller
     public function __construct() {
         //
     }
-
-    public function actionReportsIndex() {
-        //
-    }
 }

@@ -19,4 +19,8 @@ class DashboardOrderItem extends Model
         'deleted_at_int',
         'deleted_at',
     ];
+
+    public function orderItemData() {
+        return $this->belongsTo('App\Modules\Products\Models\Product', 'item_id', 'id');
+    }
 }

@@ -409,7 +409,6 @@ function RemoveFromCart(item_id) {
                             `);
                         }
                         NioApp.NumberSpinner();
-
                         $(".item-counts, .item_total_price").html('');
                         $(".item_total_price").append(data['cart_total']+' ₾');
                         $(".item-counts").append(data['total_quantity']);
@@ -522,7 +521,12 @@ function RejectOrder(order_id) {
                 },
                 success: function(data) {
                     if(data['status'] == true) {
-                       
+                        Swal.fire({
+                            icon: 'success',
+                            text: data['message'],
+                            timer: 2000,
+                        });
+                        location.reload();
                     }
                 }
             });
@@ -540,10 +544,204 @@ function OrderModal(order_id) {
         },
         success: function(data) {
             if(data['status'] == true) {
-                $(".modal-order-number").html('').append(data['DashboardOrderData']['id']);
-                $(".modal-order-date").html('').append(new Date(data['DashboardOrderData']['created_at']));
+                var order_data = data['DashboardOrderData']['created_at'];
+
+                $(".modal-order-number").html('').append('#'+data['DashboardOrderData']['id']);
+                $(".modal-order-date").html('').append(order_data.split('T')[0]+ ' '+order_data.split('T')[1].split('.')[0]);
+
+                if(data['DashboardOrderData']['rs_send'] == 1) {
+                    var order_buttons = `
+                        <a href="/dashboards/orders/print/`+data['DashboardOrderData']['id']+`" target="_blank" class="btn btn-warning font-neue">
+                            ინვოისის დაბეჭდვა
+                            <em class="icon ni ni-printer-fill ml-1"></em>
+                        </a>
+                        <button class="btn btn-primary font-neue">
+                            ინვოისის გაგზავნა
+                            <em class="icon ni ni-send ml-1"></em>
+                        </button>
+                    `;
+                } else {
+                    var order_buttons = `
+                        <button class="btn btn-success font-neue" type="button" onclick="SendOverhead()">ზედნადების ატვირთვა</button>
+                        <a href="/dashboards/orders/print/`+data['DashboardOrderData']['id']+`" target="_blank" class="btn btn-warning font-neue">
+                            ინვოისის დაბეჭდვა
+                            <em class="icon ni ni-printer-fill ml-1"></em>
+                        </a>
+                        <button class="btn btn-primary font-neue">
+                            ინვოისის გაგზავნა
+                            <em class="icon ni ni-send ml-1"></em>
+                        </button>
+                    `;
+                }
+                $(".order-buttons").html('').append(order_buttons);
+
+                var order_item_html = '';
+                var overead_list = '';
+
+                $.each(data['DashboardOrderData']['order_items'], function(key, value) {
+                    if(data['DashboardOrderData']['rs_send'] == 0 || data['DashboardOrderData']['rs_send'] == 3) {
+                        var item_switcher = `
+                            <div class="g" style="position: relative; left: 10px;">
+                                <div class="custom-control custom-control-sm custom-switch">
+                                    <input type="checkbox" name="item_rs[`+value['id']+`][]" value="1" class="custom-control-input" id="overhead_item_`+value['id']+`" checked>
+                                    <label class="custom-control-label" for="overhead_item_`+value['id']+`"></label>
+                                </div>
+                            </div>
+                        `
+                    } else {
+                        var item_switcher = `-`;
+                    }
+                    order_item_html += `
+                        <tr class="font-helvetica-regular">
+                            <td>`+value['id']+`</td>
+                            <td>`+value['order_item_data']['name']+`</td>
+                            <td>`+value['price'] / 100+`₾</td>
+                            <td>`+value['quantity']+`</td>
+                            <td>`+value['quantity'] * value['price'] / 100+`₾</td>
+                            <td>
+                                `+item_switcher+`
+                            </td>
+                        </tr>
+                    `;
+                });
+                $("#order_id").val(order_id);
+                $("#order_form").html('').append(order_item_html);
+                $(".order-customer").html('');
+
+                if(data['DashboardOrderData']['customer_company'] != null && data['DashboardOrderData']['customer_type'] == null) {
+                    $(".order-customer").append(data['DashboardOrderData']['customer_company']['name']+' ('+data['DashboardOrderData']['customer_company']['code']+')');
+                }
+
+                if(data['DashboardOrderData']['customer_company'] == null && data['DashboardOrderData']['customer_type'] != null) {
+                    $(".order-customer").append(data['DashboardOrderData']['customer_type']['name']+' '+data['DashboardOrderData']['customer_type']['lastname']+' ('+data['DashboardOrderData']['customer_type']['personal_id']+')');
+                }
+
+                $(".overhead-list").html('');
+                if(data['DashboardOrderOverheadList'].length > 0) {
+                    $.each(data['DashboardOrderOverheadList'], function(key, value) {
+                        if(value['status'] == 1) {
+                            var order_status = '<span class="badge badge-outline-success font-helvetica-regular">ატვირთულია</span>';
+                            var overhead_cancel = '<a href="javascript:;" onclick="CancelOverhead('+value['overhead_id']+', '+value['order_id']+')" class="btn btn-sm btn-danger font-helvetica-regular">გაუქმება</a>';
+                            var cancel_date = '-';
+                            var cancel_by = '';
+                        } else if (value['status'] == 2) {
+                            var order_status = '<span class="badge badge-outline-danger font-helvetica-regular">გაუქმებული</span>';
+                            var overhead_cancel = '';
+                            var cancel_date = '<span class="badge badge-outline-danger">'+value['deleted_at']+'</span>';
+                            var cancel_by = value['deleted_by']['name']+` `+value['deleted_by']['lastname'];
+                        }
+
+                        $(".overhead-list").append(`
+                            <tr class="tb-tnx-item font-helvetica-regular">
+                                <td class="tb-tnx-id">
+                                    <a href="#"><span>`+value['overhead_id']+`</span></a>
+                                </td>
+                                <td class="text-center tb-tnx-info">
+                                    <span class="badge badge-outline-primary">`+value['created_at'].split('T')[0]+` `+value['created_at'].split('T')[1].split('.')[0]+`</span>
+                                    <br>
+                                    <span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span>
+                                </td>
+                                <td class="text-center tb-tnx-info">
+                                    `+cancel_date+`<br>
+                                    <span>`+cancel_by+`</span>
+                                </td>
+                                <td class="text-center tb-tnx-info">
+                                    <div class="tb-tnx-status">
+                                        `+order_status+`
+                                    </div>
+                                </td>
+                                <td>
+                                    `+overhead_cancel+`
+                                </td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    $(".overhead-list").append(`
+                        <tr class="tb-tnx-item font-helvetica-regular">
+                            <td class="tb-tnx-id" colspan="5">
+                                <div class="example-alert text-center">
+                                    <div class="alert alert-info alert-icon font-helvetica-regular">
+                                    <em class="icon ni ni-alert-circle"></em> აღნიშნულ შეკვეთაზე ზედნადები არ არის ატვირთული.</div>
+                                </div>
+                            </td>
+                        </tr>
+                    `);
+                }
+                $(".order_total").html('').append(data['DashboardOrderData']['total_price'] / 100+ '₾');
                 $("#OrderModal").modal('show');
             }
+        }
+    });
+}
+
+function SendOverhead() {
+    var form = $('#order_form_data')[0];
+    var data = new FormData(form);
+
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/order/overhead/send",
+        type: "POST",
+        data: data,
+        enctype: 'multipart/form-data',
+        processData: false,
+        contentType: false,
+        cache: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    Swal.fire({
+                        icon: 'warning',
+                        text: data['message'],
+                        timer: 2000,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        text: data['message'],
+                        timer: 2000,
+                    });
+                    // location.reload();
+                }
+            }  
+        }
+    });
+}
+
+function CancelOverhead(overhead_id, order_id) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ ზედნადების გაუქმება",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'გაუქმება',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/dashboards/ajax/order/overhead/cancel",
+                type: "POST",
+                data: {
+                    overhead_id: overhead_id,
+                    order_id: order_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if(data['status'] == true) {
+                        Swal.fire({
+                            icon: 'success',
+                            text: data['message'],
+                            timer: 2000,
+                        });
+                        location.reload();
+                    }
+                }
+            });
         }
     });
 }

@@ -16,9 +16,8 @@
                                 <div class="nk-block-head-xs">
                                     <div class="nk-block-between g-2">
                                         <div class="nk-block-head-content">
-                                            <h6 class="nk-block-title title font-neue">შეკვეთების ისტორია</h6>
+                                            <h6 class="nk-block-title title font-neue">შეკვეთების ჩამონათვალი</h6>
                                         </div>
-
                                     </div>
                                 </div>
                                 <form action="#">
@@ -35,7 +34,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_month">თვე</label>
                                                 <div class="form-control-wrap">
@@ -47,7 +46,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_status">შეკვეთის სტატუსი</label>
                                                 <div class="form-control-wrap">
@@ -62,17 +61,30 @@
                                         </div>
                                         <div class="col-lg-2">
                                             <div class="form-group">
+                                                <label class="form-label" for="rs_status">ზედნადების სტატუსი</label>
+                                                <div class="form-control-wrap">
+                                                    <select class="form-control" id="rs_status" name="rs_status">
+                                                        <option value="0"></option>
+                                                        @foreach($rs_status as $rs_key => $rs_item)
+                                                        <option value="{{ $rs_key }}" @if(request()->rs_status == $rs_key) selected @endif>{{ $rs_item }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="form-group">
                                                 <label class="form-label" for="order_search_query">სწრაფი ძებნა</label>
                                                 <div class="form-control-wrap ">
-                                                    <input type="text" class="form-control" id="order_search_query" name="order_search_query" value="{{ request()->order_search_query }}" placeholder="სახელი, გვარი, პირადი ნომერი, სხვა...">
+                                                    <input type="text" class="form-control" id="order_search_query" name="order_search_query" value="{{ request()->order_search_query }}" placeholder="შეკვეთს ნომერი">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-lg-1">
                                             <div class="form-group">
                                                 <label class="form-label" for="pay-amount-1">&nbsp;</label>
-                                                <div class="form-control-wrap">
-                                                    <button type="submit" class="btn btn-success font-neue">ძებნა</button>
+                                                <div class="form-control-wrap text-center">
+                                                    <button type="submit" class="btn btn-success font-neue w-100">გაფილტვრა</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -80,6 +92,7 @@
                                 </form>
                                 <div class="tab-content">
                                     <div class="card card-bordered card-preview mt-4">
+                                        @if(count($order_list) > 0)
                                         <table class="table table-orders">
                                             <thead class="tb-odr-head">
                                                 <tr class="tb-odr-item font-neue">
@@ -94,6 +107,9 @@
                                                     </th>
                                                     <th class="tb-odr-info">
                                                         <span class="tb-odr-date">ღირებულება</span>
+                                                    </th>
+                                                    <th class="tb-odr-info">
+                                                        <span class="tb-odr-date">ზედნადები</span>
                                                     </th>
                                                     <th class="tb-odr-info">
                                                         <span class="tb-odr-date">სტატუსი</span>
@@ -148,6 +164,21 @@
                                                             @endswitch
                                                         </span>
                                                     </td>
+                                                    <td class="tb-odr-info">
+                                                        <span class="tb-odr-status">
+                                                            @switch($order_item->rs_send)
+                                                                @case(1)
+                                                                <span class="badge badge-outline-success font-helvetica-regular">ზედნადები ატვირთულია</span>
+                                                                @break
+                                                                @case(2)
+                                                                <span class="badge badge-outline-danger font-helvetica-regular">ზედნადები გაუქმებულია</span>
+                                                                @break
+                                                                @case(3)
+                                                                <span class="badge badge-outline-warning font-helvetica-regular">ზედნადები არ არის ატვირთული</span>
+                                                                @break
+                                                            @endswitch
+                                                        </span>
+                                                    </td>
                                                     <td class="tb-odr-action">
                                                         @if($order_item->deleted_at_int != 0 && $order_item->status != 4)
                                                         <div class="tb-odr-btns d-none d-md-inline">
@@ -168,6 +199,12 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
+                                        @else 
+                                        <div class="example-alert">
+                                            <div class="alert alert-info alert-icon">
+                                                <em class="icon ni ni-alert-circle"></em> <strong class="font-helvetica-regular">შეკვეთები ვერ მოიძებნა</strong></div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -194,10 +231,10 @@
                             <div class="invoice-contact">
                                 <span class="overline-title font-neue">მომხმარებელი</span>
                                 <div class="invoice-contact-info">
-                                    <h4 class="title font-helvetica-regular">Gregory Anderson</h4>
+                                    <h4 class="title font-helvetica-regular order-customer" style="font-size: 16px;"></h4>
                                 </div>
                             </div>
-                            <div class="invoice-desc">
+                            <div class="invoice-desc" style="width: 300px;">
                                 <ul class="list-plain">
                                     <li class="invoice-id font-helvetica-regular"><span>შეკვეთის ნომერი:</span><span class="modal-order-number"></span></li>
                                     <li class="invoice-date font-helvetica-regular"><span>თარიღი:</span><span class="modal-order-date"></span></li>
@@ -206,57 +243,69 @@
                         </div>
                         <div class="invoice-bills">
                             <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr class="font-neue">
-                                            <th class="w-150px">კოდი</th>
-                                            <th class="w-60">დასახელება</th>
-                                            <th>ღირებულება</th>
-                                            <th>რეოდენობა</th>
-                                            <th>ჯამი</th>
-                                            <th>RS</th>
+                                <form id="order_form_data">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr class="font-neue">
+                                                <th class="w-150px">კოდი</th>
+                                                <th class="w-60">დასახელება</th>
+                                                <th>ღირებულება</th>
+                                                <th>რეოდენობა</th>
+                                                <th>ჯამი</th>
+                                                <th>RS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="order_form">
+                                            
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td colspan="2" class="font-neue">ჯამი:</td>
+                                                <td class="order_total"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <input type="hidden" name="order_id" id="order_id">
+                                </form>
+                            </div>
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner border-bottom">
+                                    <div class="card-title-group">
+                                        <div class="card-title">
+                                            <h6 class="title font-neue">ზედნადებები</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-tranx">
+                                    <thead class="font-helvetica-regular">
+                                        <tr class="tb-tnx-head">
+                                            <th class="tb-tnx-id"><span class="">ზედნადების #</span></th>
+                                            <th class="tb-tnx-info text-center">
+                                                <span>ატვირთვის თარიღი / ატვირთა</span>
+                                            </th>
+                                            <th class="tb-tnx-info text-center">
+                                                <span>გაუქმების თარიღი / გააუქმა</span>
+                                            </th>
+                                            <th class="tb-tnx-amount is-alt text-center">
+                                                <span class="tb-tnx-total">სტატუსი</span>
+                                            </th>
+                                            <th class="tb-tnx-action">
+                                                <span>&nbsp;</span>
+                                            </th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr class="font-helvetica-regular">
-                                            <td>24108054</td>
-                                            <td>Dashlite - Conceptual App Dashboard - Regular License</td>
-                                            <td>$40.00</td>
-                                            <td>5</td>
-                                            <td>$200.00</td>
-                                            <td>
-                                                <div class="g" style="position: relative; left: 10px;">
-                                                    <div class="custom-control custom-control-sm custom-switch">
-                                                        <input type="checkbox" class="custom-control-input" id="customSwitch7" checked>
-                                                        <label class="custom-control-label" for="customSwitch7"></label>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tbody class="overhead-list">
+
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="3"></td>
-                                            <td colspan="2" class="font-neue">ჯამი:</td>
-                                            <td>$435.00</td>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer bg-light">
-                <button class="btn btn-success font-neue">ზედნადების ატვირთვა</button>
-                <button class="btn btn-warning font-neue">
-                    შეკვეთის დაბეჭდვა
-                    <em class="icon ni ni-printer-fill ml-1"></em>
-                </button>
-                <button class="btn btn-primary font-neue">
-                    ინვოისის გაგზავნა
-                    <em class="icon ni ni-send ml-1"></em>
-                </button>
+            <div class="modal-footer bg-light order-buttons">
+                
             </div>
         </div>
     </div>

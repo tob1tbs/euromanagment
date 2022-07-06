@@ -33,6 +33,15 @@ class Controller extends BaseController
         return $OrderStatus;
     }
 
+    public function rsStatus() {
+        $rsStatus = [
+            '1' => 'ზედნადები ატვირთულია',
+            '2' => 'ზედნადები გაუქმებულია',
+            '3' => 'ზედნადები არ არის ატვირთული',
+        ];
+        return $rsStatus;
+    }
+
     public function customerFields() {
         $FieldList = [
             'customer_type' => [

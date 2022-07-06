@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 
 use App\Modules\Dashboard\Models\Dashboard;
 use App\Modules\Dashboard\Models\DashboardOrder;
+use App\Modules\Dashboard\Models\DashboardOrderOverhead;
 use App\Modules\Dashboard\Models\DashboardOrderItem;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Customers\Models\CustomerCompany;
@@ -219,6 +220,7 @@ class DashboardAjaxController extends Controller
 			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->update([
 				'status' => 4,
 				'deleted_at_int' => 0,
+				'rs_send' => 2,
 				'deleted_at' => Carbon::now(),
 			]);
 
@@ -237,7 +239,15 @@ class DashboardAjaxController extends Controller
 				$ProductData->update(['count' => $ProductCount + $Item->quantity]);
 			}
 
-			return Response::json(['status' => true, 'errors' => false, 'message' => [0 => 'შეკვეთა წარმატებით გაუქმდა'], 'redirect_url' => route('actionDashboardOrders')]);
+
+			$DashboardOrderOverhead = new DashboardOrderOverhead();
+			$DashboardOrderOverhead::where('order_id', $Request->order_id)->update([
+				'status' => 2,
+				'deleted_at' => Carbon::now(),
+				'deleted_by' => Auth::user()->id,
+			]);
+
+			return Response::json(['status' => true, 'errors' => false, 'message' => 'შეკვეთა წარმატებით გაუქმდა']);
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 		}
@@ -246,11 +256,58 @@ class DashboardAjaxController extends Controller
 	public function ajaxOrderGet(Request $Request) {
 		if($Request->isMethod('GET') && !empty($Request->order_id)) {
 			$DashboardOrder = new DashboardOrder();
-			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->load('orderItems')->load('customerType')->load('customerCompany');
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->load('orderItems.orderItemData')->load('customerType')->load('customerCompany');
+
+			$DashboardOrderOverhead = new DashboardOrderOverhead();
+			$DashboardOrderOverheadList = $DashboardOrderOverhead->where('order_id', $Request->order_id)->get()->load(['deletedBy', 'createdBy']);
 
 			if(!empty($DashboardOrderData)) {
-				return Response::json(['status' => true, 'DashboardOrderData' => $DashboardOrderData]);
+				return Response::json(['status' => true, 'DashboardOrderData' => $DashboardOrderData, 'DashboardOrderOverheadList' => $DashboardOrderOverheadList]);
 			}
+		}
+	}
+
+	public function ajaxOrderOveheadSend(Request $Request) {
+		if($Request->isMethod('POST')) {
+
+			if(empty($Request->item_rs)) {
+				return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ აირჩიოთ ზედნადებში ასატვირთი პროდუქცია.'], 200);
+			}
+
+			$DashboardOrderOverhead = new DashboardOrderOverhead();
+			$DashboardOrderOverhead->overhead_id = 12345 . rand(1111, 9999);
+			$DashboardOrderOverhead->order_id = $Request->order_id;
+			$DashboardOrderOverhead->data = json_encode($Request->item_rs);
+			$DashboardOrderOverhead->status = 1;
+			$DashboardOrderOverhead->created_by = Auth::user()->id;
+			$DashboardOrderOverhead->save();
+
+			$DashboardOrder = new DashboardOrder();
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->update(['rs_send' => 1]);
+
+			return Response::json(['status' => true, 'errors' => false, 'message' => 'ზედნადები აიტვირთა.']);
+		} else {
+			return Response::json(['status' => false, 'errors' => true, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+		}
+	}
+
+	public function ajaxOrderOveheadCancel(Request $Request) {
+		if($Request->isMethod('POST')) {
+
+			$DashboardOrder = new DashboardOrder();
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->update(['rs_send' => 0]);
+
+			$DashboardOrderOverhead = new DashboardOrderOverhead();
+			$DashboardOrderOverhead::where('overhead_id', $Request->overhead_id)->update([
+				'status' => 2,
+				'deleted_at' => Carbon::now(),
+				'deleted_by' => Auth::user()->id,
+			]);
+
+			return Response::json(['status' => true, 'message' => 'ზედნადები გაუქმდა.']);
+
+		} else {
+			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 		}
 	}
 }

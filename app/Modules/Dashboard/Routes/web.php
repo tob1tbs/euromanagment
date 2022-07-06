@@ -6,6 +6,7 @@ Route::group(['prefix' => 'dashboards', 'middleware' => []], function () {
     Route::get('/orders', 'DashboardController@actionDashboardOrders')->name('actionDashboardOrders');
     Route::get('/orders/view/{order_id}', 'DashboardController@actionDashboardOrdersView')->name('actionDashboardOrdersView');
     Route::get('/orders/edit/{order_id}', 'DashboardController@actionDashboardOrdersEdit')->name('actionDashboardOrdersEdit');
+    Route::get('/orders/print/{order_id}', 'DashboardController@actionDashboardOrdersPrint')->name('actionDashboardOrdersPrint');
     Route::get('/reports', 'DashboardController@actionDashboardReports')->name('actionDashboardReports');
 });
 
@@ -24,4 +25,6 @@ Route::group(['prefix' => 'dashboards/ajax', 'middleware' => []], function () {
     // ORDER
     Route::post('/order/reject', 'DashboardAjaxController@ajaxOrderReject')->name('ajaxOrderReject');
     Route::get('/order/get', 'DashboardAjaxController@ajaxOrderGet')->name('ajaxOrderGet');
+    Route::post('/order/overhead/send', 'DashboardAjaxController@ajaxOrderOveheadSend')->name('ajaxOrderOveheadSend');
+    Route::post('/order/overhead/cancel', 'DashboardAjaxController@ajaxOrderOveheadCancel')->name('ajaxOrderOveheadCancel');
 });

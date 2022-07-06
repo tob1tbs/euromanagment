@@ -16,9 +16,12 @@ class DashboardOrder extends Model
         'customer_id',
         'total_price',
         'created_by',
+        'rs_send',
         'status',
         'deleted_at',
         'deleted_at_int',
+        'created_by',
+        'deleted_by',
     ];
 
     public function customerType() {
