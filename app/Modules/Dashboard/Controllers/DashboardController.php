@@ -71,6 +71,8 @@ class DashboardController extends Controller
                 'order_status' => $this->orderStatus(),   
                 'rs_status' => $this->rsStatus(),   
                 'order_list' => $DashboardOrderList,
+                'overhead_type' => $this->overheadType(),
+                'overhead_category' => $this->overheadCategory(),
                 'current_date' => Carbon::now()->locale('ka_GE'),
             ];
             

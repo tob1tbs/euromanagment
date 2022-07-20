@@ -42,6 +42,27 @@ class Controller extends BaseController
         return $rsStatus;
     }
 
+    public function overheadType() {
+        $type = [
+            '1' => 'ტრანსპორტირებით', 
+            '2' => 'ტრანსპორტირების გარეშე', 
+            '3' => 'შიდა გადაზიდვა', 
+            '4' => 'დისტრიბუცია', 
+            '5' => 'უკან დაბრუნება', 
+        ];
+
+        return $type;
+    }
+
+    public function overheadCategory() {
+        $type = [
+            '1' => 'ჩვეულებრივი', 
+            '2' => 'ხე-ტყე', 
+        ];
+
+        return $type;
+    }
+
     public function customerFields() {
         $FieldList = [
             'customer_type' => [

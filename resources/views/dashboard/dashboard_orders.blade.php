@@ -242,7 +242,7 @@
                             </div>
                         </div>
                         <div class="invoice-bills">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="overflow-x: hidden;">
                                 <form id="order_form_data">
                                     <table class="table table-striped">
                                         <thead>
@@ -261,12 +261,15 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colspan="3"></td>
-                                                <td colspan="2" class="font-neue">ჯამი:</td>
+                                                <td colspan="4"></td>
+                                                <td colspan="1" class="font-neue">ჯამური ღირებულება:</td>
                                                 <td class="order_total"></td>
                                             </tr>
                                         </tfoot>
                                     </table>
+                                    <div class="row send-overhead-form">
+                                        
+                                    </div>
                                     <input type="hidden" name="order_id" id="order_id">
                                 </form>
                             </div>
@@ -307,6 +310,84 @@
             </div>
             <div class="modal-footer bg-light order-buttons">
                 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="OrderOverheadModal">
+    <div class="modal-dialog modal-xl modal-dialog-top" role="document">
+        <div class="modal-content">
+            <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                <em class="icon ni ni-cross"></em>
+            </a>
+            <div class="modal-header">
+                <h5 class="modal-title font-neue">ზედნადები #<span class="view_overhead_number"></span> <span class="view_overhead_status ml-2"></span></h5>
+            </div>
+            <div class="modal-body py-0">
+                <div class="invoice invoice-print">
+                    <div class="invoice-wrap">
+                        <div class="invoice-bills">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span class="font-neue"><b>ზედნადების ტიპი:</b></span>
+                                    <br>
+                                    <span class="font-neue overhead-type"></span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="font-neue"><b>ზედნადების კატეგორია:</b></span>
+                                    <br>
+                                    <span class="font-neue overhead-category"></span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="font-neue"><b>ზედნადების ნომერი:</b></span>
+                                    <br>
+                                    <span class="font-neue overhead-number"></span>
+                                </div>
+                                <div class="col-3">
+                                    <span class="font-neue"><b>ატვირთვის თარიღი:</b></span>
+                                    <br>
+                                    <span class="font-neue overhead-date"></span>
+                                </div>
+                                <div class="col-3 overhead-driver mt-4">
+                                    
+                                </div>
+                                <div class="col-3 overhead-car mt-4">
+                                    
+                                </div>
+                                <div class="col-3 address-line-start mt-4">
+                                    
+                                </div>
+                                <div class="col-3 address-line-end mt-4">
+                                    
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped" style="margin-top: 15px;">
+                                    <thead>
+                                        <tr class="font-neue">
+                                            <th class="w-150px">კოდი</th>
+                                            <th class="w-60">დასახელება</th>
+                                            <th>ღირებულება</th>
+                                            <th>ერთეული</th>
+                                            <th>რეოდენობა</th>
+                                            <th>ჯამი</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="overheads_form">
+                                        
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td  colspan="3"></td>
+                                            <td class="font-neue">ჯამური ღირებულება:</td>
+                                            <td colspan="2" class="overhead-total-sum"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

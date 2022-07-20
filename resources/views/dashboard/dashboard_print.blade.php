@@ -13,7 +13,7 @@
 
     @yield('css')
 </head>
-<body class="bg-white" >
+<body class="bg-white" onload="printPromot()">
     <div class="nk-block">
         <div class="invoice invoice-print">
             <div class="invoice-wrap">

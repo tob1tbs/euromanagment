@@ -13,6 +13,8 @@ class DashboardOrderOverhead extends Model
 
     protected $table = "new_orders_overhead";
 
+    protected $fillable = ['status', 'response'];
+
     public function createdBy() {
         return $this->belongsTo('App\Modules\Users\Models\User', 'created_by', 'id');
     }

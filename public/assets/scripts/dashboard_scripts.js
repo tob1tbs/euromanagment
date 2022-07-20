@@ -560,7 +560,56 @@ function OrderModal(order_id) {
                             <em class="icon ni ni-send ml-1"></em>
                         </button>
                     `;
+
+                    var rs_send_form = '';
                 } else {
+                    var rs_send_form = `
+                        <div class="col-3 mb-3">
+                            <div class="form-group">
+                                <label class="form-label">ზედნადების ტიპი:</label>
+                                <select class="form-control" name="send_overhead_type" id="send_overhead_type">
+                                    <option value="0"></option>
+                                    <option value="1">ტრანსპორტირებით</option>
+                                    <option value="2">ტრანსპორტირების გარეშე</option>
+                                    <option value="3">შიდა გადაზიდვა</option>
+                                    <option value="4">უკან დაბრუნება</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <div class="form-group">
+                                <label class="form-label">ზედნადების კატეგორია:</label>
+                                <select class="form-control" name="send_overhead_category" id="send_overhead_category">
+                                    <option value="1">ჩვეულებრივი</option>
+                                    <option value="2">ხე-ტყე</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <div class="form-group">
+                                <label class="form-label">მძღოლის (პირადი ნომერი):</label>
+                                <input type="text" class="form-control" name="send_overhead_driver" id="send_overhead_driver">
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <div class="form-group">
+                                <label class="form-label">მანქანის ნომერი:</label>
+                                <input type="text" class="form-control" name="send_overhead_car" id="send_overhead_car">
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="form-group">
+                                <label class="form-label">ტრანსპორტირების დაწყების ადგილი:</label>
+                                <input type="text" class="form-control" name="send_overhead_start_address" id="send_overhead_start_address">
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="form-group">
+                                <label class="form-label">ტრანსპორტირების დასრულების ადგილი:</label>
+                                <input type="text" class="form-control" name="send_overhead_end_address" id="send_overhead_end_address">
+                            </div>
+                        </div>
+                    `;
                     var order_buttons = `
                         <button class="btn btn-success font-neue" type="button" onclick="SendOverhead()">ზედნადების ატვირთვა</button>
                         <a href="/dashboards/orders/print/`+data['DashboardOrderData']['id']+`" target="_blank" class="btn btn-warning font-neue">
@@ -574,6 +623,7 @@ function OrderModal(order_id) {
                     `;
                 }
                 $(".order-buttons").html('').append(order_buttons);
+                $(".send-overhead-form").html('').append(rs_send_form);
 
                 var order_item_html = '';
                 var overead_list = '';
@@ -621,7 +671,7 @@ function OrderModal(order_id) {
                 if(data['DashboardOrderOverheadList'].length > 0) {
                     $.each(data['DashboardOrderOverheadList'], function(key, value) {
                         if(value['status'] == 1) {
-                            var order_status = '<span class="badge badge-outline-success font-helvetica-regular">ატვირთულია</span>';
+                            var order_status = '<span class="badge badge-outline-success font-helvetica-regular">ზედნადები ატვირთულია</span>';
                             var overhead_cancel = '<a href="javascript:;" onclick="CancelOverhead('+value['overhead_id']+', '+value['order_id']+')" class="btn btn-sm btn-danger font-helvetica-regular">გაუქმება</a>';
                             var cancel_date = '-';
                             var cancel_by = '';
@@ -635,7 +685,7 @@ function OrderModal(order_id) {
                         $(".overhead-list").append(`
                             <tr class="tb-tnx-item font-helvetica-regular">
                                 <td class="tb-tnx-id">
-                                    <a href="#"><span>`+value['overhead_id']+`</span></a>
+                                    <a href="javascript:;" onclick="ViewSendOverhead(`+value['id']+`)"><span>`+value['overhead_id']+`</span></a>
                                 </td>
                                 <td class="text-center tb-tnx-info">
                                     <span class="badge badge-outline-primary">`+value['created_at'].split('T')[0]+` `+value['created_at'].split('T')[1].split('.')[0]+`</span>
@@ -743,6 +793,91 @@ function CancelOverhead(overhead_id, order_id) {
                     }
                 }
             });
+        }
+    });
+}
+
+function ViewSendOverhead(overhead_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/order/overhead/get",
+        type: "GET",
+        data: {
+            overhead_id: overhead_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                var order_data = data['OverheadData']['created_at'];
+                
+                $(".view_overhead_number").html('').append(data['OverheadData']['overhead_id']);
+                $(".overhead-number").html('').append(data['OverheadData']['overhead_id']);
+                $(".overhead-category").html('').append(data['OverheadCategory'][data['OverheadData']['category']]);
+                $(".overhead-type").html('').append(data['OverheadType'][data['OverheadData']['type']]);
+                $(".overhead-date").html('').append(order_data.split('T')[0]+ ' '+order_data.split('T')[1].split('.')[0]);
+
+                $("#overheads_form").html('');
+
+                var total_price = 0;
+                $.each(JSON.parse(data['OverheadData']['data']), function(key, value) {
+                    $("#overheads_form").append(`
+                        <tr class="tb-odr-item font-helvetica-regular">
+                            <td>`+key+`</td>
+                            <td>`+value['name']+`</td>
+                            <td>`+value['price']+`₾</td>
+                            <td>`+value['unit']+`</td>
+                            <td>`+value['quantity']+`</td>
+                            <td>`+(value['price'] * value['quantity']).toFixed(2)+`₾</td>
+                        </tr>
+                    `);
+
+                    total_price = total_price + (value['price'] * value['quantity']);
+                });
+                $(".overhead-total-sum").html('').append(total_price.toFixed(2)+`₾`);
+                $(".address-line-start, .address-line-end, .overhead-carm, .overhead-driver, .view_overhead_status").html('');
+
+                if(data['OverheadData']['type'] == 1) {
+                    $(".address-line-start").append(`
+                        <span class="font-neue"><b>ტრანსპორტირების დაწყების ადგილი:</b></span>
+                        <br>
+                        <span class="font-neue">`+JSON.parse(data['OverheadData']['address'])['start']+`</span>
+                    `);
+
+                    $(".address-line-end").append(`
+                        <span class="font-neue"><b>ტრანსპორტირების დასრულების ადგილი:</b></span>
+                        <br>
+                        <span class="font-neue">`+JSON.parse(data['OverheadData']['address'])['end']+`</span>
+                    `);
+
+                    $(".overhead-driver").append(`
+                        <span class="font-neue"><b>მძღოლი:</b></span>
+                        <br>
+                        <span class="font-neue">`+JSON.parse(data['OverheadData']['driver_data'])['driver_data']+` (`+JSON.parse(data['OverheadData']['driver_data'])['driver_personal_number']+`)</span>
+                    `);
+
+                    $(".overhead-car").append(`
+                        <span class="font-neue"><b>ავტომანქანის ნომერი:</b></span>
+                        <br>
+                        <span class="font-neue">`+JSON.parse(data['OverheadData']['driver_data'])['car_number']+`</span>
+                    `);
+                }
+
+                if(data['OverheadData']['status'] == 1) {
+                    var overhead_status = `
+                        <span class="btn btn-outline-success font-helvetica-regular">ზედნადები ატვირთულია</span>
+                    `;
+                }
+
+                if(data['OverheadData']['status'] == 2) {
+                    var overhead_status = `
+                        <span class="btn btn-outline-danger font-helvetica-regular">გაუქმებული</span>
+                    `;
+                }
+
+
+                $(".view_overhead_status").append(overhead_status);
+                $("#OrderModal").modal('hide');
+                $("#OrderOverheadModal").modal('show');
+            }
         }
     });
 }
