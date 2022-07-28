@@ -217,11 +217,11 @@ class DashboardAjaxController extends Controller
 		}
 	}
 
-	public function ajaxOrderReject(Request $Request) {
+	public function ajaxOrderReject(Request $Request, ServiceRsController $ServiceRsController) {
 		if($Request->isMethod('POST') && !empty($Request->order_id)) {
 			$DashboardOrder = new DashboardOrder();
 			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->update([
-				'status' => 4,
+				'status' => 5,
 				'deleted_at_int' => 0,
 				'rs_send' => 2,
 				'deleted_at' => Carbon::now(),
@@ -250,6 +250,12 @@ class DashboardAjaxController extends Controller
 				'deleted_by' => Auth::user()->id,
 			]);
 
+			$DashboardOrderOverheadData = $DashboardOrderOverhead::where('order_id', $Request->order_id)->get();
+			
+			foreach($DashboardOrderOverheadData as $Item) {
+				$ServiceRsController->serviceRsCancelOverhead($Item->rs_id);
+			}
+
 			return Response::json(['status' => true, 'errors' => false, 'message' => 'შეკვეთა წარმატებით გაუქმდა']);
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
@@ -259,6 +265,12 @@ class DashboardAjaxController extends Controller
 	public function ajaxOrderGet(Request $Request) {
 		if($Request->isMethod('GET') && !empty($Request->order_id)) {
 			$DashboardOrder = new DashboardOrder();
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id);
+
+			if($DashboardOrderData->status == 1) {
+				$DashboardOrderData->update(['status' => 2]);
+			}
+
 			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->load('orderItems.orderItemData')->load('orderItems.orderItemData.productUnit')->load('customerType')->load('customerCompany');
 
 			$DashboardOrderOverhead = new DashboardOrderOverhead();
@@ -308,44 +320,93 @@ class DashboardAjaxController extends Controller
 			} 
 
 			$DashboardOrderOverhead = new DashboardOrderOverhead();
-			
-			switch ($Request->send_overhead_type) {
-				case '1':
-					
-					if(empty($Request->send_overhead_start_address)) {
-						return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ტრანსპორტირების დაწყების ადგილი.'], 200);
-					} 
 
-					else if(empty($Request->send_overhead_end_address)) {
-						return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ტრანსპორტირების დასრულების ადგილი.'], 200);
-					} 
+			if($Request->send_overhead_category == 1) {
 
-					else if(empty($Request->send_overhead_driver)) {
-						return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ მძღოლის პირადი ნომერი.'], 200);
-					} 
+				switch ($Request->send_overhead_type) {
+					case '1':
+						
+						if(empty($Request->send_overhead_start_address)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ტრანსპორტირების დაწყების ადგილი.'], 200);
+						} 
 
-					else if(empty($Request->send_overhead_car)) {
-						return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ავტომანქანის.'], 200);
-					} 
+						else if(empty($Request->send_overhead_end_address)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ტრანსპორტირების დასრულების ადგილი.'], 200);
+						} 
 
-					else {
+						else if(empty($Request->send_overhead_driver)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ მძღოლის პირადი ნომერი.'], 200);
+						} 
 
-						$AddressData = ['start' => $Request->send_overhead_start_address, 'end' => $Request->send_overhead_end_address];
-						$DriverData = ['driver_personal_number' => $Request->send_overhead_driver, 'driver_data' => '', 'car_number' => $Request->send_overhead_car];
+						else if(empty($Request->send_overhead_car)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ავტომანქანის.'], 200);
+						} 
 
-						$DashboardOrderOverhead->address = json_encode($AddressData);
-						$DashboardOrderOverhead->driver_data = json_encode($DriverData);
+						else {
 
-						$RsData = $ServiceRsController->serviceSendRsOverheadTransporter(
+							$AddressData = ['start' => $Request->send_overhead_start_address, 'end' => $Request->send_overhead_end_address];
+							$DriverData = ['driver_personal_number' => $Request->send_overhead_driver, 'driver_data' => '', 'car_number' => $Request->send_overhead_car];
+
+							$DashboardOrderOverhead->address = json_encode($AddressData);
+							$DashboardOrderOverhead->driver_data = json_encode($DriverData);
+
+							$RsData = $ServiceRsController->serviceSendRsOverheadTransporter(
+								json_encode($OverheadItems, JSON_UNESCAPED_UNICODE), 
+								json_encode($AddressData, JSON_UNESCAPED_UNICODE), 
+								json_encode($DriverData, JSON_UNESCAPED_UNICODE), 
+								json_encode($DashboardOrderData, JSON_UNESCAPED_UNICODE), 
+							);
+							$OverheadId = $RsData->Body->save_waybillResponse->save_waybillResult->RESULT->ID;
+							$RsResponse = $ServiceRsController->serviceRsSendWaybillTransporter($OverheadId);
+							$OverheadNumber = $RsResponse->Body->send_waybillResponse->send_waybillResult;
+						}
+					break;
+					case '2':
+						$RsData = $ServiceRsController->serviceSendRsOverhead(
 							json_encode($OverheadItems, JSON_UNESCAPED_UNICODE), 
-							json_encode($AddressData, JSON_UNESCAPED_UNICODE), 
-							json_encode($DriverData, JSON_UNESCAPED_UNICODE), 
 							json_encode($DashboardOrderData, JSON_UNESCAPED_UNICODE), 
 						);
 						$OverheadId = $RsData->Body->save_waybillResponse->save_waybillResult->RESULT->ID;
 						$RsResponse = $ServiceRsController->serviceRsSendWaybillTransporter($OverheadId);
 						$OverheadNumber = $RsResponse->Body->send_waybillResponse->send_waybillResult;
-					}
+					break;
+					case '4':
+						if(empty($Request->send_overhead_start_address)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ტრანსპორტირების დაწყების ადგილი.'], 200);
+						} 
+
+						else if(empty($Request->send_overhead_end_address)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ტრანსპორტირების დასრულების ადგილი.'], 200);
+						} 
+
+						else if(empty($Request->send_overhead_driver)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ მძღოლის პირადი ნომერი.'], 200);
+						} 
+
+						else if(empty($Request->send_overhead_car)) {
+							return Response::json(['status' => true, 'errors' => true, 'message' => 'გთხოვთ შეიყვანოთ ავტომანქანის.'], 200);
+						} 
+
+						else {
+
+							$AddressData = ['start' => $Request->send_overhead_start_address, 'end' => $Request->send_overhead_end_address];
+							$DriverData = ['driver_personal_number' => $Request->send_overhead_driver, 'driver_data' => '', 'car_number' => $Request->send_overhead_car];
+
+							$DashboardOrderOverhead->address = json_encode($AddressData);
+							$DashboardOrderOverhead->driver_data = json_encode($DriverData);
+
+							$RsData = $ServiceRsController->serviceSendRsOverheadReturn(
+								json_encode($OverheadItems, JSON_UNESCAPED_UNICODE), 
+								json_encode($AddressData, JSON_UNESCAPED_UNICODE), 
+								json_encode($DriverData, JSON_UNESCAPED_UNICODE), 
+								json_encode($DashboardOrderData, JSON_UNESCAPED_UNICODE), 
+							);
+							$OverheadId = $RsData->Body->save_waybillResponse->save_waybillResult->RESULT->ID;
+							$RsResponse = $ServiceRsController->serviceRsSendWaybillTransporter($OverheadId);
+							$OverheadNumber = $RsResponse->Body->send_waybillResponse->send_waybillResult;
+						}
+					break;
+				}
 			}
 
 			$DashboardOrderOverhead->overhead_id = $OverheadNumber;
@@ -363,6 +424,7 @@ class DashboardAjaxController extends Controller
 			$DashboardOrder = new DashboardOrder();
 			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->update([
 				'rs_send' => 1,
+				'status' => 3,
 			]);
 
 			return Response::json(['status' => true, 'errors' => false, 'message' => 'ზედნადები აიტვირთა.']);
@@ -375,7 +437,7 @@ class DashboardAjaxController extends Controller
 		if($Request->isMethod('POST')) {
 
 			$DashboardOrder = new DashboardOrder();
-			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->update(['rs_send' => 0]);
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id)->update(['rs_send' => 2]);
 
 
 			$DashboardOrderOverhead = new DashboardOrderOverhead();
@@ -413,6 +475,28 @@ class DashboardAjaxController extends Controller
 				return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 			}
 
+		} else {
+			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+		}
+	}
+
+	public function ajaxOrderClose(Request $Request) {
+		if($Request->isMethod('POST') && !empty($Request->order_id)) {
+			$DashboardOrder = new DashboardOrder();
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id);
+
+			$DashboardOrderOverhead = new DashboardOrderOverhead();
+			$DashboardOrderOverheadData = $DashboardOrderOverhead::where('order_id', $Request->order_id)->first();
+
+			dd($DashboardOrderOverheadData);
+
+			if($DashboardOrderData->rs_send == 2 OR $DashboardOrderData->rs_send == 0) {
+				return Response::json(['status' => false, 'message' => 'აღნიშნულ შეკვეთაზე ზედნადები გაუქმებულია ან არ არის ატვირთული!!!']);
+			}
+
+			$DashboardOrderData->update(['status' => 4]);
+			
+			return Response::json(['status' => true, 'message' => 'შეკვეთა წარმატებით დაიხურა !!!'], 200);
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 		}

@@ -148,24 +148,6 @@
                                                     </td>
                                                     <td class="tb-odr-info">
                                                         <span class="tb-odr-status">
-                                                            @switch($order_item->status)
-                                                                @case(1)
-                                                                <span class="badge badge-dot badge-primary font-helvetica-regular">ახალი შეკვეთა</span>
-                                                                @break
-                                                                @case(2)
-                                                                <span class="badge badge-dot badge-warning font-helvetica-regular">მიმდინარე შეკვეთა</span>
-                                                                @break
-                                                                @case(3)
-                                                                <span class="badge badge-dot badge-success font-helvetica-regular">დასრულებული</span>
-                                                                @break
-                                                                @case(4)
-                                                                <span class="badge badge-dot badge-danger font-helvetica-regular">გაუქმებული</span>
-                                                                @break
-                                                            @endswitch
-                                                        </span>
-                                                    </td>
-                                                    <td class="tb-odr-info">
-                                                        <span class="tb-odr-status">
                                                             @switch($order_item->rs_send)
                                                                 @case(1)
                                                                 <span class="badge badge-outline-success font-helvetica-regular">ზედნადები ატვირთულია</span>
@@ -173,22 +155,45 @@
                                                                 @case(2)
                                                                 <span class="badge badge-outline-danger font-helvetica-regular">ზედნადები გაუქმებულია</span>
                                                                 @break
-                                                                @case(3)
+                                                                @case(0)
                                                                 <span class="badge badge-outline-warning font-helvetica-regular">ზედნადები არ არის ატვირთული</span>
                                                                 @break
                                                             @endswitch
                                                         </span>
                                                     </td>
+                                                    <td class="tb-odr-info">
+                                                        <span class="tb-odr-status">
+                                                            @switch($order_item->status)
+                                                                @case(1)
+                                                                <span class="badge badge-dot badge-primary font-helvetica-regular">ახალი შეკვეთა</span>
+                                                                @break
+                                                                @case(2)
+                                                                <span class="badge badge-dot badge-warning font-helvetica-regular">ნანახი შეკვეთა</span>
+                                                                @break
+                                                                @case(3)
+                                                                <span class="badge badge-dot badge-warning font-helvetica-regular">მიმდინარე შეკვეთა</span>
+                                                                @break
+                                                                @case(4)
+                                                                <span class="badge badge-dot badge-success font-helvetica-regular">დასრულებული</span>
+                                                                @break
+                                                                @case(5)
+                                                                <span class="badge badge-dot badge-danger font-helvetica-regular">გაუქმებული</span>
+                                                                @break
+                                                            @endswitch
+                                                        </span>
+                                                    </td>
                                                     <td class="tb-odr-action">
-                                                        @if($order_item->deleted_at_int != 0 && $order_item->status != 4)
+                                                        @if($order_item->deleted_at_int != 0 && $order_item->status != 5)
                                                         <div class="tb-odr-btns d-none d-md-inline">
+                                                            @if($order_item->status != 4)
+                                                            <a href="javascript:;" onclick="CloseOrder({{ $order_item->id }})" class="btn btn-sm btn-success font-helvetica-regular">შეკვეთის დასრულება</a>
+                                                            @endif
                                                             <a href="javascript:;" onclick="OrderModal({{ $order_item->id }})" class="btn btn-sm btn-primary font-helvetica-regular">შეკვეთის ნახვა</a>
                                                         </div>
                                                         <div class="dropdown">
                                                             <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown" data-offset="-8,0"><em class="icon ni ni-more-h"></em></a>
                                                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
                                                                 <ul class="link-list-plain">
-                                                                    <li><a href="{{ route('actionDashboardOrdersEdit', $order_item->id) }}" class="text-primary font-helvetica-regular">რედაქტირება</a></li>
                                                                     <li><a href="javascript:;" onclick="RejectOrder({{ $order_item->id }})" class="text-danger font-helvetica-regular">გაუქმება</a></li>
                                                                 </ul>
                                                             </div>

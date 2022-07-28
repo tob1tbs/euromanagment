@@ -567,7 +567,7 @@ function OrderModal(order_id) {
                         <div class="col-3 mb-3">
                             <div class="form-group">
                                 <label class="form-label">ზედნადების ტიპი:</label>
-                                <select class="form-control" name="send_overhead_type" id="send_overhead_type">
+                                <select class="form-control" name="send_overhead_type" id="send_overhead_type" onchange="ValidTransportInputs()">
                                     <option value="0"></option>
                                     <option value="1">ტრანსპორტირებით</option>
                                     <option value="2">ტრანსპორტირების გარეშე</option>
@@ -629,7 +629,7 @@ function OrderModal(order_id) {
                 var overead_list = '';
 
                 $.each(data['DashboardOrderData']['order_items'], function(key, value) {
-                    if(data['DashboardOrderData']['rs_send'] == 0 || data['DashboardOrderData']['rs_send'] == 3) {
+                    if(data['DashboardOrderData']['rs_send'] == 0 || data['DashboardOrderData']['rs_send'] == 2) {
                         var item_switcher = `
                             <div class="g" style="position: relative; left: 10px;">
                                 <div class="custom-control custom-control-sm custom-switch">
@@ -672,7 +672,11 @@ function OrderModal(order_id) {
                     $.each(data['DashboardOrderOverheadList'], function(key, value) {
                         if(value['status'] == 1) {
                             var order_status = '<span class="badge badge-outline-success font-helvetica-regular">ზედნადები ატვირთულია</span>';
-                            var overhead_cancel = '<a href="javascript:;" onclick="CancelOverhead('+value['overhead_id']+', '+value['order_id']+')" class="btn btn-sm btn-danger font-helvetica-regular">გაუქმება</a>';
+                            if(data['DashboardOrderData']['status'] == 4) {
+                                var overhead_cancel = '';
+                            } else {
+                                var overhead_cancel = '<a href="javascript:;" onclick="CancelOverhead('+value['overhead_id']+', '+value['order_id']+')" class="btn btn-sm btn-danger font-helvetica-regular">გაუქმება</a>';
+                            }
                             var cancel_date = '-';
                             var cancel_by = '';
                         } else if (value['status'] == 2) {
@@ -680,7 +684,7 @@ function OrderModal(order_id) {
                             var overhead_cancel = '';
                             var cancel_date = '<span class="badge badge-outline-danger">'+value['deleted_at']+'</span>';
                             var cancel_by = value['deleted_by']['name']+` `+value['deleted_by']['lastname'];
-                        }
+                        } 
 
                         $(".overhead-list").append(`
                             <tr class="tb-tnx-item font-helvetica-regular">
@@ -724,6 +728,14 @@ function OrderModal(order_id) {
             }
         }
     });
+}
+
+function ValidTransportInputs() {
+    if($("#send_overhead_type").val() == 2) {
+        $("#send_overhead_driver, #send_overhead_car, #send_overhead_start_address, #send_overhead_end_address").val('').attr('disabled', true);
+    } else {
+        $("#send_overhead_driver, #send_overhead_car, #send_overhead_start_address, #send_overhead_end_address").attr('disabled', false);
+    }
 }
 
 function SendOverhead() {
@@ -878,6 +890,45 @@ function ViewSendOverhead(overhead_id) {
                 $("#OrderModal").modal('hide');
                 $("#OrderOverheadModal").modal('show');
             }
+        }
+    });
+}
+
+function CloseOrder(order_id) {
+    Swal.fire({
+        title: "ნამდვილად გსურთ შეკვეთის დასრულება",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'დასრულება',
+        cancelButtonText: "გათიშვა",
+        preConfirm: () => {
+            $.ajax({
+                dataType: 'json',
+                url: "/dashboards/ajax/order/close",
+                type: "POST",
+                data: {
+                    order_id: order_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    if(data['status'] == true) {
+                        Swal.fire({
+                            icon: 'success',
+                            text: data['message'],
+                            timer: 2000,
+                        });
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            text: data['message'],
+                            timer: 2000,
+                        });
+                    }
+                }
+            });
         }
     });
 }
