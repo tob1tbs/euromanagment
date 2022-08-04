@@ -25,9 +25,10 @@ class Controller extends BaseController
     public function orderStatus() {
         $OrderStatus = [
             '1' => 'ახალი შეკვეთა',
-            '2' => 'მიმდინარე შეკვეთა',
-            '3' => 'დასრულებული',
-            '4' => 'გაუქმებული',
+            '2' => 'ნანახი შეკვეთა',
+            '3' => 'მიმდინარე შეკვეთა',
+            '4' => 'დასრულებული',
+            '5' => 'გაუქმებული',
         ];
 
         return $OrderStatus;
@@ -109,6 +110,11 @@ class Controller extends BaseController
                         'type' => 'text',
                         'name' => 'customer_address',
                     ],
+                    [
+                        'label' => 'რეფერალი',
+                        'type' => 'select',
+                        'name' => 'customer_referal',
+                    ],
                 ],
                 'type_2' => [
                     'customer_type_1' => [
@@ -142,6 +148,11 @@ class Controller extends BaseController
                             'type' => 'text',
                             'name' => 'company_phone',
                         ],
+                        [
+                            'label' => 'რეფერალი',
+                            'type' => 'select',
+                            'name' => 'customer_referal',
+                        ],
                     ],
                     'customer_type_2' => [
                         [
@@ -173,6 +184,11 @@ class Controller extends BaseController
                             'label' => 'მისამართი',
                             'type' => 'text',
                             'name' => 'customer_address',
+                        ],
+                        [
+                            'label' => 'რეფერალი',
+                            'type' => 'select',
+                            'name' => 'customer_referal',
                         ],
                     ],
                 ],

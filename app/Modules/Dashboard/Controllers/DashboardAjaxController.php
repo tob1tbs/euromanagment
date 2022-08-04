@@ -15,6 +15,8 @@ use App\Modules\Customers\Models\CustomerCompany;
 
 use App\Modules\Products\Models\Product;
 
+use App\Modules\Customers\Models\ReferalOrder;
+
 use App\Modules\Services\Controllers\ServiceMailController;
 use App\Modules\Services\Controllers\ServiceRsController;
 
@@ -488,14 +490,22 @@ class DashboardAjaxController extends Controller
 			$DashboardOrderOverhead = new DashboardOrderOverhead();
 			$DashboardOrderOverheadData = $DashboardOrderOverhead::where('order_id', $Request->order_id)->first();
 
-			dd($DashboardOrderOverheadData);
+			// dd($DashboardOrderOverheadData);
 
 			if($DashboardOrderData->rs_send == 2 OR $DashboardOrderData->rs_send == 0) {
 				return Response::json(['status' => false, 'message' => 'აღნიშნულ შეკვეთაზე ზედნადები გაუქმებულია ან არ არის ატვირთული!!!']);
 			}
 
 			$DashboardOrderData->update(['status' => 4]);
-			
+
+			$ReferalOrder = new ReferalOrder();
+			$ReferalOrder->order_id = $Request->order_id;
+			$ReferalOrder->percent = 3;
+			$ReferalOrder->order_amount = $DashboardOrderData->total_price;
+			$ReferalOrder->amount = $DashboardOrderData->total_price / 100 * 3;
+			$ReferalOrder->referal_id = 1;
+			$ReferalOrder->save();
+		
 			return Response::json(['status' => true, 'message' => 'შეკვეთა წარმატებით დაიხურა !!!'], 200);
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);

@@ -13,7 +13,7 @@
 
     @yield('css')
 </head>
-<body class="bg-white" onload="printPromot()">
+<body class="bg-white" onload="printPromot()" >
     <div class="nk-block">
         <div class="invoice invoice-print">
             <div class="invoice-wrap">
@@ -63,7 +63,7 @@
                         </div>
                         @endif
                     </div>
-                </div><!-- .invoice-head -->
+                </div>
                 <div class="invoice-bills">
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -98,10 +98,13 @@
                             </tfoot>
                         </table>
                     </div>
-                </div><!-- .invoice-bills -->
-            </div><!-- .invoice-wrap -->
-        </div><!-- .invoice -->
-    </div><!-- .nk-block -->
+                    <span>
+                        <img src="{{ asset('assets/shtamp_evro.png') }}" alt="" class="float-right">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="{{ url('/assets/js/bundle.js') }}"></script>
     <script src="{{ url('/assets/js/scripts.js') }}"></script>
     <script>

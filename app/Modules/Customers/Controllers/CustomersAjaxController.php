@@ -8,8 +8,12 @@ use App\Http\Controllers\Controller;
 
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Customers\Models\CustomerCompany;
+use App\Modules\Customers\Models\Referal;
+use App\Modules\Customers\Models\CustomerReferal;
+use App\Modules\Customers\Models\ReferalOrder;
 
 use Response;
+use Auth;
 use Validator;
 
 class CustomersAjaxController extends Controller
@@ -22,9 +26,12 @@ class CustomersAjaxController extends Controller
     public function ajaxGetFields(Request $Request) {
         if($Request->isMethod('GET')) {
         	$customer_fields = $this->customerFields();
+
+            $Referal = new Referal();
+            $ReferalList = $Referal::where('deleted_at_int', '!=', 0)->get();
         	
         	if(!empty($Request->customer_type_id) && $Request->customer_type_id == 1) {
-    			return Response::json(['status' => true,  'customer_type_id' => 1, 'customer_fields' => $customer_fields['fields']['type_1']]);
+    			return Response::json(['status' => true,  'customer_type_id' => 1, 'customer_fields' => $customer_fields['fields']['type_1'], 'ReferalList' => $ReferalList]);
         	}
 
     		else if(!empty($Request->customer_type_id) && $Request->customer_type_id == 2) {
@@ -73,7 +80,7 @@ class CustomersAjaxController extends Controller
                         return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
                     } else {
                         $Customer = new Customer();
-                        $Customer::updateOrCreate(
+                        $CustomerData = $Customer::updateOrCreate(
                             ['id' => $Request->customer_id],
                             [
                                 'id' => $Request->customer_id,
@@ -86,6 +93,14 @@ class CustomersAjaxController extends Controller
                                 'address' => $Request->customer_address,
                             ],
                         );
+
+                        if(!empty($Request->customer_referal) && $Request->customer_referal > 0) {
+                            $CustomerReferal = new CustomerReferal();
+                            $CustomerReferal->type_id = $Request->customer_type;
+                            $CustomerReferal->referal_id = $Request->customer_referal;
+                            $CustomerReferal->customer_id = $CustomerData->id;
+                            $CustomerReferal->save();
+                        }
                         return Response::json(['status' => true , 'message' => [0 => 'კლიენტის მონაცემები შენახულია'], 'redirect_url' => route('actionCustomersIndex')]);
                     }
                     break;
@@ -109,7 +124,7 @@ class CustomersAjaxController extends Controller
                                     return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
                                 } else {
                                     $CustomerCompany = new CustomerCompany();
-                                    $CustomerCompany::updateOrCreate(
+                                    $CustomerData = $CustomerCompany::updateOrCreate(
                                         ['id' => $Request->company_id],
                                         [
                                             'id' => $Request->company_id,
@@ -121,7 +136,13 @@ class CustomersAjaxController extends Controller
                                             'phone' => $Request->company_phone,
                                         ],
                                     );
-
+                                    if(!empty($Request->customer_referal) && $Request->customer_referal > 0) {
+                                        $CustomerReferal = new CustomerReferal();
+                                        $CustomerReferal->type_id = $Request->customer_type;
+                                        $CustomerReferal->referal_id = $Request->customer_referal;
+                                        $CustomerReferal->customer_id = $CustomerData->id;
+                                        $CustomerReferal->save();
+                                    }
                                     return Response::json(['status' => true , 'message' => [0 => 'კლიენტის მონაცემები შენახულია'], 'redirect_url' => route('actionCustomersIndex')]);
                                 }
                             } else {
@@ -144,7 +165,7 @@ class CustomersAjaxController extends Controller
                                     return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
                                 } else {
                                     $Customer = new Customer();
-                                    $Customer::updateOrCreate(
+                                    $CustomerData = $Customer::updateOrCreate(
                                         ['id' => $Request->customer_id],
                                         [
                                             'id' => $Request->customer_id,
@@ -157,6 +178,13 @@ class CustomersAjaxController extends Controller
                                             'address' => $Request->customer_address,
                                         ],
                                     );
+                                    if(!empty($Request->customer_referal) && $Request->customer_referal > 0) {
+                                        $CustomerReferal = new CustomerReferal();
+                                        $CustomerReferal->type_id = $Request->customer_type;
+                                        $CustomerReferal->referal_id = $Request->customer_referal;
+                                        $CustomerReferal->customer_id = $CustomerData->id;
+                                        $CustomerReferal->save();
+                                    }
                                     return Response::json(['status' => true , 'message' => [0 => 'კლიენტის მონაცემები შენახულია'], 'redirect_url' => route('actionCustomersIndex')]);
                                 }
                             }
@@ -168,6 +196,36 @@ class CustomersAjaxController extends Controller
             } else {
                 return Response::json(['status' => true, 'errors' => true, 'message' => [0 => 'გთხოვთ აირჩიოთ მომხმარებლის ტიპი']]);
             }
+        } else {
+            return Response::json(['status' => false]);
+        }
+    }
+
+    public function ajaxReferalPay(Request $Request) {
+        if($Request->isMethod('POST') && !empty($Request->item_id)) {
+            $ReferalOrder = new ReferalOrder();
+            $ReferalOrderData = $ReferalOrder::find($Request->item_id)->update([
+                'status' => 1,
+                'pay_by' => Auth::user()->id,
+            ]);
+
+
+            return Response::json(['status' => true, 'message' => [0 => 'თანხა წარმატებით გადარდა']]);
+        } else {
+            return Response::json(['status' => false]);
+        }
+    }
+
+    public function ajaxReferalPayDelete(Request $Request) {
+        if($Request->isMethod('POST') && !empty($Request->item_id)) {
+            $ReferalOrder = new ReferalOrder();
+            $ReferalOrderData = $ReferalOrder::find($Request->item_id)->update([
+                'status' => 0,
+                'pay_by' => NULL,
+            ]);
+
+
+            return Response::json(['status' => true, 'message' => [0 => 'დარიცხვა წარმატებით წაიშალა']]);
         } else {
             return Response::json(['status' => false]);
         }

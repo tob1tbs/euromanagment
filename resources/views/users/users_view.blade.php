@@ -25,7 +25,7 @@
                                                 <div class="data-item">
                                                     <div class="data-col">
                                                         <span class="data-label font-neue">სახელი გვარი</span>
-                                                        <span class="data-value font-helvetica-regular">{ $user_data->name }} {{ $user_data->lastname }}</span>
+                                                        <span class="data-value font-helvetica-regular">{{ $user_data->name }} {{ $user_data->lastname }}</span>
                                                     </div>
                                                 </div>
                                                 <div class="data-item">
