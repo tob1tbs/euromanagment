@@ -434,14 +434,15 @@ function AddSalarySubmit() {
         success: function(data) {
             if(data['status'] == true) {
                 if(data['errors'] == true) {
-                    NioApp.Toast(data['message'], 'error', {
-                        position: 'top-right'
-                    });
+                    $.each(data['message'], function(key, value) {
+                        NioApp.Toast(value, 'error', {
+                            position: 'top-right'
+                        });
+                    })
                 } else {
                     NioApp.Toast(data['message'], 'success', {
                         position: 'top-right'
                     });
-                    $(".cell-item-"+data['day']+"-"+data['user_id']).html(data['total']).addClass('table-cell').removeClass('box-shadow').prop("onclick", ViewUserSalary());
                     $('#add_user_salary_form')[0].reset();
                     $("#userAddSalary").modal('hide');
                 }
@@ -613,10 +614,41 @@ function UserSubmit() {
                             });
                         })
                     });
+                } else {
+                    NioApp.Toast('მომხმარებელი წარმატებით დაემატა', 'success', {
+                        position: 'top-right'
+                    });
+                    window.location.replace(data['redirect_url']);
                 }
             } else {
-                
+                NioApp.Toast('სისტემური ხერვეზი.', 'error', {
+                    position: 'top-right'
+                });
             }
+        }
+    });
+}
+
+function UserActiveChange(user_id, elem) {
+    if($(elem).is(":checked")) {
+        user_active = 1;
+    } else {
+        user_active = 0
+    }
+
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/active",
+        type: "POST",
+        data: {
+            user_id: user_id,
+            user_active: user_active,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            return;
         }
     });
 }
@@ -728,6 +760,89 @@ function RemoveWorkPosition(elem) {
     $(elem).parents('tr').remove();
 }
 
+function ContactAdd() {
+    checkContact = () => {
+
+        if ($("#user_contact_identy").val() == 0) {
+           $("#user_contact_identy").addClass('border border-danger');
+            contactValid = false;
+            return;
+        } else {
+            $("#user_contact_identy").removeClass('border border-danger');
+            contactValid = true;
+        }
+
+        if ($("#user_contact_phone").val() == 0) {
+            $("#user_contact_phone").addClass('border border-danger');
+            contactValid = false;
+            return;
+        } else {
+            $("#user_contact_phone").removeClass('border border-danger');
+            contactValid = true;
+        }
+
+        return contactValid;
+    };
+
+    contactValid = checkContact();
+
+    if(contactValid) {
+        $(".user_contact_list").append(`
+            <tr class="font-helvetica-regular">
+                <td class="px-2">`+$("#user_contact_identy").val()+`</td>
+                <td>`+$("#user_contact_phone").val()+`</td>
+                <td>
+                    <span class="font-helvetica-regular" onclick="RemoveContactData(this)" style="cursor: pointer;">კონტაქტის წაშლა</span>
+                </td>
+                <input type="hidden" name="contact_identy[]" value="`+$("#user_contact_identy").val()+`">
+                <input type="hidden" name="contact_phone[]" value="`+$("#user_contact_phone").val()+`">
+            </tr>
+        `);
+    }
+}
+
+function RemoveContactData(elem) {
+    $(elem).parents('tr').remove();
+}
+
+function DeleteWorkPosition(elem, position_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/deletePosition",
+        type: "POST",
+        data: {
+            position_id: position_id,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $(elem).parents('tr').remove();
+            }
+        }
+    });
+}
+
+function DeleteContact(elem, contact_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/users/ajax/deleteContact",
+        type: "POST",
+        data: {
+            contact_id: contact_id,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                $(elem).parents('tr').remove();
+            }
+        }
+    });
+}
+
 function UserLogin() {
     var form = $('#user_login_form')[0];
     var data = new FormData(form);
@@ -784,7 +899,7 @@ function ViewDetailSalary(user_id, position_id) {
                           <td class="text-center">`+value['salary']+` ₾</td>
                           <td class="text-center">`+value['bonus']+` ₾</td>
                           <td class="text-center">`+value['fine']+` ₾</td>
-                          <td class="text-left">`+value['comment']+` ₾</td>
+                          <td class="text-left">`+value['comment']+`</td>
                           <td class="text-right">`+total+`₾ </td>
                         </tr>
                     `);
@@ -947,8 +1062,8 @@ function UserPermissionData(user_id) {
 
 function UpdateRoleSubmit() {
     Swal.fire({
-        title: "ნამდვილად გსურთ ჯგუფის წაშლა?",
-        text: "მომხმარებლები რომელებთაც ააქვთ მინიჭებული აღნიშნული ჯგუფი, ავტომატურად გადავლენ ჯგუფ მოხმარებლებში !!!",
+        title: "ნამდვილად გსურთ ჯგუფის შეცვლა?",
+        text: "მომხმარებელს შეეცვლება მისთვის განკუთვნილი უფლებები !!!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: 'წაშლა',

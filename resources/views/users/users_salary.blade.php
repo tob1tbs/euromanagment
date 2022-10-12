@@ -150,7 +150,7 @@
                             <div class="form-group">
                                 <label class="form-label" id="user_bonus_salary">ბონუსი</label>
                                 <div class="form-control-wrap">
-                                    <input type="number" class="form-control" id="user_bonus_salary" name="user_bonus_salary">
+                                    <input type="number" class="form-control" id="user_bonus_salary" name="user_bonus_salary" value="0">
                                 </div>
                             </div>
                         </div>
@@ -158,7 +158,7 @@
                             <div class="form-group">
                                 <label class="form-label" id="user_fine_salary">ჯარიმა</label>
                                 <div class="form-control-wrap">
-                                    <input type="number" class="form-control" id="user_fine_salary" name="user_fine_salary">
+                                    <input type="number" class="form-control" id="user_fine_salary" name="user_fine_salary" value="0">
                                 </div>
                             </div>
                         </div>

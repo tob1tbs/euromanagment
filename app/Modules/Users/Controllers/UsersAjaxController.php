@@ -16,6 +16,7 @@ use App\Modules\Users\Models\UserWorkVacation;
 use App\Modules\Users\Models\UserWorkVacationType;
 use App\Modules\Users\Models\UserWorkData;
 use App\Modules\Users\Models\UserWorkPosition;
+use App\Modules\Users\Models\UserContact;
 
 use App\Modules\Company\Models\Branch;
 
@@ -503,6 +504,13 @@ class UsersAjaxController extends Controller
                 return Response::json(['status' => true, 'errors' => true, 'message' => $validator->getMessageBag()->toArray()], 200);
             } else {
 
+                $UserWorkData = new UserWorkData();
+                $UserWorkDataItem = $UserWorkData::where('user_id', $Request->work_user_id)->where('deleted_at_int', '!=', 0)->first();
+
+                if(empty($UserWorkDataItem)) {
+                    return Response::json(['status' => true, 'errors' => true, 'message' =>[0 => 'აღნიშნულ თანამშრომელს არ გააჩნია სამუშაო პოზიცია']]);
+                }
+
                 $UserWorkCalendar = new UserWorkCalendar();
                 $UserWorkCalendarData = $UserWorkCalendar::whereDate('work_date', Carbon::parse($Request->work_date)->format('Y-m-d'))->where('user_id', $Request->work_user_id)->where('deleted_at_int', '!=', 0)->first();
 
@@ -594,10 +602,10 @@ class UsersAjaxController extends Controller
                 return Response::json(['status' => true, 'errors' => true, 'message' => 'აღნიშნული თანამშრომელი არ მუშაობდა '.$Request->salary_date.' ში, გთხოვთ გადაამოწმოთ მონაცემები.']);
             } else {
                 $messages = array(
-                    'required' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
+                    'user_day_salary.required' => 'გთხოვთ შეიყვანოთ დღიური ხელფასი',
                 );
                 $validator = Validator::make($Request->all(), [
-                    // VALIDATOR TODO
+                    'user_day_salary' => 'required|max:255',
                 ], $messages);
 
                 if ($validator->fails()) {
@@ -653,6 +661,18 @@ class UsersAjaxController extends Controller
         }
     }
 
+    public function ajaxUserActive(Request $Request) {
+        if($Request->isMethod('POST') && !empty($Request->user_id) && $Request->user_id != 1) {
+            $User = new User();
+            $User::find($Request->user_id)->update([
+                'active' => $Request->user_active,
+            ]);
+            return Response::json(['status' => true]);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
     public function ajaxUserSubmit(Request $Request) {
         if($Request->isMethod('POST')) {
             $messages = array(
@@ -667,7 +687,7 @@ class UsersAjaxController extends Controller
                 'user_bday' => 'required|max:255',
                 'user_personal_id' => 'required|unique:new_users,personal_id,'.$Request->user_id.'|max:255',
                 'user_phone' => 'required|unique:new_users,phone,'.$Request->user_id.'|max:255',
-                'user_email' => 'required|unique:new_users,email,'.$Request->user_id.'|max:255',
+                'user_email' => 'nullable|unique:new_users,email,'.$Request->user_id.'|max:255',
             ], $messages);
 
             if ($validator->fails()) {
@@ -684,22 +704,66 @@ class UsersAjaxController extends Controller
                         'bday' => $Request->user_bday,
                         'phone' => $Request->user_phone,
                         'email' => $Request->user_email,
-                        'password' => Hash::make('Password'),
+                        'address' => $Request->user_address,
                     ],
                 );
 
                 if($Request->has('position')) {
-                    $UserWorkData = new UserWorkData();
                     for ($i=0; $i < count($Request->position); $i++) {
+                        $UserWorkData = new UserWorkData();
                         $UserWorkData->position_id = $Request->position[$i];
                         $UserWorkData->user_id = $UserData->id;
                         $UserWorkData->salary_type = $Request->salary_type[$i];
                         $UserWorkData->branch_id = $Request->branch[$i];
                         $UserWorkData->departament_id = $Request->departament[$i];
                         $UserWorkData->salary = $Request->salary[$i];
+                        $UserWorkData->save();
                     }
                 }
+
+                if($Request->has('contact_phone')) {
+                    for ($i=0; $i < count($Request->contact_phone); $i++) {
+                        $ContactArray = [
+                            'identy' => $Request->contact_identy[$i],
+                            'phone' => $Request->contact_phone[$i],
+                        ];
+                        $UserContact = new UserContact();
+                        $UserContact->value = json_encode($ContactArray);
+                        $UserContact->user_id = $UserData->id;
+                        $UserContact->save();
+                    }
+                }
+
+                return Response::json(['status' => true, 'redirect_url' => route('actionUsersView', $Request->user_id)]);
             }
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserDeletePosition(Request $Request) {
+        if($Request->isMethod('POST') && !empty($Request->position_id)) {
+            $UserWorkData = new UserWorkData();
+            $UserWorkData->find($Request->position_id)->update([
+                'deleted_at' => Carbon::now(),
+                'deleted_at_int' => 0,
+            ]);
+
+            return Response::json(['status' => true]);
+        } else {
+            return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
+        }
+    }
+
+    public function ajaxUserDeleteContact(Request $Request) {
+        if($Request->isMethod('POST') && !empty($Request->contact_id)) {
+            $UserContact = new UserContact();
+            $UserContact->find($Request->contact_id)->update([
+                'deleted_at' => Carbon::now(),
+                'deleted_at_int' => 0,
+            ]);
+
+            return Response::json(['status' => true]);
         } else {
             return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა, გთხოვთ სცადოთ თავიდან !!!']);
         }
@@ -756,7 +820,12 @@ class UsersAjaxController extends Controller
             $UserWorkDataItem = $UserWorkData::where('user_id', $Request->user_id)->where('position_id', $Request->position_id)->where('deleted_at_int', '!=', 0)->first();
 
             $UserWorkSalary = new UserWorkSalary();
-            $UserWorkSalaryList = $UserWorkSalary::where('user_id', $Request->user_id)->whereDate('date', '>=', $StartDate)->whereDate('date', '<=', $EndDate)->orderBy('date', 'DESC')->where('deleted_at_int', '!=', 0)->get();
+            $UserWorkSalaryList = $UserWorkSalary::where('user_id', $Request->user_id)
+                                    ->whereDate('date', '>=', $StartDate)
+                                    ->whereDate('date', '<=', $EndDate)
+                                    ->orderBy('date', 'DESC')
+                                    ->where('deleted_at_int', '!=', 0)
+                                    ->get();
 
             return Response::json([
                 'status' => true, 
@@ -854,7 +923,9 @@ class UsersAjaxController extends Controller
     public function ajaxUserRoleUpdate(Request $Request) {
         if($Request->isMethod('POST')) {
             $User = new User();
-            $UserData = $User::find($Request->user_id);
+            $UserData = $User::find($Request->user_id)->update([
+                'role_id' => $Request->role_id,
+            ]);
         }
     }
 

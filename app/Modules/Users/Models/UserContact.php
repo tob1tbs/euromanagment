@@ -10,4 +10,6 @@ class UserContact extends Model
     use HasFactory;
 
     protected $table = "new_users_contacts";
+
+    protected $fillable = ['value', 'user_id', 'deleted_at', 'deleted_at_int'];
 }

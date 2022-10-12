@@ -68,7 +68,7 @@
                                                 </td>
                                                 <td class="nk-tb-col tb-col-md">
                                                     <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input" id="user_active_{{ $user_item->id }}" onclick="ProductActiveChange({{ $user_item->id }}, this)" @if($user_item->active == 1) checked @endif>
+                                                        <input type="checkbox" class="custom-control-input" id="user_active_{{ $user_item->id }}" onclick="UserActiveChange({{ $user_item->id }}, this)" @if($user_item->active == 1) checked @endif>
                                                         <label class="custom-control-label" for="user_active_{{ $user_item->id }}"></label>
                                                     </div>
                                                 </td>

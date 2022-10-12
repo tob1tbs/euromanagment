@@ -11,6 +11,8 @@ class UserWorkData extends Model
 
     protected $table = "new_users_work_data";
 
+    protected $fillable = ['deleted_at', 'deleted_at_int'];
+
     public function userPosition() {
         return $this->belongsTo('App\Modules\Users\Models\UserWorkPosition', 'position_id', 'id');
     }

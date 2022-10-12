@@ -13,7 +13,7 @@
 				    <div class="card card-bordered">
 				        <div class="card-inner">
 				            <div class="card-head">
-				                <h5 class="card-title font-neue">ახალი თანამშრომლის რეგისტრაცია</h5>
+				                <h5 class="card-title font-neue">თანამშრომლის პროფილის რედატირება</h5>
 				            </div>
 				            <ul class="nav nav-tabs font-neue">
 							    <li class="nav-item">
@@ -34,7 +34,7 @@
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_name">სახელი</label>
 						                            <div class="form-control-wrap">
-						                                <input type="text" class="form-control error-input" id="user_name" name="user_name">
+						                                <input type="text" class="form-control error-input" id="user_name" name="user_name" value="{{ $user_data->name }}">
 						                            </div>
 						                        </div>
 						                    </div>
@@ -42,7 +42,7 @@
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_lastname">გვარი</label>
 						                            <div class="form-control-wrap">
-						                                <input type="text" class="form-control error-input" id="user_lastname" name="user_lastname">
+						                                <input type="text" class="form-control error-input" id="user_lastname" name="user_lastname" value="{{ $user_data->lastname }}">
 						                            </div>
 						                        </div>
 						                    </div>
@@ -50,7 +50,7 @@
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_bday">დაბადების თარიღი</label>
 						                            <div class="form-control-wrap">
-						                                <input type="date" class="form-control error-input" id="user_bday" name="user_bday">
+						                                <input type="date" class="form-control error-input" id="user_bday" name="user_bday" value="{{ $user_data->bday }}">
 						                            </div>
 						                        </div>
 						                    </div>
@@ -58,7 +58,7 @@
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_personal_id">პირადი ნომერი</label>
 						                            <div class="form-control-wrap">
-						                                <input type="number" class="form-control error-input" id="user_personal_id" name="user_personal_id">
+						                                <input type="number" class="form-control error-input" id="user_personal_id" name="user_personal_id" value="{{ $user_data->personal_id }}">
 						                            </div>
 						                        </div>
 						                    </div>
@@ -66,7 +66,7 @@
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_address">ფაქტობრივი მისამართი</label>
 						                            <div class="form-control-wrap">
-						                                <input type="text" class="form-control error-input" id="user_address" name="user_address">
+						                                <input type="text" class="form-control error-input" id="user_address" name="user_address" value="{{ $user_data->address }}">
 						                            </div>
 						                        </div>
 						                    </div>
@@ -74,7 +74,7 @@
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_phone">ტელეფონის ნომერი</label>
 						                            <div class="form-control-wrap">
-						                                <input type="phone" class="form-control error-input" id="user_phone" name="user_phone">
+						                                <input type="phone" class="form-control error-input" id="user_phone" name="user_phone" value="{{ $user_data->phone }}">
 						                            </div>
 						                        </div>
 						                    </div>
@@ -82,12 +82,12 @@
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_email">ელ-ფოსტა</label>
 						                            <div class="form-control-wrap">
-						                                <input type="email" class="form-control error-input" id="user_email" name="user_email">
+						                                <input type="email" class="form-control error-input" id="user_email" name="user_email" value="{{ $user_data->email }}">
 						                            </div>
 						                        </div>
 						                    </div>
 						                </div>
-						                <input type="hidden" name="user_id" id="user_id">
+						                <input type="hidden" name="user_id" id="user_id" value="{{ $user_data->id }}">
 								    </div>
 								    <div class="tab-pane p-0 m-3" id="tabItem2">
 							        	<table class="table table-ulogs">
@@ -100,7 +100,16 @@
 	                                            </tr>
 	                                        </thead>
 	                                        <tbody class="user_work_position">
-
+	                                        	@foreach($user_work_list as $item)
+	                                        	<tr class="font-helvetica-regular" style="line-height: 40px;">
+                                                    <td>{{ $item->userPosition->name}}</td>
+                                                    <td>{{ $item->salary }} ₾</td>
+                                                    <td>{{ $item->userBranch->name }} / {{ $item->userBranchDepartament->name }}</td>
+                                                    <td>
+									                    <span class="font-helvetica-regular" onclick="DeleteWorkPosition(this, {{ $item->id }})" style="cursor: pointer;">პოზიცის წაშლა</span>
+									                </td>
+                                                </tr>
+	                                        	@endforeach
 	                                        </tbody>
 	                                    </table>
 	                                    <div class="row mt-4">
@@ -182,7 +191,15 @@
 	                                            </tr>
 	                                        </thead>
 	                                        <tbody class="user_contact_list">
-
+	                                        	@foreach($user_contact as $contact_item)
+	                                        	<tr class="font-helvetica-regular">
+									                <td class="px-2">{{ json_decode($contact_item->value)->identy }}</td>
+									                <td>{{ json_decode($contact_item->value)->phone }}</td>
+									                <td>
+									                    <span class="font-helvetica-regular" onclick="DeleteContact(this, {{ $contact_item->id }})" style="cursor: pointer;">კონტაქტის წაშლა</span>
+									                </td>
+									            </tr>
+									            @endforeach
 	                                        </tbody>
 	                                    </table>
                                         <div class="row mt-4">

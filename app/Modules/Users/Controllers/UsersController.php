@@ -92,7 +92,32 @@ class UsersController extends Controller
     public function actionUsersEdit(Request $Request) {
         if (view()->exists('users.users_edit')) {
 
-            $data = [];
+            $UserWorkPosition = new UserWorkPosition();
+            $UserWorkPositionList = $UserWorkPosition::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $Branch = new Branch();
+            $BranchList = $Branch::where('parent_id', 0)->where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $UserContractType = new UserContractType();
+            $UserContractTypeList = $UserContractType::where('deleted_at_int', '!=', 0)->where('active', 1)->get();
+
+            $User = new User();
+            $UserData = $User::find($Request->user_id);
+
+            $UserWorkData = new UserWorkData();
+            $UserWorkDataList = $UserWorkData::where('user_id', $Request->user_id)->where('deleted_at_int', '!=', 0)->get();
+
+            $UserContact = new UserContact();
+            $UserContactList = $UserContact::where('user_id', $Request->user_id)->where('deleted_at_int', '!=', 0)->get();
+
+            $data = [
+                'work_position_list' => $UserWorkPositionList,
+                'branch_list' => $BranchList,
+                'contract_type' => $UserContractTypeList,
+                'user_data' => $UserData,
+                'user_work_list' => $UserWorkDataList,
+                'user_contact' => $UserContactList,
+            ];
 
             return view('users.users_edit', $data);
         } else {

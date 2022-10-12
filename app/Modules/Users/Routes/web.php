@@ -20,6 +20,9 @@ Route::group(['prefix' => 'users', 'middleware' => ['login']], function () {
 Route::group(['prefix' => 'users/ajax', 'middleware' => ['login']], function () {
     // USER
     Route::post('/submit', 'UsersAjaxController@ajaxUserSubmit')->name('ajaxUserSubmit');
+    Route::post('/active', 'UsersAjaxController@ajaxUserActive')->name('ajaxUserActive');
+    Route::post('/deletePosition', 'UsersAjaxController@ajaxUserDeletePosition')->name('ajaxUserDeletePosition');
+    Route::post('/deleteContact', 'UsersAjaxController@ajaxUserDeleteContact')->name('ajaxUserDeleteContact');
     Route::get('/get/departament', 'UsersAjaxController@ajaxGetDepartamentList')->name('ajaxGetDepartamentList');
     Route::get('/role/get', 'UsersAjaxController@ajaxUserRoleGet')->name('ajaxUserRoleGet');
     Route::post('/role/update', 'UsersAjaxController@ajaxUserRoleUpdate')->name('ajaxUserRoleUpdate');

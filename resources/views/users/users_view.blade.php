@@ -80,8 +80,21 @@
                                                     <tbody>
                                                     @foreach($user_data->workData as $work_item)
                                                     <tr class="font-helvetica-regular text-center" style="line-height: 40px;">
-                                                        <td>{{ $work_item->userPosition->name}}</td>
-                                                        <td>{{ $work_item->salary }} ₾</td>
+                                                        <td>{{ $work_item->userPosition->name}} @if($work_item->deleted_at_int == 0) <span class="badge badge-danger font-helvetica-regular">წაშლილია - {{ $work_item->deleted_at }}</span> @endif</td>
+                                                        <td>
+                                                            @switch($work_item->salary_type)
+                                                                @case(1)
+                                                                <span class="badge badge-success font-helvetica-regular">ფიქსირებული</span>
+                                                                @break
+                                                                @case(2)
+                                                                <span class="badge badge-success font-helvetica-regular">დღიური</span>
+                                                                @break
+                                                                @case(3)
+                                                                <span class="badge badge-success font-helvetica-regular">ფიქსირებული + დღიური</span>
+                                                                @break
+                                                            @endswitch
+                                                            - {{ $work_item->salary }} ₾
+                                                        </td>
                                                         <td>{{ $work_item->userBranch->name }} / {{ $work_item->userBranchDepartament->name }}</td>
                                                     </tr>
                                                     @endforeach
@@ -116,12 +129,12 @@
 								        <table class="table table-ulogs">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th class="tb-col-time font-neue"><span class="overline-title">#</span></th>
-                                                    <th class="tb-col-time font-neue"><span class="overline-title">გასვლის თარიღი</span></th>
-                                                    <th class="tb-col-time font-neue"><span class="overline-title">დაბრუნების თარიღი</span></th>
-                                                    <th class="tb-col-time font-neue"><span class="overline-title">შექმნა</span></th>
-                                                    <th class="tb-col-time font-neue"><span class="overline-title">შექმნის თარიღი</span></th>
-                                                    <th class="tb-col-action"><span class="overline-title">მოქმედება</span></th>
+                                                    <th class="tb-col-time"><span class="overline-title font-neue">#</span></th>
+                                                    <th class="tb-col-time"><span class="overline-title font-neue">გასვლის თარიღი</span></th>
+                                                    <th class="tb-col-time"><span class="overline-title font-neue">დაბრუნების თარიღი</span></th>
+                                                    <th class="tb-col-time"><span class="overline-title font-neue">შექმნა</span></th>
+                                                    <th class="tb-col-time"><span class="overline-title font-neue">შექმნის თარიღი</span></th>
+                                                    <th class="tb-col-action"><span class="overline-title font-neue">მოქმედება</span></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -149,7 +162,7 @@
                                     <div class="card-inner p-0">
                                         <div class="card-inner p-0">
                                             <ul class="link-list-menu font-helvetica-regular">
-                                                <li><a href="javascript:;"><span>პროფილის რედაქტირება</span></a></li>
+                                                <li><a href="{{ route('actionUsersEdit', $user_data->id) }}"><span>პროფილის რედაქტირება</span></a></li>
                                                 <li><a href="javascript:;" onclick="AddVacationModal()"><span>შვებულების დამატება</span></a></li>
                                             </ul>
                                         </div>
