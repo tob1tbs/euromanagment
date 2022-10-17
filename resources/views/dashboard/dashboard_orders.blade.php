@@ -35,7 +35,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_month">თვე</label>
                                                 <div class="form-control-wrap">
@@ -48,7 +48,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_status">შეკვეთის სტატუსი</label>
                                                 <div class="form-control-wrap">
@@ -61,7 +61,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label" for="rs_status">ზედნადების სტატუსი</label>
                                                 <div class="form-control-wrap">
@@ -74,15 +74,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2">
+                                        <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label" for="order_search_query">სწრაფი ძებნა</label>
                                                 <div class="form-control-wrap ">
-                                                    <input type="text" class="form-control" id="order_search_query" name="order_search_query" value="{{ request()->order_search_query }}" placeholder="შეკვეთს ნომერი, პირადი ნომერი, საიდენტიფიკაციო კოდი">
+                                                    <input type="text" class="form-control" id="order_search_query" name="order_search_query" value="{{ request()->order_search_query }}" placeholder="შეკვეთს ნომერი">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-1">
+                                        <div class="col-lg-2">
                                             <div class="form-group">
                                                 <label class="form-label" for="pay-amount-1">&nbsp;</label>
                                                 <div class="form-control-wrap text-center">
