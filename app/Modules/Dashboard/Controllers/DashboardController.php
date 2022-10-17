@@ -65,7 +65,7 @@ class DashboardController extends Controller
 
             if($Request->has('order_search_number') && !empty($Request->order_search_number)) {
                 $DashboardOrderList->whereHas('customerType', function ($query) use ($Request) {
-                    return $query->where('personal_id', 'like', '%'.$Request->order_search_number.'%');
+                    $query->where('personal_id', 'like', '%'.$Request->order_search_number.'%');
                 })->get();
             }
 
