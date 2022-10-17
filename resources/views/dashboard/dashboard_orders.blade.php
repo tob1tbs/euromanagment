@@ -29,7 +29,7 @@
                                                     <select class="form-control" id="order_year" name="order_year">
                                                         <option value=""></option>
                                                         @foreach($year_list as $year_item)
-                                                        <option value="{{ $year_item }}" @if(empty(request()->order_year)) @if(request()->order_year == $year_item) selected @endif>{{ $year_item }}</option>
+                                                        <option value="{{ $year_item }}" @if(request()->order_year == $year_item) selected @endif>{{ $year_item }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
