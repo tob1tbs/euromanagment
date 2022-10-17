@@ -319,6 +319,36 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner border-bottom">
+                                    <div class="card-title-group">
+                                        <div class="card-title">
+                                            <h6 class="title font-neue">ტრანზაქციები</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-tranx">
+                                    <thead class="font-helvetica-regular">
+                                        <tr class="tb-tnx-head">
+                                            <th class="tb-tnx-info text-center">
+                                                <span>ტრანზაქციის ტიპი</span>
+                                            </th>
+                                            <th class="tb-tnx-info text-center">
+                                                <span>გატარების თარიღი</span>
+                                            </th>
+                                            <th class="tb-tnx-amount is-alt text-center">
+                                                <span class="tb-tnx-total">შექმნა</span>
+                                            </th>
+                                            <th class="tb-tnx-action">
+                                                <span>&nbsp;</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="transactions-list">
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
