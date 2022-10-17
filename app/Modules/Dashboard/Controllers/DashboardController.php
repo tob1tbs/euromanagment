@@ -64,9 +64,11 @@ class DashboardController extends Controller
             }
 
             if($Request->has('order_search_number') && !empty($Request->order_search_number)) {
+                dd("ASdasd");
                 $DashboardOrderList = $DashboardOrderList->with(["customerType" => function($q) use ($Request) {
                     $q->where('customerType.personal_number', '=', $Request->order_search_number);
                 }]);
+                dd("ASdasd1");
             }
 
             $DashboardOrderList = $DashboardOrderList->orderBy('id', 'DESC')->toSql();
