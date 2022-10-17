@@ -64,7 +64,7 @@ class DashboardController extends Controller
             }
 
             if($Request->has('order_search_number') && !empty($Request->order_search_number)) {
-                $DashboardOrderList = $DashboardOrderList->whereRelation('customerType', 'personal_id', 'like', '%'.$Request->order_search_query.'%');
+                $DashboardOrderList = $DashboardOrderList->whereRelation('customerType', 'personal_id', 'like', '%'.$Request->order_search_number.'%');
             }
 
             $DashboardOrderList = $DashboardOrderList->orderBy('id', 'DESC')->get();
