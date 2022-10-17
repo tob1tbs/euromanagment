@@ -39,7 +39,7 @@ class DashboardController extends Controller
         if (view()->exists('dashboard.dashboard_orders')) {
 
             $DashboardOrder = new DashboardOrder();
-            $DashboardOrderList = $DashboardOrder;
+            $DashboardOrderList = $DashboardOrder->with(['customerType']);
 
             if($Request->has('order_year') && !empty($Request->order_year)) {
                 $DashboardOrderList = $DashboardOrderList->whereYear('created_at', $Request->order_year);
@@ -64,13 +64,11 @@ class DashboardController extends Controller
             }
 
             if($Request->has('order_search_number') && !empty($Request->order_search_number)) {
-                $DashboardOrderList = $DashboardOrderList->with(["customerType" => function($q) use ($Request) {
-                    $q->where('customerType.personal_number', '=', $Request->order_search_number);
-                }]);
-            dd($DashboardOrderList);
+                $DashboardOrderList = $DashboardOrderList->whereRelation('customerType', 'personal_id', 'like', '%'.$Request->order_search_query.'%');
             }
 
-            $DashboardOrderList = $DashboardOrderList->orderBy('id', 'DESC')->toSql();
+            $DashboardOrderList = $DashboardOrderList->orderBy('id', 'DESC')->get();
+
             $data = [
                 'year_list' => $this->yearList(),   
                 'month_list' => $this->monthList(),   
