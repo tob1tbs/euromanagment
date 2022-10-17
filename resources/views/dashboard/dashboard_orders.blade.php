@@ -29,7 +29,7 @@
                                                     <select class="form-control" id="order_year" name="order_year">
                                                         <option value=""></option>
                                                         @foreach($year_list as $year_item)
-                                                        <option value="{{ $year_item }}" @if(empty(request()->order_year)) @if($current_date->format('Y') == $year_item) selected @endif @else @if(request()->order_year == $year_item) selected @endif @endif>{{ $year_item }}</option>
+                                                        <option value="{{ $year_item }}" @if(empty(request()->order_year)) @if(request()->order_year == $year_item) selected @endif>{{ $year_item }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -42,7 +42,7 @@
                                                     <select class="form-control" id="order_month" name="order_month">
                                                         <option value=""></option>
                                                         @foreach($month_list as $month_key => $month_item)
-                                                        <option value="{{ $month_key }}" @if(empty(request()->order_month)) @if($current_date->format('m') == $month_key) selected @endif @else @if(request()->order_month == $month_key) selected @endif @endif>{{ $month_item }}</option>
+                                                        <option value="{{ $month_key }}"@if(request()->order_month == $month_key) selected @endif>{{ $month_item }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
