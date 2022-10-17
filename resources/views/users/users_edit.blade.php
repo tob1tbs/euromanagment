@@ -62,7 +62,15 @@
 						                            </div>
 						                        </div>
 						                    </div>
-						                    <div class="col-lg-12">
+						                    <div class="col-lg-6">
+						                        <div class="form-group">
+						                            <label class="form-label font-helvetica-regular" for="user_address_legal">იურიდიული მისამართი</label>
+						                            <div class="form-control-wrap">
+						                                <input type="text" class="form-control error-input" id="user_address_legal" name="user_address_legal">
+						                            </div>
+						                        </div>
+						                    </div>
+						                    <div class="col-lg-6">
 						                        <div class="form-group">
 						                            <label class="form-label font-helvetica-regular" for="user_address">ფაქტობრივი მისამართი</label>
 						                            <div class="form-control-wrap">

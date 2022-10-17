@@ -48,6 +48,12 @@
                                                 </div>
                                                 <div class="data-item">
                                                     <div class="data-col">
+                                                        <span class="data-label font-neue">იურიდიული მისამართი</span>
+                                                        <span class="data-value font-helvetica-regular">{{ $user_data->address_legal }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="data-item">
+                                                    <div class="data-col">
                                                         <span class="data-label font-neue">ტელეფონის ნომერი</span>
                                                         <span class="data-value font-helvetica-regular">{{ $user_data->phone }}</span>
                                                     </div>

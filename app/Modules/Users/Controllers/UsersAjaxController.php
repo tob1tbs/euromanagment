@@ -705,6 +705,7 @@ class UsersAjaxController extends Controller
                         'phone' => $Request->user_phone,
                         'email' => $Request->user_email,
                         'address' => $Request->user_address,
+                        'address_legal' => $Request->user_address_legal,
                     ],
                 );
 
