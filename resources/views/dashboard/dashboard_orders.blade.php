@@ -82,6 +82,14 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="form-label" for="order_search_query">პირადი ნომერი / საიდენტიფიკაციო კოდი</label>
+                                                <div class="form-control-wrap ">
+                                                    <input type="text" class="form-control" id="order_search_number" name="order_search_number" value="{{ request()->order_search_number }}" placeholder="შეკვეთს ნომერი">
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-lg-2">
                                             <div class="form-group">
                                                 <label class="form-label" for="pay-amount-1">&nbsp;</label>
