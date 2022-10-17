@@ -67,10 +67,8 @@ class DashboardController extends Controller
                 $DashboardOrderList = $DashboardOrderList->whereRelation('customerType', 'personal_id', 'like', '%'.$Request->order_search_query.'%');
             }
 
+            $DashboardOrderList = $DashboardOrderList->orderBy('id', 'DESC')->toSql();
             dd($DashboardOrderList);
-
-            $DashboardOrderList = $DashboardOrderList->orderBy('id', 'DESC')->get();
-
             $data = [
                 'year_list' => $this->yearList(),   
                 'month_list' => $this->monthList(),   
