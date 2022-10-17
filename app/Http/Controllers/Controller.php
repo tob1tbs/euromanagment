@@ -118,7 +118,7 @@ class Controller extends BaseController
                     [
                         'label' => 'კონსიგნაციის ლიმიტი',
                         'type' => 'number',
-                        'name' => 'company_consignation_limit',
+                        'name' => 'customer_consignation_limit',
                     ],
                 ],
                 'type_2' => [
@@ -156,12 +156,12 @@ class Controller extends BaseController
                         [
                             'label' => 'რეფერალი',
                             'type' => 'select',
-                            'name' => 'customer_referal',
+                            'name' => 'company_referal',
                         ],
                         [
                             'label' => 'კონსიგნაციის ლიმიტი',
                             'type' => 'number',
-                            'name' => 'customer_consignation_limit',
+                            'name' => 'company_consignation_limit',
                         ],
                     ],
                     'customer_type_2' => [

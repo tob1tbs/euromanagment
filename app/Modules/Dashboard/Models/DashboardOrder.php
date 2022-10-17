@@ -35,4 +35,8 @@ class DashboardOrder extends Model
     public function orderItems() {
         return $this->hasMany('App\Modules\Dashboard\Models\DashboardOrderItem', 'order_id', 'id');
     }
+
+    public function orderTransactions() {
+        return $this->hasMany('App\Modules\Dashboard\Models\DashboardOrderTransactions', 'order_id', 'id');
+    }
 }

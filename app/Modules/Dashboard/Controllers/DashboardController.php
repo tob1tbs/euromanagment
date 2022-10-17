@@ -117,6 +117,22 @@ class DashboardController extends Controller
         }
     }
 
+    public function actionDashboardOrdersInvoicePrint(Request $Request) {
+        if (view()->exists('dashboard.dashboard_print_invoice')) {
+
+            $DashboardOrder = new DashboardOrder();
+            $DashboardOrderData = $DashboardOrder->find($Request->order_id);
+
+            $data = [
+                'order_data' => $DashboardOrderData,
+            ];
+            
+            return view('dashboard.dashboard_print_invoice', $data);
+        } else {
+            abort('404');
+        }
+    }
+
     public function actionDashboardOrdersPrint(Request $Request) {
         if (view()->exists('dashboard.dashboard_print')) {
 

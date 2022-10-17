@@ -7,6 +7,7 @@ Route::group(['prefix' => 'dashboards', 'middleware' => []], function () {
     Route::get('/orders/view/{order_id}', 'DashboardController@actionDashboardOrdersView')->name('actionDashboardOrdersView');
     Route::get('/orders/edit/{order_id}', 'DashboardController@actionDashboardOrdersEdit')->name('actionDashboardOrdersEdit');
     Route::get('/orders/print/{order_id}', 'DashboardController@actionDashboardOrdersPrint')->name('actionDashboardOrdersPrint');
+    Route::get('/orders/print/invoice/{order_id}', 'DashboardController@actionDashboardOrdersInvoicePrint')->name('actionDashboardOrdersInvoicePrint');
     Route::get('/reports', 'DashboardController@actionDashboardReports')->name('actionDashboardReports');
 });
 
