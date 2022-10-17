@@ -66,6 +66,7 @@ class CustomersAjaxController extends Controller
                         'customer_personal_id.unique' => 'კლიენტი აღნიშნული პირადი ნომრით უკვე არსებობს.',
                         'customer_phone.unique' => 'კლიენტი აღნიშნული ტელეფონის ნომრით უკვე არსებობს.',
                         'customer_email.unique' => 'კლიენტი აღნიშნული ელფოსტით უკვე არსებობს.',
+                        'customer_consignation_limit.required' => 'გთხოვთ მიუთითოთ კონსიგნაციის ლიმიტი.',
                     );
                     $validator = Validator::make($Request->all(), [
                         'customer_name' => 'required|max:255',
@@ -74,6 +75,7 @@ class CustomersAjaxController extends Controller
                         'customer_phone' => 'required|unique:new_customers,phone,'.$Request->customer_id.'|max:255',
                         'customer_email' => 'required|unique:new_customers,email,'.$Request->customer_id.'|max:255',
                         'customer_address' => 'required|max:255',
+                        'customer_consignation_limit' => 'required|max:255',
                     ], $messages);
 
                     if ($validator->fails()) {
@@ -109,7 +111,7 @@ class CustomersAjaxController extends Controller
                             if($Request->customer_type_legal == 1) {
                                 $messages = array(
                                     'required' => 'გთხოვთ შეავსოთ ყველა აუცილებელი ველი',
-                                    'company_code.required' => 'კომპანია აღნიშნული საიდენტიფიკაციო კოდით უკვე არსებობს.',
+                                    'company_code.unique' => 'კომპანია აღნიშნული საიდენტიფიკაციო კოდით უკვე არსებობს.',
                                 );
                                 $validator = Validator::make($Request->all(), [
                                     'company_name' => 'required|max:255',
@@ -118,6 +120,7 @@ class CustomersAjaxController extends Controller
                                     'company_contact' => 'required|max:255',
                                     'company_email' => 'required|max:255',
                                     'company_phone' => 'required|max:255',
+                                    'company_consignation_limit' => 'required|max:255',
                                 ], $messages);
 
                                 if ($validator->fails()) {

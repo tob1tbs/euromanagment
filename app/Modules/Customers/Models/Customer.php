@@ -20,5 +20,6 @@ class Customer extends Model
         'email',
         'address',
         'active',
+        'consignation_limit',
     ];
 }

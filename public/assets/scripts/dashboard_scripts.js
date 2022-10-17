@@ -667,7 +667,7 @@ function OrderModal(order_id) {
                     $(".order-customer").append(data['DashboardOrderData']['customer_type']['name']+' '+data['DashboardOrderData']['customer_type']['lastname']+' ('+data['DashboardOrderData']['customer_type']['personal_id']+')');
                 }
 
-                $(".overhead-list").html('');
+                $(".overhead-list, .transaction-list").html('');
                 if(data['DashboardOrderOverheadList'].length > 0) {
                     $.each(data['DashboardOrderOverheadList'], function(key, value) {
                         if(value['status'] == 1) {
@@ -718,6 +718,21 @@ function OrderModal(order_id) {
                                 <div class="example-alert text-center">
                                     <div class="alert alert-info alert-icon font-helvetica-regular">
                                     <em class="icon ni ni-alert-circle"></em> აღნიშნულ შეკვეთაზე ზედნადები არ არის ატვირთული.</div>
+                                </div>
+                            </td>
+                        </tr>
+                    `);
+                }
+
+                if() {
+
+                } else {
+                    $(".transaction-list").append(`
+                        <tr class="tb-tnx-item font-helvetica-regular">
+                            <td class="tb-tnx-id" colspan="5">
+                                <div class="example-alert text-center">
+                                    <div class="alert alert-info alert-icon font-helvetica-regular">
+                                    <em class="icon ni ni-alert-circle"></em> აღნიშნულ შეკვეთაზე ტრანზაქციები არ არის შექმნილი.</div>
                                 </div>
                             </td>
                         </tr>

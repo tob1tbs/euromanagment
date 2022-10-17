@@ -18,5 +18,6 @@ class CustomerCompany extends Model
         'phone',
         'email',
         'contact',
+        'consignation_limit',
     ];
 }
