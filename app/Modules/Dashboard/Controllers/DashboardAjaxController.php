@@ -511,4 +511,8 @@ class DashboardAjaxController extends Controller
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 		}
 	}
+
+	public function ajaxGetTransactionData(Request $Request) {
+		dd($Request->all());
+	}
 }

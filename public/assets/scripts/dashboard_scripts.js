@@ -957,5 +957,17 @@ function CloseOrder(order_id) {
 }
 
 function OrderTransaction(order_id) {
-    alert(order_id);
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/get/transaction/data",
+        type: "GET",
+        data: {
+            order_id: order_id,
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+            }
+        }
+    });
+    $("#TransactionData").modal('show');
 }
