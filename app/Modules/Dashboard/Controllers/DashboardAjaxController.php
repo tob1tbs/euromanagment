@@ -513,6 +513,10 @@ class DashboardAjaxController extends Controller
 	}
 
 	public function ajaxGetTransactionData(Request $Request) {
-		dd($Request->all());
+		if($Request->isMethod('GET') && !empty($Request->order_id)) {
+			
+		} else {
+			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+		}
 	}
 }

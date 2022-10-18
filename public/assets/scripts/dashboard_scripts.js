@@ -966,6 +966,7 @@ function OrderTransaction(order_id) {
         },
         success: function(data) {
             if(data['status'] == true) {
+                console.log(data);
             }
         }
     });
