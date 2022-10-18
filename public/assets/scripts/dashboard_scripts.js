@@ -559,7 +559,7 @@ function OrderModal(order_id) {
                             ინვოისის გაგზავნა
                             <em class="icon ni ni-send ml-1"></em>
                         </button>
-                        <a href="/dashboards/orders/print/`+data['DashboardOrderData']['id']+`" target="_blank" class="btn btn-warning font-neue">
+                        <a href="/dashboards/orders/print/`+data['DashboardOrderData']['id']+`" target="_blank" class="btn btn-info font-neue">
                             დეტალური დაბეჭდვა
                             <em class="icon ni ni-printer-fill ml-1"></em>
                         </a>
@@ -624,7 +624,7 @@ function OrderModal(order_id) {
                             ინვოისის გაგზავნა
                             <em class="icon ni ni-send ml-1"></em>
                         </button>
-                        <a href="/dashboards/orders/print/`+data['DashboardOrderData']['id']+`" target="_blank" class="btn btn-warning font-neue">
+                        <a href="/dashboards/orders/print/`+data['DashboardOrderData']['id']+`" target="_blank" class="btn btn-info font-neue">
                             დეტალური დაბეჭდვა
                             <em class="icon ni ni-printer-fill ml-1"></em>
                         </a>
