@@ -205,6 +205,7 @@
                                                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
                                                                 <ul class="link-list-plain">
                                                                     <li><a href="javascript:;" onclick="RejectOrder({{ $order_item->id }})" class="text-danger font-helvetica-regular">გაუქმება</a></li>
+                                                                    <li><a href="javascript:;" onclick="OrderTransaction({{ $order_item->id }})" class="font-helvetica-regular">ტრანზაქციები</a></li>
                                                                 </ul>
                                                             </div>
                                                         </div>

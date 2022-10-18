@@ -955,3 +955,7 @@ function CloseOrder(order_id) {
         }
     });
 }
+
+function OrderTransaction(order_id) {
+    alert(order_id);
+}
