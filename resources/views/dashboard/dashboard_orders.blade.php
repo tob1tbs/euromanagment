@@ -299,8 +299,8 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-6">
-                                                <label for="payment_type">გადახდის ტიპი</label>
-                                                <select id="payment_type" name="payment_type">
+                                                <label for="payment_type" class="form-label">გადახდის ტიპი</label>
+                                                <select id="payment_type" name="payment_type" class="form-control">
                                                     <option>აირჩიეთ გადახდის ტიპი</option>
                                                     @foreach($payment_list as $payment_key => $payment_item)
                                                     <option value="{{ $payment_key }}">{{ $payment_item }}</option>
