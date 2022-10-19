@@ -301,14 +301,15 @@
                                             <div class="col-6">
                                                 <label for="payment_type" class="form-label">გადახდის ტიპი</label>
                                                 <select id="payment_type" name="payment_type" class="form-control">
-                                                    <option>აირჩიეთ გადახდის ტიპი</option>
+                                                    <option value="0">აირჩიეთ გადახდის ტიპი</option>
                                                     @foreach($payment_list as $payment_key => $payment_item)
                                                     <option value="{{ $payment_key }}">{{ $payment_item }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-6">
-
+                                                <label for="payment_amount" class="form-label">გადასახდელი თანხა</label>
+                                                <input type="number" name="payment_amount" id="payment_amount">
                                             </div>
                                         </div>
                                     </div>
