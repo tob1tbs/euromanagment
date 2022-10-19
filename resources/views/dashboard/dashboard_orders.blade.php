@@ -309,7 +309,7 @@
                                             </div>
                                             <div class="col-6">
                                                 <label for="payment_amount" class="form-label">გადასახდელი თანხა</label>
-                                                <input type="number" name="payment_amount" id="payment_amount">
+                                                <input type="number" name="payment_amount" id="payment_amount" class="form-control">
                                             </div>
                                         </div>
                                     </div>
