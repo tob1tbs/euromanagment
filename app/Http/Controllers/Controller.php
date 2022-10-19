@@ -11,6 +11,17 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function paymentType() {
+        $PaymentType = [
+            '1' => 'ნაღდი ანგარიშსწორება',
+            '2' => 'პოსტერმინალით გადახდა',
+            '3' => 'საბანკო გადარიცხვა',
+            '4' => 'კონსიგნაცია',
+        ];
+
+        return $PaymentType;
+    }
+
     public function monthList() {
         $MonthList = [ '01' => 'იანვარი', '02' => 'თებერვალი', '03' => 'მარტი', '04' => 'აპრილი', '05' => 'მაისი', '06' => 'ივნისი', '07' => 'ივლისი', '08' => 'აგვისტო', '09' => 'სექტემბერი', '10' => 'ოქტომბერი', '11' => 'ნოემბერი', '12' => 'დეკემბერი'];
         return $MonthList;

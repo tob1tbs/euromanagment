@@ -76,6 +76,7 @@ class DashboardController extends Controller
                 'month_list' => $this->monthList(),   
                 'order_status' => $this->orderStatus(),   
                 'rs_status' => $this->rsStatus(),   
+                'payment_list' => $this->paymentType(),   
                 'order_list' => $DashboardOrderList,
                 'overhead_type' => $this->overheadType(),
                 'overhead_category' => $this->overheadCategory(),

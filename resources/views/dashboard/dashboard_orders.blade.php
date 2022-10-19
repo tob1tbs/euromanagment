@@ -293,6 +293,31 @@
                                 <div class="card-inner border-bottom">
                                     <div class="card-title-group">
                                         <div class="card-title">
+                                            <h6 class="title font-neue">გადახდა</h6>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label for="payment_type">გადახდის ტიპი</label>
+                                                <select id="payment_type" name="payment_type">
+                                                    <option>აირჩიეთ გადახდის ტიპი</option>
+                                                    @foreach($payment_list as $payment_key => $payment_item)
+                                                    <option value="{{ $payment_key }}">{{ $payment_item }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card card-bordered card-full">
+                                <div class="card-inner border-bottom">
+                                    <div class="card-title-group">
+                                        <div class="card-title">
                                             <h6 class="title font-neue">ზედნადებები</h6>
                                         </div>
                                     </div>
@@ -324,7 +349,7 @@
                                 <div class="card-inner border-bottom">
                                     <div class="card-title-group">
                                         <div class="card-title">
-                                            <h6 class="title font-neue">ტრანზაქციები</h6>
+                                            <h6 class="title font-neue">გადახდის ისტორია</h6>
                                         </div>
                                     </div>
                                 </div>
