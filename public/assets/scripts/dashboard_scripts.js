@@ -732,7 +732,7 @@ function OrderModal(order_id) {
                     `);
                 }
 
-                if() {
+                if(1 == 2) {
 
                 } else {
                     $(".transaction-list").append(`
