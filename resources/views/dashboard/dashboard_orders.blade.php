@@ -466,5 +466,5 @@
 @endsection
 
 @section('js')
-<script src="{{ url('assets/scripts/dashboard_scripts.js?v=123') }}"></script>
+<script src="{{ url('assets/scripts/dashboard_scripts.js?v=1.1') }}"></script>
 @endsection
