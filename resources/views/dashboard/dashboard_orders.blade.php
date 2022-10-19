@@ -345,7 +345,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody class="transactions-list">
+                                    <tbody class="transaction-list">
 
                                     </tbody>
                                 </table>
