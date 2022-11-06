@@ -993,7 +993,7 @@ function TransactionSave() {
                     $(".transaction-list").append(`
                         <tr class="font-helvetica-regular text-center">
                             <td>`+value['created_at']+`</td>
-                            <td>`+data['payment_list'][$value['type']]+`</td>
+                            <td>`+data['payment_list'][value['type']]+`</td>
                             <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                             <td>
                                 <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
