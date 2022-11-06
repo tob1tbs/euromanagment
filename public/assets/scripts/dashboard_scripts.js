@@ -988,8 +988,12 @@ function TransactionSave() {
         },
         success: function(data) {
             if(data['status'] == true) {
-                
+                $(".transaction-list").html('');
+                $(".transaction-list").append(`
+
+                `);
             } else {
+
             }
         }
     });
