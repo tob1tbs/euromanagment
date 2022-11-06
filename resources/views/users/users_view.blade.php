@@ -87,6 +87,7 @@
                                                     @foreach($user_data->workData as $work_item)
                                                     <tr class="font-helvetica-regular text-center" style="line-height: 40px;">
                                                         <td>{{ $work_item->userPosition->name}} @if($work_item->deleted_at_int == 0) <span class="badge badge-danger font-helvetica-regular">წაშლილია - {{ $work_item->deleted_at }}</span> @endif</td>
+                                                        <td>{{ $work_item->userBranch->name }} / {{ $work_item->userBranchDepartament->name }}</td>
                                                         <td>
                                                             @switch($work_item->salary_type)
                                                                 @case(1)
@@ -101,7 +102,6 @@
                                                             @endswitch
                                                             - {{ $work_item->salary }} ₾
                                                         </td>
-                                                        <td>{{ $work_item->userBranch->name }} / {{ $work_item->userBranchDepartament->name }}</td>
                                                     </tr>
                                                     @endforeach
                                                   </tbody>

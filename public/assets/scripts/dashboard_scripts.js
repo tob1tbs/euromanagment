@@ -972,3 +972,23 @@ function OrderTransaction(order_id) {
     });
     $("#TransactionData").modal('show');
 }
+
+function SavePayment() {
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/order/transaction/save",
+        type: "POST",
+        data: {
+            order_id: order_id,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                
+            } else {
+            }
+        }
+    });
+}
