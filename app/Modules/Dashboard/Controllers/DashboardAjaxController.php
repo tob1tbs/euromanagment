@@ -519,4 +519,12 @@ class DashboardAjaxController extends Controller
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 		}
 	}
+
+	public function ajaxSaveTransactionData(Request $Request) {
+		if($Request->isMethod('POST') && !empty($Request->order_id)) {
+			
+		} else {
+			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+		}
+	}
 }

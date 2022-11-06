@@ -312,7 +312,7 @@
                                                 <input type="number" name="payment_amount" id="payment_amount" class="form-control">
                                             </div>
                                             <div class="col-2">
-                                                <button class="btn btn-success font-neue" onclick="TransactionSave()">გატარება</button>
+                                                <button class="btn btn-success font-neue mt-2" onclick="TransactionSave()">გატარება</button>
                                             </div>
                                         </div>
                                     </div>

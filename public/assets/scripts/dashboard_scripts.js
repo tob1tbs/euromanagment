@@ -973,13 +973,15 @@ function OrderTransaction(order_id) {
     $("#TransactionData").modal('show');
 }
 
-function SavePayment() {
+function TransactionSave() {
     $.ajax({
         dataType: 'json',
         url: "/dashboards/ajax/order/transaction/save",
         type: "POST",
         data: {
-            order_id: order_id,
+            payment_type: $("#payment_type").val(),
+            payment_amount: $("#payment_amount").val(),
+            order_id: $("#order_id").val(),
         },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
