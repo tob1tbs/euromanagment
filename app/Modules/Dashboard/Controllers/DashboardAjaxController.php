@@ -536,7 +536,11 @@ class DashboardAjaxController extends Controller
 				'createdBy',
 			]);
 
-			return Response::json(['status' => true, 'DashboardOrderTransactionData' => $DashboardOrderTransactionData]);
+			return Response::json([
+				'status' => true, 
+				'payment_list' => $this->paymentType(),
+				'DashboardOrderTransactionData' => $DashboardOrderTransactionData,
+			]);
 			
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);

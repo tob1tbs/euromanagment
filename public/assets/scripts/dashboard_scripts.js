@@ -991,9 +991,9 @@ function TransactionSave() {
                 $(".transaction-list").html('');
                 $.each(data['DashboardOrderTransactionData'], function(key, value) {
                     $(".transaction-list").append(`
-                        <tr class="font-helvetica-regular">
-                            <th></th>
-                            <td></td>
+                        <tr class="font-helvetica-regular text-center">
+                            <td>`+value['created_at']+`</td>
+                            <td>`+payment_list[$value['type']]+`</td>
                             <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                             <td>
                                 <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
