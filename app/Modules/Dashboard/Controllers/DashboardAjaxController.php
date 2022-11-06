@@ -12,7 +12,7 @@ use App\Modules\Dashboard\Models\DashboardOrderOverhead;
 use App\Modules\Dashboard\Models\DashboardOrderItem;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Customers\Models\CustomerCompany;
-use App\Modules\Customers\Models\DashboardOrderTransactions;
+use App\Modules\Dashboard\Models\DashboardOrderTransactions;
 
 use App\Modules\Products\Models\Product;
 
