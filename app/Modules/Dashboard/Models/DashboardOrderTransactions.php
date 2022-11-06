@@ -9,5 +9,5 @@ class DashboardOrderTransactions extends Model
 {
     use HasFactory;
 
-    protected $table = "new_orders_transaction";
+    protected $table = "new_orders_transactions";
 }
