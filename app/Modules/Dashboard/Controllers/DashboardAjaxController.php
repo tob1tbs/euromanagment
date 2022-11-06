@@ -530,10 +530,17 @@ class DashboardAjaxController extends Controller
 	public function ajaxSaveTransactionData(Request $Request) {
 		if($Request->isMethod('POST') && !empty($Request->order_id)) {
 
+			$DashboardOrder = new DashboardOrder();
+			$DashboardOrderData = $DashboardOrder::find($Request->order_id);
+
+			if($DashboardOrderData->total_price < $Request->payment_amount * 100) {
+				return Response::json(['status' => true, 'errors' => true, 'message' => [0 => 'შეყვანილი ღირებულება აღებამდე შეკვეთის ღირებულებას']]);
+			}
+
 			$DashboardOrderTransaction = new DashboardOrderTransaction();
 			$DashboardOrderTransaction->order_id = $Request->order_id;
 			$DashboardOrderTransaction->type = $Request->payment_type;
-			$DashboardOrderTransaction->amount = $Request->payment_amount;
+			$DashboardOrderTransaction->amount = $Request->payment_amount * 100;
 			$DashboardOrderTransaction->order_id = $Request->order_id;
 			$DashboardOrderTransaction->created_by = Auth::user()->id;
 			$DashboardOrderTransaction->save();
