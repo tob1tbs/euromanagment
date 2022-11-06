@@ -279,11 +279,16 @@ class DashboardAjaxController extends Controller
 			$DashboardOrderOverhead = new DashboardOrderOverhead();
 			$DashboardOrderOverheadList = $DashboardOrderOverhead->where('order_id', $Request->order_id)->get()->load(['deletedBy', 'createdBy']);
 
+			$DashboardOrderTransactionData = $DashboardOrderTransaction::where('order_id', $Request->order_id)->orderBy('id', 'DESC')->get()->load([
+				'createdBy',
+			]);
+
 			if(!empty($DashboardOrderData)) {
 				return Response::json([
 					'status' => true,  
 					'DashboardOrderData' => $DashboardOrderData, 
-					'DashboardOrderOverheadList' => $DashboardOrderOverheadList
+					'DashboardOrderOverheadList' => $DashboardOrderOverheadList,
+					'DashboardOrderTransactionData' => $DashboardOrderTransactionData
 				]);
 			}
 		}

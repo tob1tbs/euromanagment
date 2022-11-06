@@ -676,6 +676,7 @@ function OrderModal(order_id) {
                 }
 
                 $(".overhead-list, .transaction-list").html('');
+                
                 if(data['DashboardOrderOverheadList'].length > 0) {
                     $.each(data['DashboardOrderOverheadList'], function(key, value) {
                         if(value['status'] == 1) {
@@ -732,8 +733,22 @@ function OrderModal(order_id) {
                     `);
                 }
 
-                if(1 == 2) {
-
+                if(data['DashboardOrderTransactionData'].length > 0) {
+                    $(".transaction-list").html('');
+                    $.each(data['DashboardOrderTransactionData'], function(key, value) {
+                        $(".transaction-list").append(`
+                            <tr class="font-helvetica-regular text-center">
+                                <td>`+value['created_at'].split('T')[0]+ ' '+order_data.split('T')[1].split('.')[0]`</td>
+                                <td>`+data['payment_list'][value['type']]+`</td>
+                                <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
+                                <td>
+                                    <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                        <em class="icon ni ni-trash"></em>
+                                    </a>
+                                </td>
+                            </tr>
+                        `);
+                    });
                 } else {
                     $(".transaction-list").append(`
                         <tr class="tb-tnx-item font-helvetica-regular">
@@ -988,11 +1003,13 @@ function TransactionSave() {
         },
         success: function(data) {
             if(data['status'] == true) {
+               
                 $(".transaction-list").html('');
+                
                 $.each(data['DashboardOrderTransactionData'], function(key, value) {
                     $(".transaction-list").append(`
                         <tr class="font-helvetica-regular text-center">
-                            <td>`+value['created_at']+`</td>
+                            <td>`+value['created_at'].split('T')[0]+ ' '+order_data.split('T')[1].split('.')[0]`</td>
                             <td>`+data['payment_list'][value['type']]+`</td>
                             <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                             <td>
