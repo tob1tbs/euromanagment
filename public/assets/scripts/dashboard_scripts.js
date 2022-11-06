@@ -736,6 +736,7 @@ function OrderModal(order_id) {
                 $(".transaction-list").html('');
                 
                 if(data['DashboardOrderTransactionData'].length > 0) {
+                    console.log(12);
                     $.each(data['DashboardOrderTransactionData'], function(key, value) {
                         $(".transaction-list").append(`
                             <tr class="font-helvetica-regular text-center">
