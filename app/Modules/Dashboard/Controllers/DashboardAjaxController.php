@@ -12,7 +12,7 @@ use App\Modules\Dashboard\Models\DashboardOrderOverhead;
 use App\Modules\Dashboard\Models\DashboardOrderItem;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Customers\Models\CustomerCompany;
-use App\Modules\Dashboard\Models\DashboardOrderTransactions;
+use App\Modules\Dashboard\Models\DashboardOrderTransaction;
 
 use App\Modules\Products\Models\Product;
 
@@ -524,13 +524,17 @@ class DashboardAjaxController extends Controller
 	public function ajaxSaveTransactionData(Request $Request) {
 		if($Request->isMethod('POST') && !empty($Request->order_id)) {
 
-			$DashboardOrderTransactions = new DashboardOrderTransactions();
-			$DashboardOrderTransactions->order_id = $Request->order_id;
-			$DashboardOrderTransactions->type = $Request->payment_type;
-			$DashboardOrderTransactions->amount = $Request->payment_amount;
-			$DashboardOrderTransactions->order_id = $Request->order_id;
-			$DashboardOrderTransactions->created_by = Auth::user()->id;
-			$DashboardOrderTransactions->save();
+			$DashboardOrderTransaction = new DashboardOrderTransaction();
+			$DashboardOrderTransaction->order_id = $Request->order_id;
+			$DashboardOrderTransaction->type = $Request->payment_type;
+			$DashboardOrderTransaction->amount = $Request->payment_amount;
+			$DashboardOrderTransaction->order_id = $Request->order_id;
+			$DashboardOrderTransaction->created_by = Auth::user()->id;
+			$DashboardOrderTransaction->save();
+
+			$DashboardOrderTransactionData = $DashboardOrderTransaction::where('order_id', $Request->order_id)->get();
+
+			return Response::json(['status' => true, 'DashboardOrderTransactionData' => $DashboardOrderTransactionData]);
 			
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
