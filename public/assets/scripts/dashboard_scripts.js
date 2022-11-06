@@ -733,8 +733,9 @@ function OrderModal(order_id) {
                     `);
                 }
 
+                $(".transaction-list").html('');
+                
                 if(data['DashboardOrderTransactionData'].length > 0) {
-                    $(".transaction-list").html('');
                     $.each(data['DashboardOrderTransactionData'], function(key, value) {
                         $(".transaction-list").append(`
                             <tr class="font-helvetica-regular text-center">
@@ -761,6 +762,7 @@ function OrderModal(order_id) {
                         </tr>
                     `);
                 }
+
                 $(".order_total").html('').append(data['DashboardOrderData']['total_price'] / 100+ '₾');
                 $("#OrderModal").modal('show');
             }
