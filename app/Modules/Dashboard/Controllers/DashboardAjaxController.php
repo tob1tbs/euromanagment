@@ -287,6 +287,7 @@ class DashboardAjaxController extends Controller
 			if(!empty($DashboardOrderData)) {
 				return Response::json([
 					'status' => true,  
+					'payment_list' => $this->paymentType(),
 					'DashboardOrderData' => $DashboardOrderData, 
 					'DashboardOrderOverheadList' => $DashboardOrderOverheadList,
 					'DashboardOrderTransactionData' => $DashboardOrderTransactionData
