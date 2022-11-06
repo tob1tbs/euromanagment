@@ -740,6 +740,7 @@ function OrderModal(order_id) {
                         $(".transaction-list").append(`
                             <tr class="font-helvetica-regular text-center">
                                 <td>`+value['created_at'].split('T')[0]+ ' '+value['created_at'].split('T')[1].split('.')[0]+`</td>
+                                <td>`+value['amount'] / 100+` ₾</td>
                                 <td>`+data['payment_list'][value['type']]+`</td>
                                 <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                                 <td>
@@ -1018,6 +1019,7 @@ function TransactionSave() {
                         $(".transaction-list").append(`
                             <tr class="font-helvetica-regular text-center">
                                 <td>`+value['created_at'].split('T')[0]+ ' '+value['created_at'].split('T')[1].split('.')[0]+`</td>
+                                <td>`+value['amount'] / 100+` ₾</td>
                                 <td>`+data['payment_list'][value['type']]+`</td>
                                 <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                                 <td>

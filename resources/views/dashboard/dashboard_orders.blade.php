@@ -364,6 +364,9 @@
                                                 <span>ტრანზაქციის ტიპი</span>
                                             </th>
                                             <th class="tb-tnx-info text-center">
+                                                <span>თანხა</span>
+                                            </th>
+                                            <th class="tb-tnx-info text-center">
                                                 <span>გატარების თარიღი</span>
                                             </th>
                                             <th class="tb-tnx-amount is-alt text-center">
