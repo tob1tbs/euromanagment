@@ -12,6 +12,7 @@ use App\Modules\Dashboard\Models\DashboardOrderOverhead;
 use App\Modules\Dashboard\Models\DashboardOrderItem;
 use App\Modules\Customers\Models\Customer;
 use App\Modules\Customers\Models\CustomerCompany;
+use App\Modules\Customers\Models\DashboardOrderTransactions;
 
 use App\Modules\Products\Models\Product;
 
@@ -522,6 +523,14 @@ class DashboardAjaxController extends Controller
 
 	public function ajaxSaveTransactionData(Request $Request) {
 		if($Request->isMethod('POST') && !empty($Request->order_id)) {
+
+			$DashboardOrderTransactions = new DashboardOrderTransactions();
+			$DashboardOrderTransactions->order_id = $Request->order_id;
+			$DashboardOrderTransactions->type = $Request->payment_type;
+			$DashboardOrderTransactions->amount = $Request->payment_amount;
+			$DashboardOrderTransactions->order_id = $Request->order_id;
+			$DashboardOrderTransactions->created_by = Auth::user()->id;
+			$DashboardOrderTransactions->save();
 			
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
