@@ -990,8 +990,17 @@ function TransactionSave() {
             if(data['status'] == true) {
                 $(".transaction-list").html('');
                 $(".transaction-list").append(`
-
-                `);
+                    <tr class="font-helvetica-regular">
+                        <th></th>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                <em class="icon ni ni-trash"></em>
+                            </a>
+                        </td>
+                    </tr>
+            `);
             } else {
 
             }

@@ -375,22 +375,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="transaction-list">
-                                        <tr class="dashboard-item-`+value['id']+` font-helvetica-regular">
-                                            <th>`+value['name']+`</th>
-                                            <td>`+value['attributes']['unit']+`</td>
-                                            <td>
-                                                <div class="form-control-wrap number-spinner-wrap" style="width: 150px;">
-                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-minus" data-number="minus" onclick="UpdateQuantityMinus(`+value['id']+`)"><em class="icon ni ni-minus"></em></button>
-                                                    <input type="number" class="form-control number-spinner item-quantity-`+value['id']+`" value="`+value['quantity']+`">
-                                                    <button class="btn btn-icon btn-outline-light number-spinner-btn number-plus" data-number="plus" onclick="UpdateQuantityPlus(`+value['id']+`)"><em class="icon ni ni-plus"></em></button>
-                                                </div> 
-                                            </td>
-                                            <td>
-                                                <a href="javascript:;" onclick="RemoveFromCart(`+value['id']+`)" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
-                                                    <em class="icon ni ni-trash"></em>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        
                                     </tbody>
                                 </table>
                             </div>
