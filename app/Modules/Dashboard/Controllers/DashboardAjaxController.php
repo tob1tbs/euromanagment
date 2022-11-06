@@ -532,7 +532,9 @@ class DashboardAjaxController extends Controller
 			$DashboardOrderTransaction->created_by = Auth::user()->id;
 			$DashboardOrderTransaction->save();
 
-			$DashboardOrderTransactionData = $DashboardOrderTransaction::where('order_id', $Request->order_id)->get();
+			$DashboardOrderTransactionData = $DashboardOrderTransaction::where('order_id', $Request->order_id)->orderBy('id', 'DESC')->get()->load([
+				'createdBy',
+			]);
 
 			return Response::json(['status' => true, 'DashboardOrderTransactionData' => $DashboardOrderTransactionData]);
 			
