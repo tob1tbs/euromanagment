@@ -361,13 +361,13 @@
                                     <thead class="font-helvetica-regular">
                                         <tr class="tb-tnx-head">
                                             <th class="tb-tnx-info text-center">
-                                                <span>ტრანზაქციის ტიპი</span>
+                                                <span>გატარების თარიღი</span>
                                             </th>
                                             <th class="tb-tnx-info text-center">
                                                 <span>თანხა</span>
                                             </th>
                                             <th class="tb-tnx-info text-center">
-                                                <span>გატარების თარიღი</span>
+                                                <span>ტრანზაქციის ტიპი</span>
                                             </th>
                                             <th class="tb-tnx-amount is-alt text-center">
                                                 <span class="tb-tnx-total">შექმნა</span>
