@@ -542,8 +542,8 @@ class DashboardAjaxController extends Controller
 			$DashboardOrderTransactionDataCount = $DashboardOrderTransaction::where('order_id', $Request->order_id)->where('status', 1)->where('deleted_at_int', '!=', 0)->get();
 			
 			if(
-				($DashboardOrderTransactionDataCount->sum('amount') >= $DashboardOrderData->total_price) OR 
-				($DashboardOrderTransactionDataCount->sum('amount') + ($Request->payment_amount * 100) >= $DashboardOrderData->total_price)
+				($DashboardOrderTransactionDataCount->sum('amount') > $DashboardOrderData->total_price) OR 
+				($DashboardOrderTransactionDataCount->sum('amount') + ($Request->payment_amount * 100) > $DashboardOrderData->total_price)
 			) {
 				return Response::json(['status' => true, 'errors' => true, 'message' => [0 => 'შეყვანილი ღირებულება აღემატება დასაფარ თანხას.']]);
 			}
