@@ -119,6 +119,12 @@
                                                         <span class="tb-odr-date">ღირებულება</span>
                                                     </th>
                                                     <th class="tb-odr-info">
+                                                        <span class="tb-odr-date">გადასახდელი თანხა</span>
+                                                    </th>
+                                                    <th class="tb-odr-info">
+                                                        <span class="tb-odr-date">გადახდილი თანხა</span>
+                                                    </th>
+                                                    <th class="tb-odr-info">
                                                         <span class="tb-odr-date">ზედნადები</span>
                                                     </th>
                                                     <th class="tb-odr-info">
@@ -149,6 +155,16 @@
                                                                 <span class="badge badge-warning font-helvetica-regular mr-1">შპს</span>{{ $order_item->customerCompany->name }} ({{ $order_item->customerCompany->code }})
                                                             @break
                                                             @endswitch
+                                                        </span>
+                                                    </td>
+                                                    <td class="tb-odr-info">
+                                                        <span class="tb-odr-total">
+                                                            <span class="amount">{{ number_format($order_item->total_price / 100, 2) }} ₾</span>
+                                                        </span>
+                                                    </td>
+                                                    <td class="tb-odr-info">
+                                                        <span class="tb-odr-total">
+                                                            <span class="amount">{{ number_format($order_item->total_price / 100, 2) }} ₾</span>
                                                         </span>
                                                     </td>
                                                     <td class="tb-odr-info">
