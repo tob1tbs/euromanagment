@@ -36,7 +36,7 @@ class DashboardOrder extends Model
         return $this->hasMany('App\Modules\Dashboard\Models\DashboardOrderItem', 'order_id', 'id');
     }
 
-    public function orderTransactions() {
+    public function orderTransaction() {
         return $this->hasMany('App\Modules\Dashboard\Models\DashboardOrderTransactions', 'order_id', 'id');
     }
 }
