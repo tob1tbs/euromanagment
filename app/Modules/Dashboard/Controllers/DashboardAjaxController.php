@@ -543,7 +543,7 @@ class DashboardAjaxController extends Controller
 			
 			if(
 				($DashboardOrderTransactionDataCount->sum('amount') >= $DashboardOrderData->total_price) OR 
-				($DashboardOrderTransactionDataCount->sum('amount') + ($Request->payment_amount * 100))
+				($DashboardOrderTransactionDataCount->sum('amount') + ($Request->payment_amount * 100) >= $DashboardOrderData->total_price)
 			) {
 				return Response::json(['status' => true, 'errors' => true, 'message' => [0 => 'შეყვანილი ღირებულება აღემატება დასაფარ თანხას.']]);
 			}
