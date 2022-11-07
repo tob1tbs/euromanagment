@@ -164,12 +164,16 @@
                                                     </td>
                                                     <td class="tb-odr-info">
                                                         <span class="tb-odr-total">
-                                                            <span class="amount">{{ number_format($order_item->total_price / 100, 2) }} ₾</span>
+                                                            @if(!empty($order_item->orderTransactions))
+                                                            <span class="amount">{{ number_format((($order_item->total_price + $order_item->orderTransactions->sum('amount'))) / 100, 2) }} ₾</span>
+                                                            @endif
                                                         </span>
                                                     </td>
                                                     <td class="tb-odr-info">
                                                         <span class="tb-odr-total">
-                                                            <span class="amount">{{ number_format($order_item->total_price / 100, 2) }} ₾</span>
+                                                            @if(!empty($order_item->orderTransactions))
+                                                            <span class="amount">{{ number_format((($order_item->total_price - $order_item->orderTransactions->sum('amount'))) / 100, 2) }} ₾</span>
+                                                            @endif
                                                         </span>
                                                     </td>
                                                     <td class="tb-odr-info">
