@@ -11,6 +11,8 @@ class DashboardOrderTransaction extends Model
 
     protected $table = "new_orders_transactions";
 
+    protected $fillable = ['deleted_at', 'deleted_at_int', 'status'];
+
     public function createdBy() {
         return $this->belongsTo('App\Modules\Users\Models\User', 'created_by', 'id');
     }

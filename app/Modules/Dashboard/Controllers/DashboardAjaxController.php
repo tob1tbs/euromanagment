@@ -549,6 +549,7 @@ class DashboardAjaxController extends Controller
 			$DashboardOrderTransaction->type = $Request->payment_type;
 			$DashboardOrderTransaction->amount = $Request->payment_amount * 100;
 			$DashboardOrderTransaction->order_id = $Request->order_id;
+			$DashboardOrderTransaction->status = 1;
 			$DashboardOrderTransaction->created_by = Auth::user()->id;
 			$DashboardOrderTransaction->save();
 
@@ -562,6 +563,23 @@ class DashboardAjaxController extends Controller
 				'DashboardOrderTransactionData' => $DashboardOrderTransactionData,
 			]);
 			
+		} else {
+			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
+		}
+	}
+
+	public function ajaxDeleteTransactionData(Request $Request) {
+		if($Request->isMethod('POST') && !empty($Request->transaction_id)) {
+			$DashboardOrderTransaction = new DashboardOrderTransaction();
+			$DashboardOrderTransaction::find($Request->transaction_id)->update([
+				'deleted_at_int' => 0,
+				'deleted_at' => Carbon::now(),	
+				'status' => 2,
+			]);
+
+			$DashboardOrderTransactionData = $DashboardOrderTransaction::where('order_id', $Request->order_id)->orderBy('id', 'DESC')->get()->load([
+				'createdBy',
+			]);
 		} else {
 			return Response::json(['status' => false, 'message' => 'დაფიქსირდა შეცდომა გთხოვთ სცადოთ თავიდან !!!'], 200);
 		}

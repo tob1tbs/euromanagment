@@ -737,8 +737,13 @@ function OrderModal(order_id) {
                 
                 if(data['DashboardOrderTransactionData'].length > 0) {
                     $.each(data['DashboardOrderTransactionData'], function(key, value) {
+                        if(valuep['status'] == 2) {
+                            var status_color = 'style="background: #fd9494;"';
+                        } else {
+                            var status_color = '';
+                        }
                         $(".transaction-list").append(`
-                            <tr class="font-helvetica-regular text-center">
+                            <tr class="font-helvetica-regular text-center" `+status_color+`>
                                 <td>`+value['created_at'].split('T')[0]+ ' '+value['created_at'].split('T')[1].split('.')[0]+`</td>
                                 <td>`+value['amount'] / 100+` ₾</td>
                                 <td>`+data['payment_list'][value['type']]+`</td>
@@ -1016,8 +1021,63 @@ function TransactionSave() {
                     $(".transaction-list").html('');
                     
                     $.each(data['DashboardOrderTransactionData'], function(key, value) {
+                        if(valuep['status'] == 2) {
+                            var status_color = 'style="background: #fd9494;"';
+                        } else {
+                            var status_color = '';
+                        }
                         $(".transaction-list").append(`
-                            <tr class="font-helvetica-regular text-center">
+                            <tr class="font-helvetica-regular text-center" `+status_color+`>
+                                <td>`+value['created_at'].split('T')[0]+ ' '+value['created_at'].split('T')[1].split('.')[0]+`</td>
+                                <td>`+value['amount'] / 100+` ₾</td>
+                                <td>`+data['payment_list'][value['type']]+`</td>
+                                <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
+                                <td>
+                                    <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                        <em class="icon ni ni-trash"></em>
+                                    </a>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                }
+            } else {
+
+            }
+        }
+    });
+}
+
+function DeleteTransaction(transaction_id) {
+    $.ajax({
+        dataType: 'json',
+        url: "/dashboards/ajax/order/transaction/dalete",
+        type: "POST",
+        data: {
+            payment_type: transaction_id,
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            if(data['status'] == true) {
+                if(data['errors'] == true) {
+                    Swal.fire({
+                        icon: 'warning',
+                        text: data['message'],
+                        timer: 2000,
+                    });
+                } else {
+                    $(".transaction-list").html('');
+                    
+                    $.each(data['DashboardOrderTransactionData'], function(key, value) {
+                        if(valuep['status'] == 2) {
+                            var status_color = 'style="background: #fd9494;"';
+                        } else {
+                            var status_color = '';
+                        }
+                        $(".transaction-list").append(`
+                            <tr class="font-helvetica-regular text-center" `+status_color+`>
                                 <td>`+value['created_at'].split('T')[0]+ ' '+value['created_at'].split('T')[1].split('.')[0]+`</td>
                                 <td>`+value['amount'] / 100+` ₾</td>
                                 <td>`+data['payment_list'][value['type']]+`</td>

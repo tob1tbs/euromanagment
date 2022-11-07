@@ -32,4 +32,5 @@ Route::group(['prefix' => 'dashboards/ajax', 'middleware' => []], function () {
     Route::get('/order/overhead/get', 'DashboardAjaxController@ajaxViewSendOverhead')->name('ajaxViewSendOverhead');
     Route::get('/order/transaction/get', 'DashboardAjaxController@ajaxGetTransactionData')->name('ajaxGetTransactionData');
     Route::post('/order/transaction/save', 'DashboardAjaxController@ajaxSaveTransactionData')->name('ajaxSaveTransactionData');
+    Route::post('/order/transaction/delete', 'DashboardAjaxController@ajaxDeleteTransactionData')->name('ajaxDeleteTransactionData');
 });
