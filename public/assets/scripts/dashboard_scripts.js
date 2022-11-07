@@ -749,7 +749,7 @@ function OrderModal(order_id) {
                                 <td>`+data['payment_list'][value['type']]+`</td>
                                 <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                                 <td>
-                                    <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                    <a href="javascript:;" onclick="DeleteTransaction()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
                                         <em class="icon ni ni-trash"></em>
                                     </a>
                                 </td>
@@ -1033,7 +1033,7 @@ function TransactionSave() {
                                 <td>`+data['payment_list'][value['type']]+`</td>
                                 <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                                 <td>
-                                    <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                    <a href="javascript:;" onclick="DeleteTransaction()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
                                         <em class="icon ni ni-trash"></em>
                                     </a>
                                 </td>
@@ -1083,7 +1083,7 @@ function DeleteTransaction(transaction_id) {
                                 <td>`+data['payment_list'][value['type']]+`</td>
                                 <td><span>`+value['created_by']['name']+` `+value['created_by']['lastname']+`</span></td>
                                 <td>
-                                    <a href="javascript:;" onclick="RemoveFromCart()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
+                                    <a href="javascript:;" onclick="DeleteTransaction()" class="btn btn-primary font-neue btn-dim d-none d-sm-inline-flex" data-toggle="dropdown">
                                         <em class="icon ni ni-trash"></em>
                                     </a>
                                 </td>
