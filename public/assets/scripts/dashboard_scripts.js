@@ -737,7 +737,7 @@ function OrderModal(order_id) {
                 
                 if(data['DashboardOrderTransactionData'].length > 0) {
                     $.each(data['DashboardOrderTransactionData'], function(key, value) {
-                        if(valuep['status'] == 2) {
+                        if(value['status'] == 2) {
                             var status_color = 'style="background: #fd9494;"';
                         } else {
                             var status_color = '';
@@ -1021,7 +1021,7 @@ function TransactionSave() {
                     $(".transaction-list").html('');
                     
                     $.each(data['DashboardOrderTransactionData'], function(key, value) {
-                        if(valuep['status'] == 2) {
+                        if(value['status'] == 2) {
                             var status_color = 'style="background: #fd9494;"';
                         } else {
                             var status_color = '';
@@ -1071,7 +1071,7 @@ function DeleteTransaction(transaction_id) {
                     $(".transaction-list").html('');
                     
                     $.each(data['DashboardOrderTransactionData'], function(key, value) {
-                        if(valuep['status'] == 2) {
+                        if(value['status'] == 2) {
                             var status_color = 'style="background: #fd9494;"';
                         } else {
                             var status_color = '';
